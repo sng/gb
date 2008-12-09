@@ -8,9 +8,9 @@ import junit.framework.TestCase;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.android.geobrowse.CachePageIntentCreator;
-import com.android.geobrowse.Destination;
-import com.android.geobrowse.UriParser;
+import com.google.code.geobeagle.CachePageIntentCreator;
+import com.google.code.geobeagle.Destination;
+import com.google.code.geobeagle.UriParser;
 
 public class CachePageIntentCreatorTest extends TestCase {
 	public void test() {

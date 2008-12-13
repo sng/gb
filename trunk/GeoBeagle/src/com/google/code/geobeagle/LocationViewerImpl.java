@@ -1,7 +1,5 @@
 package com.google.code.geobeagle;
 
-import java.util.Calendar;
-
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationProvider;

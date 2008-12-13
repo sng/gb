@@ -7,9 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import android.content.Context;
 import android.location.Location;
@@ -116,8 +114,8 @@ public class LocationSetterImpl implements LocationSetter {
 	public void setLocation(CharSequence c) {
 		if (c == null) {
 			Location location = gpsControl.getLocation();
-//			String format = new SimpleDateFormat("H:mm").format(new Date(location.getTime()));
-			setLocation(location.getLatitude(), location.getLongitude(), String.format("[%1$tk:%1$tM] My Location", location.getTime()));
+			setLocation(location.getLatitude(), location.getLongitude(), String.format(
+					"[%1$tk:%1$tM] My Location", location.getTime()));
 			return;
 		}
 		saveLocation(c);

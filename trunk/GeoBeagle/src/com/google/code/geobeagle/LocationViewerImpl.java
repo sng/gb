@@ -7,8 +7,6 @@ import android.location.Location;
 import android.location.LocationProvider;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.TextView;
 
 public class LocationViewerImpl implements LocationViewer {
 	static class LocationViewerOnClickListener implements OnClickListener {
@@ -26,14 +24,15 @@ public class LocationViewerImpl implements LocationViewer {
 		}
 	}
 
-	private final Button caption;
-	private final TextView coordinates;
+	private final MockableButton caption;
+	private final MockableTextView coordinates;
 
-	public LocationViewerImpl(final Button caption, TextView coordinates, Location initialLocation) {
+	public LocationViewerImpl(final MockableButton button, MockableTextView coordinates,
+			Location initialLocation) {
 		this.coordinates = coordinates;
-		this.caption = caption;
+		this.caption = button;
 		// disabled until coordinates come in.
-		caption.setEnabled(false);
+		button.setEnabled(false);
 		if (initialLocation == null) {
 			this.coordinates.setText("getting location from gps...");
 		} else {
@@ -47,7 +46,7 @@ public class LocationViewerImpl implements LocationViewer {
 	}
 
 	public void setLocation(Location location) {
-		setLocation(location, Calendar.getInstance().getTime().getTime());
+		setLocation(location, location.getTime());
 	}
 
 	public void setLocation(Location location, long time) {

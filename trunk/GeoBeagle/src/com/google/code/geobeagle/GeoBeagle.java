@@ -66,12 +66,13 @@ public class GeoBeagle extends Activity {
 			final EditText txtLocation = (EditText) findViewById(R.id.go_to);
 			txtLocation.setOnKeyListener(new LocationOnKeyListener(
 					(Button) findViewById(R.id.cache_page), new TooString(txtLocation)));
-			locationSetter = new LocationSetterImpl(this, new MockableEditText(txtLocation), gpsControl);
+			locationSetter = new LocationSetterImpl(this, new MockableEditText(txtLocation),
+					gpsControl);
 			dlgError = createErrorDialog();
 
-			locationViewer = new LocationViewerImpl(
-					(Button) findViewById(R.id.location_viewer_caption),
-					(TextView) findViewById(R.id.location_viewer), gpsControl.getLocation());
+			locationViewer = new LocationViewerImpl(new MockableButton(
+					(Button) findViewById(R.id.location_viewer_caption)), new MockableTextView(
+					(TextView) findViewById(R.id.location_viewer)), gpsControl.getLocation());
 			locationViewer.setOnClickListener(new LocationViewerImpl.LocationViewerOnClickListener(
 					locationViewer, locationSetter));
 			gpsLocationListener = new GpsLocationListener(locationViewer, this);

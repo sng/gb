@@ -22,8 +22,8 @@
 		<LinearLayout android:orientation="horizontal"
 			android:layout_height="wrap_content" android:layout_width="fill_parent">
 			<EditText android:id="@+id/go_to" android:layout_height="wrap_content"
-				android:layout_width="wrap_content" android:layout_weight="1"
-				android:textSize="14sp" android:text="37 122" />
+				android:scrollHorizontally="true" android:layout_width="wrap_content"
+				android:layout_weight="1" android:textSize="14sp" android:text="37 122" />
 			<Button android:id="@+id/go_to_list" android:text="..."
 				android:layout_height="wrap_content" android:layout_width="wrap_content" />
 		</LinearLayout>
@@ -44,7 +44,8 @@
 				android:text="@string/cache_page" />
 		</LinearLayout>
 		<TextView android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:textSize="12sp" android:text="(Click 'Google Maps' to return to GeoBrowse.)" />
+			android:layout_height="wrap_content" android:textSize="12sp"
+			android:text="(Click 'Google Maps' to return to GeoBeagle.)" />
 
 		<TextView android:layout_height="fill_parent"
 			android:layout_width="wrap_content" android:text="Open Android application:"

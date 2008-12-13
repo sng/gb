@@ -116,8 +116,8 @@ public class LocationSetterImpl implements LocationSetter {
 	public void setLocation(CharSequence c) {
 		if (c == null) {
 			Location location = gpsControl.getLocation();
-			setLocation(location.getLatitude(), location.getLongitude(), "GPS at "
-					+ new SimpleDateFormat("H:mm aaa").format(new Date(location.getTime())));
+//			String format = new SimpleDateFormat("H:mm").format(new Date(location.getTime()));
+			setLocation(location.getLatitude(), location.getLongitude(), String.format("[%1$tk:%1$tM] My Location", location.getTime()));
 			return;
 		}
 		saveLocation(c);

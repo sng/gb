@@ -45,11 +45,11 @@ public class LocationSetterImplTest extends TestCase {
 		final Location location = createMock(Location.class);
 		MockableEditText editText = createMock(MockableEditText.class);
 		editText.setOnFocusChangeListener((OnFocusChangeListener) notNull());
-		editText.setText("37 07.380  122 20.700 # GPS at 4:25 AM");
+		editText.setText("37 07.380  122 20.700 # [16:07] My Location");
 		expect(location.getLatitude()).andReturn(37.123);
 		expect(location.getLongitude()).andReturn(122.345);
 		expect(location.getTime()).andReturn(
-				new GregorianCalendar(2008, 12, 5, 4, 25, 10).getTime().getTime());
+				new GregorianCalendar(2008, 12, 5, 16, 7, 10).getTime().getTime());
 		replay(location);
 		replay(editText);
 		LocationSetter lsi = new LocationSetterImpl(null, editText, new GpsControl() {

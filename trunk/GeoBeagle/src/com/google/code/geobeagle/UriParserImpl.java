@@ -5,14 +5,12 @@ import android.net.Uri;
 
 public class UriParserImpl implements UriParser {
 
-	public Intent createIntent(String actionView, Uri parse) {
-		// TODO Auto-generated method stub
-		return null;
+	public Uri parse(String uriString) {
+		return Uri.parse(uriString);
 	}
 
-	public Uri parse(String format) {
-		// TODO Auto-generated method stub
-		return null;
+	public Intent createIntent(String actionView, Uri uri) {
+		return new Intent(actionView, uri);
 	}
 
 }

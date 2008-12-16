@@ -18,8 +18,7 @@ public class LocationOnKeyListener implements OnKeyListener {
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		boolean isCache = false;
 		try {
-			isCache = (new Destination(tooString.tooString())).getDescription()
-					.startsWith("GC");
+			isCache = (new Destination(tooString.tooString())).getDescription().startsWith("GC");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

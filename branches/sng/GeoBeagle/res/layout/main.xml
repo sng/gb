@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:scrollbars="vertical">
+
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="fill_parent">
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:paddingBottom="12sp">
+			<Button android:id="@+id/location_viewer_caption"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:text="GPS" />
+			<TextView android:id="@+id/location_viewer"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:layout_weight="1" android:textSize="15sp" android:textColor="#ffffff"
+				android:typeface="monospace" />
+		</LinearLayout>
+
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="@string/go_to" />
+		<LinearLayout android:orientation="horizontal"
+			android:layout_height="wrap_content" android:layout_width="fill_parent">
+			<EditText android:id="@+id/go_to" android:layout_height="wrap_content"
+				android:scrollHorizontally="true" android:layout_width="wrap_content"
+				android:layout_weight="1" android:textSize="14sp" android:text="37 122" />
+			<Button android:id="@+id/go_to_list" android:text="..."
+				android:layout_height="wrap_content" android:layout_width="wrap_content" />
+		</LinearLayout>
+
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="Open Geocaching.com web page:"
+			android:paddingTop="12sp" />
+		<LinearLayout android:orientation="horizontal"
+			android:layout_height="wrap_content" android:layout_width="fill_parent">
+			<Button android:id="@+id/nearest_caches"
+				android:layout_height="wrap_content" android:layout_width="wrap_content"
+				android:layout_weight="1" android:text="@string/nearest_caches" />
+			<Button android:id="@+id/geocaching_map"
+				android:layout_height="wrap_content" android:layout_width="wrap_content"
+				android:layout_weight="1" android:text="@string/geocaching_map" />
+			<Button android:id="@+id/cache_page" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:layout_weight="1"
+				android:text="@string/cache_page" />
+		</LinearLayout>
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:textSize="12sp"
+			android:text="(Click 'Google Maps' to return to GeoBeagle.)" />
+
+		<TextView android:layout_height="fill_parent"
+			android:layout_width="wrap_content" android:text="Open Android application:"
+			android:paddingTop="12sp" />
+		<LinearLayout android:orientation="horizontal"
+			android:layout_height="wrap_content" android:layout_width="fill_parent">
+			<Button android:id="@+id/radar" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:text="@string/radar"
+				android:layout_weight="1" />
+			<Button android:id="@+id/maps" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:text="@string/maps"
+				android:layout_weight="1" />
+		</LinearLayout>
+
+		<TextView android:id="@+id/debug" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="" />
+	</LinearLayout>
+</ScrollView>

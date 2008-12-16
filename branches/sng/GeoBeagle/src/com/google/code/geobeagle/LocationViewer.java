@@ -1,3 +1,4 @@
+
 package com.google.code.geobeagle;
 
 import android.location.Location;
@@ -5,13 +6,13 @@ import android.view.View.OnClickListener;
 
 public interface LocationViewer {
 
-	void setLocation(Location location, long time);
-	
-	void setLocation(Location location);
+    void setLocation(Location location, long time);
 
-	void setStatus(int status);
+    void setLocation(Location location);
 
-	String getLocation();
+    void setStatus(int status);
 
-	void setOnClickListener(OnClickListener onClickListener);
+    String getLocation();
+
+    void setOnClickListener(OnClickListener onClickListener);
 }

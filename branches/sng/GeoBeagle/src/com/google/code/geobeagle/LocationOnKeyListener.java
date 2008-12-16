@@ -1,3 +1,4 @@
+
 package com.google.code.geobeagle;
 
 import android.view.KeyEvent;
@@ -7,23 +8,24 @@ import android.widget.Button;
 
 public class LocationOnKeyListener implements OnKeyListener {
 
-	private final Button cachePage;
-	private final TooString tooString;
+    private final Button mCachePage;
 
-	public LocationOnKeyListener(Button cachePage, TooString editText) {
-		this.cachePage = cachePage;
-		this.tooString = editText;
-	}
+    private final TooString mTooString;
 
-	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		boolean isCache = false;
-		try {
-			isCache = (new Destination(tooString.tooString())).getDescription().startsWith("GC");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		cachePage.setEnabled(isCache);
-		return false;
-	}
+    public LocationOnKeyListener(Button cachePage, TooString editText) {
+        this.mCachePage = cachePage;
+        this.mTooString = editText;
+    }
+
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        boolean isCache = false;
+        try {
+            isCache = (new Destination(mTooString.tooString())).getDescription().startsWith("GC");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mCachePage.setEnabled(isCache);
+        return false;
+    }
 
 }

@@ -14,12 +14,12 @@ public class LocationOnKeyListenerTest extends TestCase {
 	private TooString tooString;
 	private LocationOnKeyListener locationOnKeyListener;
 
+	@Override
 	public void setUp() {
 		btnCachePage = createMock(Button.class);
 		editable = createMock(Editable.class);
 		tooString = createMock(TooString.class);
 		locationOnKeyListener = new LocationOnKeyListener(btnCachePage, tooString);
-
 	}
 
 	public void testLocationOnKeyListener() {

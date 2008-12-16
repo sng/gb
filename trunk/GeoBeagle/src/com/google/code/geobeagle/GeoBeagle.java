@@ -81,8 +81,7 @@ public class GeoBeagle extends Activity {
 
 			final Button btnGoToList = (Button) findViewById(R.id.go_to_list);
 			btnGoToList.setOnClickListener(new DestinationListOnClickListener(locationSetter
-					.getPreviousDescriptions(), locationSetter.getPreviousLocations(),
-					locationSetter, new AlertDialog.Builder(this)));
+					.getDescriptionsAndLocations(), locationSetter, new AlertDialog.Builder(this)));
 		} catch (final Exception e) {
 			((TextView) findViewById(R.id.debug)).setText(e.toString() + "\n"
 					+ Util.getStackTrace(e));
@@ -103,11 +102,11 @@ public class GeoBeagle extends Activity {
 	protected void onResume() {
 		super.onResume();
 		GpsControlImpl.onResume(this, gpsLocationListener);
+		locationSetter.load(this);
 		if (!maybeGetCoordinatesFromIntent()) {
 			locationSetter.setLocation(getPreferences(MODE_PRIVATE).getString(PREFS_LOCATION,
 					getString(R.string.initial_destination)));
 		}
-		locationSetter.load(this);
 	}
 
 	private void setOnClickListener(final int id, final IntentCreator intentCreator) {

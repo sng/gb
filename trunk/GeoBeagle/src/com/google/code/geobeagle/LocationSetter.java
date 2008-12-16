@@ -1,6 +1,6 @@
 package com.google.code.geobeagle;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 
@@ -11,9 +11,11 @@ public interface LocationSetter {
 
 	public abstract void setLocation(CharSequence c);
 
-	public abstract ArrayList<CharSequence> getPreviousDescriptions();
+	public abstract List<CharSequence> getPreviousDescriptions();
 
-	public abstract ArrayList<CharSequence> getPreviousLocations();
+	public abstract List<CharSequence> getPreviousLocations();
+	
+	public abstract DescriptionsAndLocations getDescriptionsAndLocations();
 
 	public abstract void load(Context c);
 

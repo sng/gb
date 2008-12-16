@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.location.Location;
@@ -16,16 +16,14 @@ import android.view.View.OnFocusChangeListener;
 
 public class LocationSetterImpl implements LocationSetter {
 	private static final String FNAME_RECENT_LOCATIONS = "RECENT_LOCATIONS";
-	private final ArrayList<CharSequence> previousDescriptions;
-	private final ArrayList<CharSequence> previousLocations;
+	private final DescriptionsAndLocations descriptionsAndLocations;
 	private final MockableEditText txtLocation;
 	private final GpsControl gpsControl;
 
 	public LocationSetterImpl(Context context, MockableEditText editText, GpsControl gpsControl) {
 		txtLocation = editText;
 		this.gpsControl = gpsControl;
-		previousLocations = new ArrayList<CharSequence>();
-		previousDescriptions = new ArrayList<CharSequence>();
+		descriptionsAndLocations = new DescriptionsAndLocations();
 		editText.setOnFocusChangeListener(new OnFocusChangeListener() {
 			public void onFocusChange(View v, boolean hasFocus) {
 				if (!hasFocus) {
@@ -39,18 +37,17 @@ public class LocationSetterImpl implements LocationSetter {
 		return txtLocation.getText();
 	}
 
-	public ArrayList<CharSequence> getPreviousDescriptions() {
-		return previousDescriptions;
+	public List<CharSequence> getPreviousDescriptions() {
+		return descriptionsAndLocations.getPreviousDescriptions();
 	}
 
-	public ArrayList<CharSequence> getPreviousLocations() {
-		return previousLocations;
+	public List<CharSequence> getPreviousLocations() {
+		return descriptionsAndLocations.getPreviousLocations();
 	}
 
 	public void load(Context c) {
 		try {
-			previousDescriptions.clear();
-			previousLocations.clear();
+			descriptionsAndLocations.clear();
 
 			final FileInputStream f = c.openFileInput(FNAME_RECENT_LOCATIONS);
 			final InputStreamReader isr = new InputStreamReader(f);
@@ -60,6 +57,7 @@ public class LocationSetterImpl implements LocationSetter {
 			while ((dataLine = br.readLine()) != null) {
 				saveLocation(dataLine);
 			}
+			
 			f.close();
 		} catch (final FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -75,7 +73,7 @@ public class LocationSetterImpl implements LocationSetter {
 			final FileOutputStream openFileOutput = c.openFileOutput(FNAME_RECENT_LOCATIONS,
 					Context.MODE_PRIVATE);
 			final BufferedOutputStream bos = new BufferedOutputStream(openFileOutput);
-			for (final CharSequence location : previousLocations) {
+			for (final CharSequence location : descriptionsAndLocations.getPreviousLocations()) {
 				bos.write((location.toString() + "\n").getBytes());
 			}
 			bos.close();
@@ -96,18 +94,8 @@ public class LocationSetterImpl implements LocationSetter {
 	private CharSequence saveLocation(final CharSequence location) {
 		final Destination d = new Destination(location);
 		final CharSequence description = d.getDescription();
-		final int ix = previousDescriptions.indexOf(description);
-		if (ix >= 0) {
-			previousLocations.remove(ix);
-			previousDescriptions.remove(ix);
-		}
+		descriptionsAndLocations.add(description, location);
 
-		previousDescriptions.add(description);
-		previousLocations.add(location);
-		if (previousLocations.size() > 25) {
-			previousLocations.remove(0);
-			previousDescriptions.remove(0);
-		}
 		return location;
 	}
 
@@ -128,6 +116,10 @@ public class LocationSetterImpl implements LocationSetter {
 		txtLocation.setText(latLonText);
 		saveLocation(latLonText);
 		return latLonText;
+	}
+
+	public DescriptionsAndLocations getDescriptionsAndLocations() {
+		return descriptionsAndLocations;
 	}
 
 }

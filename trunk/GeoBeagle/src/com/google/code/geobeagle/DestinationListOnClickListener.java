@@ -13,13 +13,13 @@ import android.view.View.OnClickListener;
 public class DestinationListOnClickListener implements OnClickListener {
 	public static final String MY_LOCATION = "My Location";
 
-	public static class DestinationListDialogOnClickListener implements
-			DialogInterface.OnClickListener {
+	public static class DestinationListDialogOnClickListener
+			implements
+				DialogInterface.OnClickListener {
 		private final LocationSetter locationSetter;
 		private final List<CharSequence> previousLocations;
 
-		public DestinationListDialogOnClickListener(
-				List<CharSequence> previousLocations,
+		public DestinationListDialogOnClickListener(List<CharSequence> previousLocations,
 				LocationSetter locationSetter) {
 			this.previousLocations = previousLocations;
 			this.locationSetter = locationSetter;
@@ -32,23 +32,18 @@ public class DestinationListOnClickListener implements OnClickListener {
 
 	final private Builder dialogBuilder;
 	final private LocationSetter locationSetter;
-	final private List<CharSequence> previousDescriptions;
-	final private List<CharSequence> previousLocations;
+	private DescriptionsAndLocations descriptionsAndLocations = new DescriptionsAndLocations();
 
-	public DestinationListOnClickListener(
-			List<CharSequence> previousDescriptions,
-			List<CharSequence> previousLocations,
+	public DestinationListOnClickListener(DescriptionsAndLocations descriptionsAndLocations,
 			LocationSetter locationSetter, AlertDialog.Builder dialogBuilder) {
 		this.dialogBuilder = dialogBuilder;
 		this.locationSetter = locationSetter;
-		this.previousDescriptions = previousDescriptions;
-		this.previousLocations = previousLocations;
+		this.descriptionsAndLocations = descriptionsAndLocations;
 	}
 
 	protected DialogInterface.OnClickListener createDestinationListDialogOnClickListener(
 			List<CharSequence> previousLocations) {
-		return new DestinationListDialogOnClickListener(previousLocations,
-				locationSetter);
+		return new DestinationListDialogOnClickListener(previousLocations, locationSetter);
 	}
 
 	public void onClick(View v) {
@@ -59,23 +54,20 @@ public class DestinationListOnClickListener implements OnClickListener {
 		// Display "My Location" followed by descriptions in reverse order (most
 		// recent descriptions first).
 		List<CharSequence> dialogPreviousDescriptions = getDisplayableList(
-				previousDescriptions,
+				descriptionsAndLocations.getPreviousDescriptions(),
 				DestinationListOnClickListener.MY_LOCATION);
 		List<CharSequence> dialogPreviousLocations = getDisplayableList(
-				previousLocations, null);
+				descriptionsAndLocations.getPreviousLocations(), null);
 
 		final CharSequence[] prevDescriptionsArray = dialogPreviousDescriptions
 				.toArray(new CharSequence[dialogPreviousDescriptions.size()]);
 		dialogBuilder.setTitle(R.string.select_destination);
-		dialogBuilder
-				.setItems(
-						prevDescriptionsArray,
-						createDestinationListDialogOnClickListener(dialogPreviousLocations))
-				.create().show();
+		dialogBuilder.setItems(prevDescriptionsArray,
+				createDestinationListDialogOnClickListener(dialogPreviousLocations)).create()
+				.show();
 	}
 
-	private List<CharSequence> getDisplayableList(List<CharSequence> list,
-			String myLocation) {
+	private List<CharSequence> getDisplayableList(List<CharSequence> list, String myLocation) {
 		List<CharSequence> dialogPreviousDescriptions = new ArrayList<CharSequence>();
 		dialogPreviousDescriptions.addAll(list);
 		dialogPreviousDescriptions.add(myLocation);

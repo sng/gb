@@ -4,6 +4,5 @@ import android.location.Location;
 
 public interface GpsControl {
 
-	public abstract Location getLocation();
-
+    public abstract Location getLocation();
 }

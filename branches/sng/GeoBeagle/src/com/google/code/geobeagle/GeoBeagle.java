@@ -17,11 +17,11 @@ public class GeoBeagle extends Activity {
 
     private AlertDialog mDlgError;
 
-    private GpsLocationListener gpsLocationListener;
+    private GpsLocationListener mGpsLocationListener;
 
-    private LocationSetter locationSetter;
+    private LocationSetter mLocationSetter;
 
-    private LocationViewer locationViewer;
+    private LocationViewer mLocationViewer;
 
     private ErrorDisplayerImpl mErrorDisplayer;
 
@@ -58,7 +58,7 @@ public class GeoBeagle extends Activity {
         final String action = intent.getAction();
 
         if ((action != null) && action.equals(Intent.ACTION_VIEW)) {
-            getCoordinatesFromIntent(locationSetter, intent, mDlgError);
+            getCoordinatesFromIntent(mLocationSetter, intent, mDlgError);
             return true;
         }
         return false;
@@ -73,22 +73,22 @@ public class GeoBeagle extends Activity {
             final EditText txtLocation = (EditText)findViewById(R.id.go_to);
             txtLocation.setOnKeyListener(new LocationOnKeyListener(
                     (Button)findViewById(R.id.cache_page), new TooString(txtLocation)));
-            locationSetter = new LocationSetterImpl(this, new MockableEditText(txtLocation),
+            mLocationSetter = new LocationSetterImpl(this, new MockableEditText(txtLocation),
                     gpsControl);
             mDlgError = createErrorDialog();
 
-            locationViewer = new LocationViewerImpl(new MockableTextView(
+            mLocationViewer = new LocationViewerImpl(new MockableTextView(
                     (TextView)findViewById(R.id.location_viewer)), new MockableTextView(
                     (TextView)findViewById(R.id.last_updated)), new MockableTextView(
                     (TextView)findViewById(R.id.status)), gpsControl.getLocation());
-            gpsLocationListener = new GpsLocationListener(locationViewer, this);
+            mGpsLocationListener = new GpsLocationListener(mLocationViewer, this);
 
-            setOnClickListeners(locationSetter);
+            setOnClickListeners(mLocationSetter);
 
             final Button btnGoToList = (Button)findViewById(R.id.go_to_list);
             mErrorDisplayer = new ErrorDisplayerImpl(this);
-            btnGoToList.setOnClickListener(new DestinationListOnClickListener(locationSetter
-                    .getDescriptionsAndLocations(), locationSetter, new AlertDialog.Builder(this), mErrorDisplayer));
+            btnGoToList.setOnClickListener(new DestinationListOnClickListener(mLocationSetter
+                    .getDescriptionsAndLocations(), mLocationSetter, new AlertDialog.Builder(this), mErrorDisplayer));
         } catch (final Exception e) {
             ((TextView)findViewById(R.id.debug)).setText(e.toString() + "\n"
                     + Util.getStackTrace(e));
@@ -98,27 +98,27 @@ public class GeoBeagle extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        GpsControlImpl.onPause(this, gpsLocationListener);
+        GpsControlImpl.onPause(this, mGpsLocationListener);
         final SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-        editor.putString(sPrefsLocation, locationSetter.getLocation().toString());
+        editor.putString(sPrefsLocation, mLocationSetter.getLocation().toString());
         editor.commit();
-        locationSetter.save(this);
+        mLocationSetter.save(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        GpsControlImpl.onResume(this, gpsLocationListener);
-        locationSetter.load(this);
+        GpsControlImpl.onResume(this, mGpsLocationListener);
+        mLocationSetter.load(this);
         if (!maybeGetCoordinatesFromIntent()) {
-            locationSetter.setLocation(getPreferences(MODE_PRIVATE).getString(sPrefsLocation,
+            mLocationSetter.setLocation(getPreferences(MODE_PRIVATE).getString(sPrefsLocation,
                     getString(R.string.initial_destination)), mErrorDisplayer);
         }
     }
 
     private void setOnClickListener(final int id, final IntentCreator intentCreator) {
         ((Button)findViewById(id)).setOnClickListener(new OnActivityButtonLinkClickListener(this,
-                mDlgError, locationSetter, intentCreator));
+                mDlgError, mLocationSetter, intentCreator));
     }
 
     private void setOnClickListeners(final LocationSetter controls) {

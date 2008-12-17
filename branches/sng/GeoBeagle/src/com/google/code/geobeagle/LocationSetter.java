@@ -9,7 +9,7 @@ public interface LocationSetter {
 
     public abstract CharSequence getLocation();
 
-    public abstract void setLocation(CharSequence c);
+    public abstract void setLocation(CharSequence c, ErrorDisplayer errorDisplayer);
 
     public abstract List<CharSequence> getPreviousDescriptions();
 

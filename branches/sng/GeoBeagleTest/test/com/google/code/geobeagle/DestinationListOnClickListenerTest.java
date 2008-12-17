@@ -48,7 +48,7 @@ public class DestinationListOnClickListenerTest extends TestCase {
         }
 
         DestinationListOnClickListener destinationListOnClickListener = new DestinationListOnClickListener(
-                descriptionsAndLocations, locationSetter, dialogBuilder) {
+                descriptionsAndLocations, locationSetter, dialogBuilder, null) {
             protected OnClickListener createDestinationListDialogOnClickListener(
                     List<CharSequence> previousLocations) {
                 assertEquals(Arrays.asList(null, locations[1], locations[0]), previousLocations);
@@ -65,11 +65,11 @@ public class DestinationListOnClickListenerTest extends TestCase {
         CharSequence[] locations = new CharSequence[] {
                 null, "37 122 foo", "37 122 etc",
         };
-        locationSetter.setLocation("37 122 foo");
+        locationSetter.setLocation("37 122 foo", null);
 
         replay(locationSetter);
         DestinationListDialogOnClickListener dldocl = new DestinationListDialogOnClickListener(
-                Arrays.asList(locations), locationSetter);
+                Arrays.asList(locations), locationSetter, null);
         dldocl.onClick(null, 1);
         verify(locationSetter);
     }

@@ -18,18 +18,21 @@ public class DestinationListOnClickListener implements OnClickListener {
 
         private final List<CharSequence> mPreviousLocations;
 
+        private final ErrorDisplayer mErrorDisplayer;
+
         public DestinationListDialogOnClickListener(List<CharSequence> previousLocations,
-                LocationSetter locationSetter) {
+                LocationSetter locationSetter, ErrorDisplayer errorDisplayer) {
             this.mPreviousLocations = previousLocations;
             this.mLocationSetter = locationSetter;
+            this.mErrorDisplayer = errorDisplayer;
         }
 
         public void onClick(DialogInterface dialog, int which) {
-            mLocationSetter.setLocation(mPreviousLocations.get(which));
+            mLocationSetter.setLocation(mPreviousLocations.get(which), mErrorDisplayer);
         }
     }
 
-    public static final String MY_LOCATION = "My Location";
+    public static final String MY_LOCATION = "My Current Location";
 
     final private DescriptionsAndLocations mDescriptionsAndLocations;
 
@@ -37,16 +40,21 @@ public class DestinationListOnClickListener implements OnClickListener {
 
     final private LocationSetter mLocationSetter;
 
+    private ErrorDisplayer mErrorDisplayer;
+
     public DestinationListOnClickListener(DescriptionsAndLocations descriptionsAndLocations,
-            LocationSetter locationSetter, AlertDialog.Builder dialogBuilder) {
+            LocationSetter locationSetter, AlertDialog.Builder dialogBuilder,
+            ErrorDisplayer errorDisplayer) {
         this.mDialogBuilder = dialogBuilder;
         this.mLocationSetter = locationSetter;
         this.mDescriptionsAndLocations = descriptionsAndLocations;
+        this.mErrorDisplayer = errorDisplayer;
     }
 
     protected DialogInterface.OnClickListener createDestinationListDialogOnClickListener(
             List<CharSequence> previousLocations) {
-        return new DestinationListDialogOnClickListener(previousLocations, mLocationSetter);
+        return new DestinationListDialogOnClickListener(previousLocations, mLocationSetter,
+                mErrorDisplayer);
     }
 
     private List<CharSequence> getDisplayableList(List<CharSequence> list, String myLocation) {

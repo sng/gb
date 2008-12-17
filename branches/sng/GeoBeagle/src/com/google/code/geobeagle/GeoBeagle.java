@@ -23,6 +23,8 @@ public class GeoBeagle extends Activity {
 
     private LocationViewer locationViewer;
 
+    private ErrorDisplayerImpl mErrorDisplayer;
+
     private AlertDialog createErrorDialog() {
         return new AlertDialog.Builder(this).setNeutralButton("Ok",
                 new DialogInterface.OnClickListener() {
@@ -75,18 +77,18 @@ public class GeoBeagle extends Activity {
                     gpsControl);
             mDlgError = createErrorDialog();
 
-            locationViewer = new LocationViewerImpl(new MockableButton(
-                    (Button)findViewById(R.id.location_viewer_caption)), new MockableTextView(
-                    (TextView)findViewById(R.id.location_viewer)), gpsControl.getLocation());
-            locationViewer.setOnClickListener(new LocationViewerImpl.LocationViewerOnClickListener(
-                    locationViewer, locationSetter));
+            locationViewer = new LocationViewerImpl(new MockableTextView(
+                    (TextView)findViewById(R.id.location_viewer)), new MockableTextView(
+                    (TextView)findViewById(R.id.last_updated)), new MockableTextView(
+                    (TextView)findViewById(R.id.status)), gpsControl.getLocation());
             gpsLocationListener = new GpsLocationListener(locationViewer, this);
 
             setOnClickListeners(locationSetter);
 
             final Button btnGoToList = (Button)findViewById(R.id.go_to_list);
+            mErrorDisplayer = new ErrorDisplayerImpl(this);
             btnGoToList.setOnClickListener(new DestinationListOnClickListener(locationSetter
-                    .getDescriptionsAndLocations(), locationSetter, new AlertDialog.Builder(this)));
+                    .getDescriptionsAndLocations(), locationSetter, new AlertDialog.Builder(this), mErrorDisplayer));
         } catch (final Exception e) {
             ((TextView)findViewById(R.id.debug)).setText(e.toString() + "\n"
                     + Util.getStackTrace(e));
@@ -110,7 +112,7 @@ public class GeoBeagle extends Activity {
         locationSetter.load(this);
         if (!maybeGetCoordinatesFromIntent()) {
             locationSetter.setLocation(getPreferences(MODE_PRIVATE).getString(sPrefsLocation,
-                    getString(R.string.initial_destination)));
+                    getString(R.string.initial_destination)), mErrorDisplayer);
         }
     }
 

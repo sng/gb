@@ -103,9 +103,13 @@ public class LocationSetterImpl implements LocationSetter {
         return location;
     }
 
-    public void setLocation(CharSequence c) {
+    public void setLocation(CharSequence c, ErrorDisplayer errorDisplayer) {
         if (c == null) {
             Location location = mGpsControl.getLocation();
+            if (location == null) {
+                errorDisplayer.displayError(R.string.current_location_null);
+                return;
+            }
             setLocation(location.getLatitude(), location.getLongitude(), String.format(
                     "[%1$tk:%1$tM] My Location", location.getTime()));
             return;

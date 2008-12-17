@@ -32,8 +32,8 @@ public class LocationSetterImplTest extends TestCase {
                 return null;
             }
         });
-        lsi.setLocation(LOCATION1);
-        lsi.setLocation(LOCATION2);
+        lsi.setLocation(LOCATION1, null);
+        lsi.setLocation(LOCATION2, null);
         assertEquals(LOCATION1, lsi.getPreviousLocations().get(0));
         assertEquals(LOCATION2, lsi.getPreviousLocations().get(1));
         verify(editText);
@@ -48,6 +48,7 @@ public class LocationSetterImplTest extends TestCase {
         expect(location.getLongitude()).andReturn(122.345);
         expect(location.getTime()).andReturn(
                 new GregorianCalendar(2008, 12, 5, 16, 7, 10).getTime().getTime());
+
         replay(location);
         replay(editText);
         LocationSetter lsi = new LocationSetterImpl(null, editText, new GpsControl() {
@@ -55,8 +56,26 @@ public class LocationSetterImplTest extends TestCase {
                 return location;
             }
         });
-        lsi.setLocation(null);
+        lsi.setLocation(null, null);
         verify(location);
         verify(editText);
+    }
+
+    public void testMyLocationNull() {
+        MockableEditText editText = createMock(MockableEditText.class);
+        editText.setOnFocusChangeListener((OnFocusChangeListener)notNull());
+        ErrorDisplayer errorDisplayer = createMock(ErrorDisplayer.class);
+        errorDisplayer.displayError(R.string.current_location_null);
+
+        replay(editText);
+        replay(errorDisplayer);
+        LocationSetter locationSetter = new LocationSetterImpl(null, editText, new GpsControl() {
+            public Location getLocation() {
+                return null;
+            }
+        });
+        locationSetter.setLocation(null, errorDisplayer);
+        verify(editText);
+        verify(errorDisplayer);
     }
 }

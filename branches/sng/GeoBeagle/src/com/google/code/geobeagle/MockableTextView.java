@@ -4,7 +4,6 @@ package com.google.code.geobeagle;
 import android.widget.TextView;
 
 public class MockableTextView {
-
     private TextView mTextView;
 
     public MockableTextView(TextView textView) {
@@ -22,5 +21,4 @@ public class MockableTextView {
     public void setEnabled(boolean enabled) {
         mTextView.setEnabled(enabled);
     }
-
 }

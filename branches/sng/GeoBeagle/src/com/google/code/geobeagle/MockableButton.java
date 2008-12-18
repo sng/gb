@@ -5,7 +5,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class MockableButton extends MockableTextView {
-
     private Button mButton;
 
     public MockableButton(Button button) {
@@ -20,5 +19,4 @@ public class MockableButton extends MockableTextView {
     public void setTextColor(int red) {
         mButton.setTextColor(red);
     }
-
 }

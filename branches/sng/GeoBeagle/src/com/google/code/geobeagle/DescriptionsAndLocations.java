@@ -6,9 +6,7 @@ import java.util.List;
 
 public class DescriptionsAndLocations {
     private List<CharSequence> mPreviousDescriptions;
-
     private List<CharSequence> mPreviousLocations;
-
     private int mMaxSize;
 
     public DescriptionsAndLocations() {
@@ -30,7 +28,6 @@ public class DescriptionsAndLocations {
         if (ix >= 0) {
             remove(ix);
         }
-
         mPreviousDescriptions.add(description);
         mPreviousLocations.add(location);
         if (mPreviousDescriptions.size() > mMaxSize) {

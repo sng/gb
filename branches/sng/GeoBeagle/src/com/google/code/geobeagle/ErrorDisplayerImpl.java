@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 
 public class ErrorDisplayerImpl implements ErrorDisplayer {
-
     private final Context context;
 
     public ErrorDisplayerImpl(Context context) {
@@ -22,5 +21,4 @@ public class ErrorDisplayerImpl implements ErrorDisplayer {
                 });
         alertDialogBuilder.create().show();
     }
-
 }

@@ -17,11 +17,8 @@ import java.util.List;
 
 public class LocationSetterImpl implements LocationSetter {
     private static final String FNAME_RECENT_LOCATIONS = "RECENT_LOCATIONS";
-
     private final DescriptionsAndLocations mDescriptionsAndLocations;
-
     private final MockableEditText mTxtLocation;
-
     private final GpsControl mGpsControl;
 
     public LocationSetterImpl(Context context, MockableEditText editText, GpsControl gpsControl) {
@@ -52,16 +49,13 @@ public class LocationSetterImpl implements LocationSetter {
     public void load(Context c) {
         try {
             mDescriptionsAndLocations.clear();
-
             final FileInputStream f = c.openFileInput(FNAME_RECENT_LOCATIONS);
             final InputStreamReader isr = new InputStreamReader(f);
             final BufferedReader br = new BufferedReader(isr);
             CharSequence dataLine = null;
-
             while ((dataLine = br.readLine()) != null) {
                 saveLocation(dataLine);
             }
-
             f.close();
         } catch (final FileNotFoundException e) {
             // TODO Auto-generated catch block
@@ -99,7 +93,6 @@ public class LocationSetterImpl implements LocationSetter {
         final Destination d = new Destination(location);
         final CharSequence description = d.getDescription();
         mDescriptionsAndLocations.add(description, location);
-
         return location;
     }
 
@@ -129,5 +122,4 @@ public class LocationSetterImpl implements LocationSetter {
     public DescriptionsAndLocations getDescriptionsAndLocations() {
         return mDescriptionsAndLocations;
     }
-
 }

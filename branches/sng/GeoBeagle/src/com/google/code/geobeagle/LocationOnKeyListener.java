@@ -7,9 +7,7 @@ import android.view.View.OnKeyListener;
 import android.widget.Button;
 
 public class LocationOnKeyListener implements OnKeyListener {
-
     private final Button mCachePage;
-
     private final TooString mTooString;
 
     public LocationOnKeyListener(Button cachePage, TooString editText) {
@@ -27,5 +25,4 @@ public class LocationOnKeyListener implements OnKeyListener {
         mCachePage.setEnabled(isCache);
         return false;
     }
-
 }

@@ -9,9 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Util {
-
     private static final String DATE_FORMAT_NOW = "HH:mm:ss";
-
     public static final String[] geocachingQueryParam = new String[] {
         "q"
     };

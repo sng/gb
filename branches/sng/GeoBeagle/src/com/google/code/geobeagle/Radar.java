@@ -12,5 +12,4 @@ public class Radar {
             return i;
         }
     }
-
 }

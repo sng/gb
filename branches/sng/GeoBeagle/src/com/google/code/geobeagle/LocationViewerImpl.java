@@ -6,9 +6,7 @@ import android.location.LocationProvider;
 
 public class LocationViewerImpl implements LocationViewer {
     private final MockableTextView mCoordinates;
-
     private final MockableTextView mLastUpdateTime;
-
     private final MockableTextView mStatus;
 
     public LocationViewerImpl(MockableTextView coordinates, MockableTextView lastUpdateTime,
@@ -29,7 +27,8 @@ public class LocationViewerImpl implements LocationViewer {
 
     public void setLocation(Location location, long time) {
         mCoordinates.setText(Util.degreesToMinutes(location.getLatitude()) + " "
-                + Util.degreesToMinutes(location.getLongitude()));
+                + Util.degreesToMinutes(location.getLongitude()) + "  ±" + location.getAccuracy()
+                + "m");
         mLastUpdateTime.setText(Util.formatTime(time));
     }
 
@@ -46,5 +45,4 @@ public class LocationViewerImpl implements LocationViewer {
                 break;
         }
     }
-
 }

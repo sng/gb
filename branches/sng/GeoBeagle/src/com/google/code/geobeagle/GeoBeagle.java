@@ -14,15 +14,10 @@ import android.widget.TextView;
 
 public class GeoBeagle extends Activity {
     private static final String sPrefsLocation = "Location";
-
     private AlertDialog mDlgError;
-
     private GpsLocationListener mGpsLocationListener;
-
     private LocationSetter mLocationSetter;
-
     private LocationViewer mLocationViewer;
-
     private ErrorDisplayerImpl mErrorDisplayer;
 
     private AlertDialog createErrorDialog() {
@@ -40,10 +35,8 @@ public class GeoBeagle extends Activity {
             final String sanitizedQuery = Util.parseHttpUri(query, new UrlQuerySanitizer(),
                     UrlQuerySanitizer.getAllButNulAndAngleBracketsLegal());
             final String[] latlon = Util.getLatLonFromQuery(sanitizedQuery);
-
             locationSetter.setLocation(Util.minutesToDegrees(latlon[0]), Util
                     .minutesToDegrees(latlon[1]), latlon[2]);
-
             // startActivityForResult(new RadarIntentCreator().createIntent(new
             // LatLong(ll)), -1);
         } catch (final Exception e) {
@@ -56,7 +49,6 @@ public class GeoBeagle extends Activity {
     private boolean maybeGetCoordinatesFromIntent() {
         final Intent intent = getIntent();
         final String action = intent.getAction();
-
         if ((action != null) && action.equals(Intent.ACTION_VIEW)) {
             getCoordinatesFromIntent(mLocationSetter, intent, mDlgError);
             return true;
@@ -76,19 +68,17 @@ public class GeoBeagle extends Activity {
             mLocationSetter = new LocationSetterImpl(this, new MockableEditText(txtLocation),
                     gpsControl);
             mDlgError = createErrorDialog();
-
             mLocationViewer = new LocationViewerImpl(new MockableTextView(
                     (TextView)findViewById(R.id.location_viewer)), new MockableTextView(
                     (TextView)findViewById(R.id.last_updated)), new MockableTextView(
                     (TextView)findViewById(R.id.status)), gpsControl.getLocation());
             mGpsLocationListener = new GpsLocationListener(mLocationViewer, this);
-
             setOnClickListeners(mLocationSetter);
-
             final Button btnGoToList = (Button)findViewById(R.id.go_to_list);
             mErrorDisplayer = new ErrorDisplayerImpl(this);
             btnGoToList.setOnClickListener(new DestinationListOnClickListener(mLocationSetter
-                    .getDescriptionsAndLocations(), mLocationSetter, new AlertDialog.Builder(this), mErrorDisplayer));
+                    .getDescriptionsAndLocations(), mLocationSetter, new AlertDialog.Builder(this),
+                    mErrorDisplayer));
         } catch (final Exception e) {
             ((TextView)findViewById(R.id.debug)).setText(e.toString() + "\n"
                     + Util.getStackTrace(e));
@@ -128,5 +118,4 @@ public class GeoBeagle extends Activity {
         setOnClickListener(R.id.maps, new MapsIntentCreator());
         setOnClickListener(R.id.cache_page, new CachePageIntentCreator());
     }
-
 }

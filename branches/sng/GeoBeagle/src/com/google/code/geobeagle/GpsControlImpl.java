@@ -7,7 +7,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 
 public class GpsControlImpl implements GpsControl {
-
     private Context mContext;
 
     public GpsControlImpl(Context context) {
@@ -36,5 +35,4 @@ public class GpsControlImpl implements GpsControl {
         getLocationManagerFromContext(context).requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 0, 0, locationListener);
     }
-
 }

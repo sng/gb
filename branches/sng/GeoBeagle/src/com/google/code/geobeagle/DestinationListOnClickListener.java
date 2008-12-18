@@ -15,9 +15,7 @@ public class DestinationListOnClickListener implements OnClickListener {
     public static class DestinationListDialogOnClickListener implements
             DialogInterface.OnClickListener {
         private final LocationSetter mLocationSetter;
-
         private final List<CharSequence> mPreviousLocations;
-
         private final ErrorDisplayer mErrorDisplayer;
 
         public DestinationListDialogOnClickListener(List<CharSequence> previousLocations,
@@ -33,13 +31,9 @@ public class DestinationListOnClickListener implements OnClickListener {
     }
 
     public static final String MY_LOCATION = "My Current Location";
-
     final private DescriptionsAndLocations mDescriptionsAndLocations;
-
     final private Builder mDialogBuilder;
-
     final private LocationSetter mLocationSetter;
-
     private ErrorDisplayer mErrorDisplayer;
 
     public DestinationListOnClickListener(DescriptionsAndLocations descriptionsAndLocations,
@@ -77,7 +71,6 @@ public class DestinationListOnClickListener implements OnClickListener {
                 DestinationListOnClickListener.MY_LOCATION);
         List<CharSequence> dialogPreviousLocations = getDisplayableList(mDescriptionsAndLocations
                 .getPreviousLocations(), null);
-
         final CharSequence[] prevDescriptionsArray = dialogPreviousDescriptions
                 .toArray(new CharSequence[dialogPreviousDescriptions.size()]);
         mDialogBuilder.setTitle(R.string.select_destination);

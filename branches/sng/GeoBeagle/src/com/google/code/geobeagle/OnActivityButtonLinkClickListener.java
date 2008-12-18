@@ -9,11 +9,8 @@ import android.view.View.OnClickListener;
 
 class OnActivityButtonLinkClickListener implements OnClickListener {
     private final Activity mActivity;
-
     private final IntentCreator mIntentCreator;
-
     private LocationSetter mLocationSetter;
-
     private AlertDialog mDlgError;
 
     public OnActivityButtonLinkClickListener(Activity activity, AlertDialog dlgError,

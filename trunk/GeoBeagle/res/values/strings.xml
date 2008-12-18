@@ -14,4 +14,8 @@
 	<string name="initial_destination">"37 25.341 -122 04.933 # GCMEY7"</string>
 	<string name="current_location_null">Current Location is not available. Make sure
 		your GPS is enabled and try again.</string>
+	<string name="out_of_service">OUT OF SERVICE</string>
+	<string name="available">AVAILABLE</string>
+	<string name="temporarily_unavailable">TEMPORARILY UNAVAILABLE</string>
+	<string name="getting_location_from_gps">getting location from gps...</string>	
 </resources>

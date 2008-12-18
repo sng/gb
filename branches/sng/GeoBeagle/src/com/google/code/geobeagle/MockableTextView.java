@@ -21,4 +21,8 @@ public class MockableTextView {
     public void setEnabled(boolean enabled) {
         mTextView.setEnabled(enabled);
     }
+
+    public void setText(int id) {
+        mTextView.setText(id);
+    }
 }

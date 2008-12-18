@@ -68,7 +68,7 @@ public class GeoBeagle extends Activity {
             mLocationSetter = new LocationSetterImpl(this, new MockableEditText(txtLocation),
                     gpsControl);
             mDlgError = createErrorDialog();
-            mLocationViewer = new LocationViewerImpl(new MockableTextView(
+            mLocationViewer = new LocationViewerImpl(new MockableContext(this), new MockableTextView(
                     (TextView)findViewById(R.id.location_viewer)), new MockableTextView(
                     (TextView)findViewById(R.id.last_updated)), new MockableTextView(
                     (TextView)findViewById(R.id.status)), gpsControl.getLocation());

@@ -1,24 +1,25 @@
+
 package com.google.code.geobeagle;
 
 import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 
 public class MockableEditText {
-	private final EditText editText;
+    private final EditText mEditText;
 
-	public MockableEditText(EditText editText) {
-		this.editText = editText;
-	}
+    public MockableEditText(EditText editText) {
+        this.mEditText = editText;
+    }
 
-	public void setText(CharSequence s) {
-		editText.setText(s);
-	}
+    public void setText(CharSequence s) {
+        mEditText.setText(s);
+    }
 
-	public CharSequence getText() {
-		return editText.getText();
-	}
+    public CharSequence getText() {
+        return mEditText.getText();
+    }
 
-	public void setOnFocusChangeListener(OnFocusChangeListener l) {
-		editText.setOnFocusChangeListener(l);
-	}
+    public void setOnFocusChangeListener(OnFocusChangeListener l) {
+        mEditText.setOnFocusChangeListener(l);
+    }
 }

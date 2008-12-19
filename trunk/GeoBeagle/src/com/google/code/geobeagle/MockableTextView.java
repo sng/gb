@@ -1,25 +1,28 @@
+
 package com.google.code.geobeagle;
 
 import android.widget.TextView;
 
 public class MockableTextView {
+    private TextView mTextView;
 
-	private TextView textView;
+    public MockableTextView(TextView textView) {
+        this.mTextView = textView;
+    }
 
-	public MockableTextView(TextView textView) {
-		this.textView = textView;
-	}
+    public void setText(CharSequence text) {
+        mTextView.setText(text);
+    }
 
-	public void setText(CharSequence text) {
-		textView.setText(text);
-	}
+    public CharSequence getText() {
+        return mTextView.getText();
+    }
 
-	public CharSequence getText() {
-		return textView.getText();
-	}
+    public void setEnabled(boolean enabled) {
+        mTextView.setEnabled(enabled);
+    }
 
-	public void setEnabled(boolean enabled) {
-		textView.setEnabled(enabled);
-	}
-
+    public void setText(int id) {
+        mTextView.setText(id);
+    }
 }

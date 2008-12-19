@@ -1,74 +1,50 @@
+
 package com.google.code.geobeagle;
 
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationProvider;
-import android.view.View;
-import android.view.View.OnClickListener;
 
 public class LocationViewerImpl implements LocationViewer {
-	static class LocationViewerOnClickListener implements OnClickListener {
-		private final LocationSetter locationSetter;
-		private final LocationViewer locationViewer;
+    private final MockableTextView mCoordinates;
+    private final MockableTextView mLastUpdateTime;
+    private final MockableTextView mStatus;
+    private final MockableContext mContext;
 
-		public LocationViewerOnClickListener(LocationViewer locationViewer,
-				LocationSetter locationSetter) {
-			this.locationSetter = locationSetter;
-			this.locationViewer = locationViewer;
-		}
+    public LocationViewerImpl(MockableContext context, MockableTextView coordinates, MockableTextView lastUpdateTime,
+            MockableTextView status, Location initialLocation) {
+        this.mContext = context;
+        this.mCoordinates = coordinates;
+        this.mLastUpdateTime = lastUpdateTime;
+        this.mStatus = status;
+        if (initialLocation == null) {
+            this.mCoordinates.setText(R.string.getting_location_from_gps);
+        } else {
+            setLocation(initialLocation);
+        }
+    }
 
-		public void onClick(View v) {
-			locationSetter.setLocation(locationViewer.getLocation());
-		}
-	}
+    public void setLocation(Location location) {
+        setLocation(location, location.getTime());
+    }
 
-	private final MockableButton caption;
-	private final MockableTextView coordinates;
+    public void setLocation(Location location, long time) {
+        mCoordinates.setText(Util.degreesToMinutes(location.getLatitude()) + " "
+                + Util.degreesToMinutes(location.getLongitude()) + "  ±" + location.getAccuracy()
+                + "m");
+        mLastUpdateTime.setText(Util.formatTime(time));
+    }
 
-	public LocationViewerImpl(final MockableButton button, MockableTextView coordinates,
-			Location initialLocation) {
-		this.coordinates = coordinates;
-		this.caption = button;
-		// disabled until coordinates come in.
-		button.setEnabled(false);
-		if (initialLocation == null) {
-			this.coordinates.setText("getting location from gps...");
-		} else {
-			setLocation(initialLocation);
-		}
-	}
-
-	public String getLocation() {
-		final String desc = (String) caption.getText();
-		return coordinates.getText() + " # " + desc.substring(0, desc.length());
-	}
-
-	public void setLocation(Location location) {
-		setLocation(location, location.getTime());
-	}
-
-	public void setLocation(Location location, long time) {
-		caption.setEnabled(true);
-		coordinates.setText(Util.degreesToMinutes(location.getLatitude()) + " "
-				+ Util.degreesToMinutes(location.getLongitude()));
-		caption.setText("GPS@" + Util.formatTime(time));
-	}
-
-	public void setOnClickListener(OnClickListener onClickListener) {
-		caption.setOnClickListener(onClickListener);
-	}
-
-	public void setStatus(int status) {
-		switch (status) {
-		case LocationProvider.OUT_OF_SERVICE:
-			caption.setTextColor(Color.RED);
-			break;
-		case LocationProvider.AVAILABLE:
-			caption.setTextColor(Color.BLACK);
-			break;
-		case LocationProvider.TEMPORARILY_UNAVAILABLE:
-			caption.setTextColor(Color.DKGRAY);
-			break;
-		}
-	}
+    public void setStatus(int status) {
+        switch (status) {
+            case LocationProvider.OUT_OF_SERVICE:
+                mStatus.setText(mContext.getString(R.string.out_of_service));
+                break;
+            case LocationProvider.AVAILABLE:
+                mStatus.setText(mContext.getString(R.string.available));
+                break;
+            case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                mStatus.setText(mContext.getString(R.string.temporarily_unavailable));
+                break;
+        }
+    }
 }

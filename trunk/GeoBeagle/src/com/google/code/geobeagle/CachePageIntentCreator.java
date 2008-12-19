@@ -1,20 +1,21 @@
+
 package com.google.code.geobeagle;
 
 import android.content.Intent;
 
 public class CachePageIntentCreator implements IntentCreator {
-	private final UriParser uriParser;
+    private final UriParser mUriParser;
 
-	public CachePageIntentCreator() {
-		uriParser = new UriParserImpl();
-	}
+    public CachePageIntentCreator() {
+        mUriParser = new UriParserImpl();
+    }
 
-	public CachePageIntentCreator(UriParser uriParser) {
-		this.uriParser = uriParser;
-	}
+    public CachePageIntentCreator(UriParser uriParser) {
+        this.mUriParser = uriParser;
+    }
 
-	public Intent createIntent(Destination destination) {
-		return uriParser.createIntent(Intent.ACTION_VIEW, uriParser.parse(String.format(
-				"http://coord.info/%1$s", destination.getDescription())));
-	}
+    public Intent createIntent(Destination destination) {
+        return mUriParser.createIntent(Intent.ACTION_VIEW, mUriParser.parse(String.format(
+                "http://coord.info/%1$s", destination.getDescription())));
+    }
 }

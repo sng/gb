@@ -1,3 +1,4 @@
+
 package com.google.code.geobeagle;
 
 import android.content.Context;
@@ -6,30 +7,32 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 
 public class GpsControlImpl implements GpsControl {
-	
-	private Context context;
+    private Context mContext;
 
-	public GpsControlImpl(Context context) {
-		this.context = context;
-	}
-	/* (non-Javadoc)
-	 * @see com.android.geobrowse.GpsControlI#getLocation(android.content.Context)
-	 */
-	public Location getLocation() {
-		return getLocationManagerFromContext(context).getLastKnownLocation(LocationManager.GPS_PROVIDER);
-	}
+    public GpsControlImpl(Context context) {
+        this.mContext = context;
+    }
 
-	private static LocationManager getLocationManagerFromContext(Context context) {
-		return (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-	}
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.android.geobrowse.GpsControlI#getLocation(android.content.Context)
+     */
+    public Location getLocation() {
+        return getLocationManagerFromContext(mContext).getLastKnownLocation(
+                LocationManager.GPS_PROVIDER);
+    }
 
-	public static void onPause(Context context, LocationListener locationListener) {
-		getLocationManagerFromContext(context).removeUpdates(locationListener);
-	}
+    private static LocationManager getLocationManagerFromContext(Context context) {
+        return (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+    }
 
-	public static void onResume(Context context, LocationListener locationListener) {
-		getLocationManagerFromContext(context).requestLocationUpdates(LocationManager.GPS_PROVIDER,
-				0, 0, locationListener);
-	}
+    public static void onPause(Context context, LocationListener locationListener) {
+        getLocationManagerFromContext(context).removeUpdates(locationListener);
+    }
 
+    public static void onResume(Context context, LocationListener locationListener) {
+        getLocationManagerFromContext(context).requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                0, 0, locationListener);
+    }
 }

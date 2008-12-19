@@ -1,32 +1,35 @@
+
 package com.google.code.geobeagle;
 
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
-import junit.framework.TestCase;
+
 import android.location.Location;
 import android.location.LocationProvider;
 
+import junit.framework.TestCase;
+
 public class GpsLocationListenerTest extends TestCase {
 
-	public void testOnLocationChanged() {
-		Location location = createMock(Location.class);
-		LocationViewer locationViewer = createMock(LocationViewer.class);
-		locationViewer.setLocation(location);
+    public void testOnLocationChanged() {
+        Location location = createMock(Location.class);
+        LocationViewer locationViewer = createMock(LocationViewer.class);
+        locationViewer.setLocation(location);
 
-		replay(location);
-		new GpsLocationListener(locationViewer, null).onLocationChanged(location);
-		verify(location);
-	}
+        replay(location);
+        new GpsLocationListener(locationViewer, null).onLocationChanged(location);
+        verify(location);
+    }
 
-	public void testOnStatusChange() {
-		Location location = createMock(Location.class);
-		LocationViewer locationViewer = createMock(LocationViewer.class);
+    public void testOnStatusChange() {
+        Location location = createMock(Location.class);
+        LocationViewer locationViewer = createMock(LocationViewer.class);
 
-		replay(location);
-		new GpsLocationListener(locationViewer, null).onStatusChanged(null,
-				LocationProvider.OUT_OF_SERVICE, null);
-		verify(location);
-	}
+        replay(location);
+        new GpsLocationListener(locationViewer, null).onStatusChanged(null,
+                LocationProvider.OUT_OF_SERVICE, null);
+        verify(location);
+    }
 
 }

@@ -1,3 +1,4 @@
+
 package com.google.code.geobeagle;
 
 import static org.easymock.EasyMock.expect;
@@ -13,19 +14,19 @@ import com.google.code.geobeagle.Destination;
 import com.google.code.geobeagle.UriParser;
 
 public class CachePageIntentCreatorTest extends TestCase {
-	public void test() {
-		UriParser uriParser = createMock(UriParser.class);
-		Uri uri = createMock(Uri.class);
-		Intent intent = createMock(Intent.class);
+    public void test() {
+        UriParser uriParser = createMock(UriParser.class);
+        Uri uri = createMock(Uri.class);
+        Intent intent = createMock(Intent.class);
 
-		expect(uriParser.createIntent(Intent.ACTION_VIEW, uri)).andReturn(intent);
-		expect(uriParser.parse("http://coord.info/GCFOO")).andReturn(uri);
+        expect(uriParser.createIntent(Intent.ACTION_VIEW, uri)).andReturn(intent);
+        expect(uriParser.parse("http://coord.info/GCFOO")).andReturn(uri);
 
-		replay(uriParser);
-		replay(intent);
-		CachePageIntentCreator cpic = new CachePageIntentCreator(uriParser);
-		assertEquals(cpic.createIntent(new Destination("37 12.234 122 56.789 # GCFOO")), intent);
-		verify(uriParser);
-		verify(intent);
-	}
+        replay(uriParser);
+        replay(intent);
+        CachePageIntentCreator cpic = new CachePageIntentCreator(uriParser);
+        assertEquals(cpic.createIntent(new Destination("37 12.234 122 56.789 # GCFOO")), intent);
+        verify(uriParser);
+        verify(intent);
+    }
 }

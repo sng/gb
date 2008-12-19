@@ -5,7 +5,7 @@
 Make sure you have subclipse installed.
 Set up the plugin location in your workspace per:  http://code.google.com/android/intro/installing.html
 
-= Checking out GeoBeagle =
+= Checking out `GeoBeagle` =
 
   * Window / Show View / SVN Repositories
   * Click on the "+" sign
@@ -14,3 +14,4 @@ Set up the plugin location in your workspace per:  http://code.google.com/androi
   * Select Android/Android Project
   * Project name: GeoBeagle, Package name: com.google.code.geobeagle, Activity name: geobeagle, Application name: geobeagle.
   * Confirm overwrite
+  * Right click on project icon, select Properties.  Select Java Build Path / Libraries / Add External JARs... select android.jar

@@ -1,0 +1,11 @@
+#summary How to check out using svn
+
+
+`svn checkout https://geobeagle.googlecode.com/svn/`
+
+Eclipse / New Android Project / Create Project From Existing Source
+
+GeoBeagle / Properties / Java Build Path / Add External Jars.... / android.jar
+
+
+Eclipse / Properties / Set Android SDK Location

@@ -13,3 +13,5 @@ Eclipse / Preferences / Set Android SDK Location
 Set java1.6
 
 Eclipse / New Java Project / Create Project From Existing Source / select GeoBeagleTest dir
+
+

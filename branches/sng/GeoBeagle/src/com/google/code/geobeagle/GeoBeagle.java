@@ -68,10 +68,11 @@ public class GeoBeagle extends Activity {
             mLocationSetter = new LocationSetterImpl(this, new MockableEditText(txtLocation),
                     gpsControl);
             mDlgError = createErrorDialog();
-            mLocationViewer = new LocationViewerImpl(new MockableContext(this), new MockableTextView(
-                    (TextView)findViewById(R.id.location_viewer)), new MockableTextView(
-                    (TextView)findViewById(R.id.last_updated)), new MockableTextView(
-                    (TextView)findViewById(R.id.status)), gpsControl.getLocation());
+            mLocationViewer = new LocationViewerImpl(new MockableContext(this),
+                    new MockableTextView((TextView)findViewById(R.id.location_viewer)),
+                    new MockableTextView((TextView)findViewById(R.id.last_updated)),
+                    new MockableTextView((TextView)findViewById(R.id.status)), gpsControl
+                            .getLocation());
             mGpsLocationListener = new GpsLocationListener(mLocationViewer, this);
             setOnClickListeners(mLocationSetter);
             final Button btnGoToList = (Button)findViewById(R.id.go_to_list);
@@ -106,16 +107,22 @@ public class GeoBeagle extends Activity {
         }
     }
 
-    private void setOnClickListener(final int id, final IntentCreator intentCreator) {
-        ((Button)findViewById(id)).setOnClickListener(new OnActivityButtonLinkClickListener(this,
-                mDlgError, mLocationSetter, intentCreator));
+    private void setOnClickListener(int id, IntentStarter activityStarter) {
+        ((Button)findViewById(id)).setOnClickListener(new OnActivityButtonLinkClickListener(
+                new IntentFactoryImpl(new UriParserImpl()), activityStarter,
+                new ActivityStarterImpl(this), mLocationSetter, mDlgError));
     }
 
     private void setOnClickListeners(final LocationSetter controls) {
-        setOnClickListener(R.id.radar, new Radar.RadarIntentCreator());
-        setOnClickListener(R.id.geocaching_map, new GeocachingMapsIntentCreator());
-        setOnClickListener(R.id.nearest_caches, new NearestCachesIntentCreator());
-        setOnClickListener(R.id.maps, new MapsIntentCreator());
-        setOnClickListener(R.id.cache_page, new CachePageIntentCreator());
+        final GetCoordsToast getCoordsToast = new GetCoordsToastImpl(this);
+        final ResourceProviderImpl resourceProviderImpl = new ResourceProviderImpl(this);
+
+        setOnClickListener(R.id.radar, new RadarIntentStarter());
+        setOnClickListener(R.id.geocaching_map, new GeocachingMapsIntentStarter(getCoordsToast,
+                resourceProviderImpl));
+        setOnClickListener(R.id.nearest_caches, new NearestCachesIntentStarter(getCoordsToast,
+                resourceProviderImpl));
+        setOnClickListener(R.id.maps, new MapsIntentStarter(resourceProviderImpl));
+        setOnClickListener(R.id.cache_page, new CachePageIntentStarter(resourceProviderImpl));
     }
 }

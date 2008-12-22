@@ -27,7 +27,7 @@
 			<TextView android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:text="Status: " />
 			<TextView android:id="@+id/status" android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:text="Temporarily Unavailable" />
+				android:layout_height="wrap_content" android:text="TEMPORARILY UNAVAILBLE" />
 
 		</LinearLayout>
 
@@ -57,10 +57,6 @@
 				android:layout_width="wrap_content" android:layout_weight="1"
 				android:text="@string/cache_page" />
 		</LinearLayout>
-		<TextView android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:textSize="12sp"
-			android:text="(Click 'Google Maps' to return to GeoBeagle.)" />
-
 		<TextView android:layout_height="fill_parent"
 			android:layout_width="wrap_content" android:text="Open Android application:"
 			android:paddingTop="12sp" />

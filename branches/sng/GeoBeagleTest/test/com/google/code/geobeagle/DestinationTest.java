@@ -3,7 +3,7 @@ package com.google.code.geobeagle;
 
 import junit.framework.TestCase;
 
-public class LatLongTest extends TestCase {
+public class DestinationTest extends TestCase {
     public void testLatLong() {
         Destination ll = new Destination("37 00.0 122 00.0");
         assertEquals(37.0, ll.getLatitude());

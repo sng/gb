@@ -8,18 +8,11 @@ public class DescriptionsAndLocationsTest extends TestCase {
     public final void testDescriptionsAndLocations() {
         DescriptionsAndLocations descriptionsAndLocations = new DescriptionsAndLocations();
 
-        CharSequence[] descriptions = new CharSequence[] {
-                "SFO", "OAK"
-        };
-        final CharSequence[] locations = new CharSequence[] {
-                "37 122 etc", "37 122 foo"
-        };
         descriptionsAndLocations = new DescriptionsAndLocations();
-        for (int ix = 0; ix < descriptions.length; ix++) {
-            descriptionsAndLocations.add(descriptions[ix], locations[ix]);
-        }
-        assertEquals(descriptions[1], descriptionsAndLocations.getPreviousDescriptions().get(1));
-        assertEquals(locations[0], descriptionsAndLocations.getPreviousLocations().get(0));
+        descriptionsAndLocations.add("SFO", "37 122 etc");
+        descriptionsAndLocations.add("OAK", "37 122 foo");
+        assertEquals("OAK", descriptionsAndLocations.getPreviousDescriptions().get(1));
+        assertEquals("37 122 etc", descriptionsAndLocations.getPreviousLocations().get(0));
     }
 
     public final void testAdd() {
@@ -51,16 +44,9 @@ public class DescriptionsAndLocationsTest extends TestCase {
     }
 
     public final void testClear() {
-        CharSequence[] descriptions = new CharSequence[] {
-                "SFO", "OAK"
-        };
-        final CharSequence[] locations = new CharSequence[] {
-                "37 122 etc", "37 122 foo"
-        };
         DescriptionsAndLocations descriptionsAndLocations = new DescriptionsAndLocations();
-        for (int ix = 0; ix < descriptions.length; ix++) {
-            descriptionsAndLocations.add(descriptions[ix], locations[ix]);
-        }
+        descriptionsAndLocations.add("SFO", "37 122 etc");
+        descriptionsAndLocations.add("OAK", "37 122 foo");
         descriptionsAndLocations.clear();
 
         assertEquals(0, descriptionsAndLocations.getPreviousDescriptions().size());

@@ -25,12 +25,6 @@ public class DestinationListOnClickListenerTest extends TestCase {
         LocationSetter locationSetter = createMock(LocationSetter.class);
         AlertDialog.Builder dialogBuilder = createMock(AlertDialog.Builder.class);
         AlertDialog alertDialog = createMock(AlertDialog.class);
-        CharSequence[] descriptions = new CharSequence[] {
-                "SFO", "OAK"
-        };
-        final CharSequence[] locations = new CharSequence[] {
-                "37 122 etc", "37 122 foo"
-        };
 
         expect(dialogBuilder.setTitle(R.string.select_destination)).andReturn(dialogBuilder);
         expect(dialogBuilder.setItems(aryEq(new CharSequence[] {
@@ -43,15 +37,14 @@ public class DestinationListOnClickListenerTest extends TestCase {
         replay(dialogBuilder);
         replay(alertDialog);
         DescriptionsAndLocations descriptionsAndLocations = new DescriptionsAndLocations();
-        for (int ix = 0; ix < descriptions.length; ix++) {
-            descriptionsAndLocations.add(descriptions[ix], locations[ix]);
-        }
+        descriptionsAndLocations.add("SFO", "37 122 etc");
+        descriptionsAndLocations.add("OAK", "37 122 foo");
 
         DestinationListOnClickListener destinationListOnClickListener = new DestinationListOnClickListener(
                 descriptionsAndLocations, locationSetter, dialogBuilder, null) {
             protected OnClickListener createDestinationListDialogOnClickListener(
                     List<CharSequence> previousLocations) {
-                assertEquals(Arrays.asList(null, locations[1], locations[0]), previousLocations);
+                assertEquals(Arrays.asList(null, "37 122 foo", "37 122 etc"), previousLocations);
                 return mockListener;
             }
         };

@@ -18,7 +18,7 @@ public class GpsLocationListenerTest extends TestCase {
         locationViewer.setLocation(location);
 
         replay(location);
-        new GpsLocationListener(locationViewer, null).onLocationChanged(location);
+        new GpsLocationListener(locationViewer).onLocationChanged(location);
         verify(location);
     }
 
@@ -27,7 +27,7 @@ public class GpsLocationListenerTest extends TestCase {
         LocationViewer locationViewer = createMock(LocationViewer.class);
 
         replay(location);
-        new GpsLocationListener(locationViewer, null).onStatusChanged(null,
+        new GpsLocationListener(locationViewer).onStatusChanged(null,
                 LocationProvider.OUT_OF_SERVICE, null);
         verify(location);
     }

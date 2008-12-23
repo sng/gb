@@ -1,7 +1,6 @@
 
 package com.google.code.geobeagle;
 
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -9,7 +8,7 @@ import android.os.Bundle;
 public final class GpsLocationListener implements LocationListener {
     private LocationViewer mLocationViewer;
 
-    public GpsLocationListener(LocationViewer locationViewer, Context context) {
+    public GpsLocationListener(LocationViewer locationViewer) {
         this.mLocationViewer = locationViewer;
     }
 

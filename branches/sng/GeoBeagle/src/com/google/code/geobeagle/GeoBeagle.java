@@ -73,7 +73,7 @@ public class GeoBeagle extends Activity {
                     new MockableTextView((TextView)findViewById(R.id.last_updated)),
                     new MockableTextView((TextView)findViewById(R.id.status)), gpsControl
                             .getLocation());
-            mGpsLocationListener = new GpsLocationListener(mLocationViewer, this);
+            mGpsLocationListener = new GpsLocationListener(mLocationViewer);
             setOnClickListeners(mLocationSetter);
             final Button btnGoToList = (Button)findViewById(R.id.go_to_list);
             mErrorDisplayer = new ErrorDisplayerImpl(this);
@@ -99,7 +99,6 @@ public class GeoBeagle extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        GpsControlImpl.onResume(this, mGpsLocationListener);
         mLocationSetter.load(this);
         if (!maybeGetCoordinatesFromIntent()) {
             mLocationSetter.setLocation(getPreferences(MODE_PRIVATE).getString(sPrefsLocation,

@@ -25,10 +25,12 @@ import com.google.code.geobeagle.GraphicsGenerator.ListViewBitmapCopier;
 import com.google.code.geobeagle.activity.cachelist.model.GeocacheVector;
 import com.google.code.geobeagle.activity.cachelist.presenter.BearingFormatter;
 import com.google.code.geobeagle.activity.cachelist.presenter.HasDistanceFormatter;
+import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
 import com.google.code.geobeagle.formatting.DistanceFormatter;
 import com.google.inject.Inject;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -76,18 +78,21 @@ public class GeocacheSummaryRowInflater implements HasDistanceFormatter {
     private final IconRenderer mIconRenderer;
     private final ListViewBitmapCopier mListViewBitmapCopier;
     private final IconOverlayFactory mIconOverlayFactory;
+    private final UpdateFlag mUpdateFlag;
 
     @Inject
     public GeocacheSummaryRowInflater(DistanceFormatter distanceFormatter,
             LayoutInflater layoutInflater, BearingFormatter relativeBearingFormatter,
             @DifficultyAndTerrainPainterAnnotation IconRenderer iconRenderer,
-            ListViewBitmapCopier listViewBitmapCopier, IconOverlayFactory iconOverlayFactory) {
+            ListViewBitmapCopier listViewBitmapCopier, IconOverlayFactory iconOverlayFactory,
+            UpdateFlag updateFlag) {
         mLayoutInflater = layoutInflater;
         mDistanceFormatter = distanceFormatter;
         mBearingFormatter = relativeBearingFormatter;
         mIconRenderer = iconRenderer;
         mListViewBitmapCopier = listViewBitmapCopier;
         mIconOverlayFactory = iconOverlayFactory;
+        mUpdateFlag = updateFlag;
     }
 
     public View inflate(View convertView) {
@@ -96,6 +101,9 @@ public class GeocacheSummaryRowInflater implements HasDistanceFormatter {
         //Log.d("GeoBeagle", "SummaryRow::inflate(" + convertView + ")");
 
         View view = mLayoutInflater.inflate(R.layout.cache_row, null);
+        if (!mUpdateFlag.updatesEnabled()) {
+            Log.d("GeoBeagle", "!!!!!!!!! SKIPPING PAINT DUE TO IMPORT");
+        }
         RowViews rowViews = new RowViews((TextView)view.findViewById(R.id.txt_gcattributes),
                 ((TextView)view.findViewById(R.id.txt_cache)), ((TextView)view
                         .findViewById(R.id.distance)), ((ImageView)view

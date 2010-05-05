@@ -55,7 +55,7 @@ public class CacheListRefresh implements Refresher {
             mUpdateFlag = enabled;
         }
 
-        boolean updatesEnabled() {
+        public boolean updatesEnabled() {
             return mUpdateFlag;
         }
     }

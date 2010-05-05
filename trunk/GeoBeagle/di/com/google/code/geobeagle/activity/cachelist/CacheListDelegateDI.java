@@ -54,7 +54,6 @@ import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresen
 import com.google.code.geobeagle.activity.cachelist.presenter.ListTitleFormatter;
 import com.google.code.geobeagle.activity.cachelist.presenter.LocationAndAzimuthTolerance;
 import com.google.code.geobeagle.activity.cachelist.presenter.LocationTolerance;
-import com.google.code.geobeagle.activity.cachelist.presenter.RelativeBearingFormatter;
 import com.google.code.geobeagle.activity.cachelist.presenter.SensorManagerWrapper;
 import com.google.code.geobeagle.activity.cachelist.presenter.SqlCacheLoader;
 import com.google.code.geobeagle.activity.cachelist.presenter.TitleUpdater;
@@ -154,12 +153,12 @@ public class CacheListDelegateDI {
         final AttributePainter attributePainter = new AttributePainter(new Paint(), new Rect());
         final DifficultyAndTerrainPainter difficultyAndTerrainPainter = new DifficultyAndTerrainPainter(
                 attributePainter);
+        final UpdateFlag updateFlag = injector.getInstance(UpdateFlag.class);
         final IconRenderer iconRenderer = new IconRenderer(resources, difficultyAndTerrainPainter);
         final GeocacheSummaryRowInflater geocacheSummaryRowInflater = new GeocacheSummaryRowInflater(
                 distanceFormatterManager.getFormatter(), layoutInflater, relativeBearingFormatter,
                 iconRenderer, new ListViewBitmapCopier(), injector
-                        .getInstance(IconOverlayFactory.class));
-        final UpdateFlag updateFlag = new UpdateFlag();
+                        .getInstance(IconOverlayFactory.class), updateFlag);
         final GeocacheListAdapter geocacheListAdapter = new GeocacheListAdapter(geocacheVectors,
                 geocacheSummaryRowInflater);
 

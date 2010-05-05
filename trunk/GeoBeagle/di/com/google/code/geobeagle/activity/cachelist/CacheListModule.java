@@ -28,6 +28,7 @@ import com.google.code.geobeagle.activity.cachelist.presenter.RelativeBearingFor
 import com.google.code.geobeagle.activity.cachelist.presenter.SqlCacheLoader;
 import com.google.code.geobeagle.activity.cachelist.presenter.ToleranceStrategy;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.ActionManager;
+import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter.GeocacheListPresenterFactory;
 import com.google.code.geobeagle.activity.main.GeoBeagleModule.DefaultSharedPreferences;
 import com.google.inject.Provides;
@@ -48,6 +49,7 @@ public class CacheListModule extends AbstractAndroidModule {
         bind(GeocacheListPresenterFactory.class).toProvider(
                 FactoryProvider.newFactory(GeocacheListPresenterFactory.class,
                         GeocacheListPresenter.class));
+        bind(UpdateFlag.class).in(ContextScoped.class);
     }
 
     @Provides

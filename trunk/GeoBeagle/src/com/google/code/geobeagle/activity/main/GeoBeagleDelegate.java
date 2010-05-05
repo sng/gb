@@ -157,7 +157,7 @@ public class GeoBeagleDelegate {
         mSensorManager.registerListener(mCompassListener, SensorManager.SENSOR_ORIENTATION,
                 SensorManager.SENSOR_DELAY_UI);
         mGeocache = mIncomingIntentHandler.maybeGetGeocacheFromIntent(mParent.getIntent(),
-                mGeocache, new LocationSaver(mDbFrontend));
+                mGeocache, mParent.getInjector().getInstance(LocationSaver.class));
 
         // Possible fix for issue 53.
         if (mGeocache == null) {

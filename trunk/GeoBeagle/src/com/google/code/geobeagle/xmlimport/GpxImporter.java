@@ -22,12 +22,17 @@ import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.ImportThreadWrapper;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.ToastFactory;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import android.content.Context;
 import android.widget.Toast;
 
 public class GpxImporter implements Abortable {
 
+    static interface GpxImporterFactory2 {
+        GpxImporter create(Pausable pausable);
+    }
     private final ErrorDisplayer mErrorDisplayer;
     private final EventHandlers mEventHandlers;
     private final GpxLoader mGpxLoader;
@@ -35,9 +40,10 @@ public class GpxImporter implements Abortable {
     private final Context mContext;
     private final MessageHandler mMessageHandler;
     private final ToastFactory mToastFactory;
-    private final Pausable mGeocacheListPresenter;
+    private final Pausable mPausable;
 
-    GpxImporter(Pausable geocacheListPresenter, GpxLoader gpxLoader, Context context,
+    @Inject
+    GpxImporter(@Assisted Pausable pausable, GpxLoader gpxLoader, Context context,
             ImportThreadWrapper importThreadWrapper, MessageHandler messageHandler,
             ToastFactory toastFactory, EventHandlers eventHandlers, ErrorDisplayer errorDisplayer) {
         mContext = context;
@@ -47,7 +53,7 @@ public class GpxImporter implements Abortable {
         mMessageHandler = messageHandler;
         mErrorDisplayer = errorDisplayer;
         mToastFactory = toastFactory;
-        mGeocacheListPresenter = geocacheListPresenter;
+        mPausable = pausable;
     }
 
     public void abort() {
@@ -60,7 +66,7 @@ public class GpxImporter implements Abortable {
     }
 
     public void importGpxs(CacheListRefresh cacheListRefresh) {
-        mGeocacheListPresenter.onPause();
+        mPausable.onPause();
 
         mImportThreadWrapper.open(cacheListRefresh, mGpxLoader, mEventHandlers, mErrorDisplayer);
         mImportThreadWrapper.start();

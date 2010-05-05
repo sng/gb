@@ -19,11 +19,13 @@ import com.google.code.geobeagle.activity.main.view.EditCacheActivityDelegate;
 import com.google.code.geobeagle.activity.main.view.EditCacheActivityDelegate.CancelButtonOnClickListener;
 import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.database.LocationSaver;
+import com.google.inject.Injector;
 
-import android.app.Activity;
+import roboguice.activity.GuiceActivity;
+
 import android.os.Bundle;
 
-public class EditCacheActivity extends Activity {
+public class EditCacheActivity extends GuiceActivity {
     private EditCacheActivityDelegate mEditCacheActivityDelegate;
     private DbFrontend mDbFrontend;
     
@@ -32,9 +34,10 @@ public class EditCacheActivity extends Activity {
         super.onCreate(savedInstanceState);
         final CancelButtonOnClickListener cancelButtonOnClickListener = new CancelButtonOnClickListener(
                 this);
+        Injector injector = getInjector();
         final GeocacheFactory geocacheFactory = new GeocacheFactory();
-        mDbFrontend = new DbFrontend(this);
-        LocationSaver locationSaver = new LocationSaver(mDbFrontend);
+        mDbFrontend = injector.getInstance(DbFrontend.class);
+        LocationSaver locationSaver = injector.getInstance(LocationSaver.class);
         mEditCacheActivityDelegate = new EditCacheActivityDelegate(this,
                 cancelButtonOnClickListener, geocacheFactory, locationSaver);
         

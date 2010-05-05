@@ -261,7 +261,7 @@ public class CacheListDelegateDI {
                 new AlertDialog.Builder(listActivity)));
         menuActions.add(new MenuActionToggleFilter(filterNearestCaches, cacheListRefresh));
         menuActions.add(new MenuActionMyLocation(listActivity, errorDisplayer, geocacheFromMyLocationFactory,
-                new LocationSaver(dbFrontend)));
+                injector.getInstance(LocationSaver.class)));
         menuActions.add(new MenuActionSearchOnline(listActivity));
         menuActions.add(new MenuActionMap(listActivity, locationControlBuffered));
         // menuActions.add(new MenuActionChooseFilter(listActivity));

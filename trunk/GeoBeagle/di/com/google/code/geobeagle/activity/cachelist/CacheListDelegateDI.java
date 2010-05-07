@@ -149,7 +149,7 @@ public class CacheListDelegateDI {
         final XmlPullParserWrapper xmlPullParserWrapper = new XmlPullParserWrapper();
 
         final Resources resources = listActivity.getResources();
-        final DbFrontend dbFrontend = new DbFrontend(listActivity);
+        final DbFrontend dbFrontend = injector.getInstance(DbFrontend.class);
         final AttributePainter attributePainter = new AttributePainter(new Paint(), new Rect());
         final DifficultyAndTerrainPainter difficultyAndTerrainPainter = new DifficultyAndTerrainPainter(
                 attributePainter);

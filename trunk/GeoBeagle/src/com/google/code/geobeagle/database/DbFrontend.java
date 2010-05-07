@@ -39,7 +39,7 @@ public class DbFrontend {
     private GeoBeagleSqliteOpenHelper mSqliteOpenHelper;
 
     @Inject
-    public DbFrontend(Context context) {
+    DbFrontend(Context context) {
         mContext = context;
         mIsDatabaseOpen = false;
     }

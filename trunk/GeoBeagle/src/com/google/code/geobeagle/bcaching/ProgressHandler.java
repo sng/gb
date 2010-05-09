@@ -12,18 +12,17 @@
  ** limitations under the License.
  */
 
-package com.google.code.geobeagle.activity.cachelist.actions.menu;
-
+package com.google.code.geobeagle.bcaching;
 
 import android.app.ProgressDialog;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-final class ProgressHandler extends Handler {
+public final class ProgressHandler extends Handler {
     private final ProgressDialog progressDialog;
 
-    ProgressHandler(ProgressDialog progressDialog) {
+    public ProgressHandler(ProgressDialog progressDialog) {
         this.progressDialog = progressDialog;
     }
 

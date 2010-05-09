@@ -12,7 +12,7 @@
  ** limitations under the License.
  */
 
-package com.google.code.geobeagle.activity.cachelist.actions.menu;
+package com.google.code.geobeagle.bcaching;
 
 import android.app.ProgressDialog;
 

@@ -259,8 +259,9 @@ public class CacheListDelegateDI {
                 cacheListRefresh, gpxImporterFactory, dbFrontend);
         final MenuActions menuActions = new MenuActions(resources);
         menuActions.add(menuActionSyncGpx);
+        SharedPreferences sharedPreferences = injector.getInstance(SharedPreferences.class);
         menuActions.add(new MenuActionDeleteAllCaches(cacheListRefresh, listActivity, dbFrontend,
-                new AlertDialog.Builder(listActivity)));
+                new AlertDialog.Builder(listActivity), sharedPreferences));
         menuActions.add(new MenuActionToggleFilter(filterNearestCaches, cacheListRefresh));
         menuActions.add(new MenuActionMyLocation(listActivity, errorDisplayer, geocacheFromMyLocationFactory,
                 new LocationSaver(dbFrontend)));

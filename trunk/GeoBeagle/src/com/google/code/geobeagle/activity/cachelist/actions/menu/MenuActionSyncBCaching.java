@@ -39,27 +39,6 @@ import java.util.Hashtable;
 
 public class MenuActionSyncBCaching extends MenuActionBase {
 
-    private static final class ProgressHandler extends Handler {
-        private final ProgressDialog progressDialog;
-
-        ProgressHandler(ProgressDialog progressDialog) {
-            this.progressDialog = progressDialog;
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            progressDialog.setTitle("hello  " + msg.getWhen());
-            if (msg.what == 0)
-                progressDialog.setMax(msg.arg1);
-            else if (msg.what == 1)
-                progressDialog.setProgress(msg.arg1);
-            else if (msg.what == 2)
-                progressDialog.dismiss();
-            else if (msg.what == 3)
-                progressDialog.show();
-        }
-    }
-
     static class ImportBcachingWorker extends Thread {
 
         private final Handler handler;
@@ -117,7 +96,7 @@ public class MenuActionSyncBCaching extends MenuActionBase {
                 Log.d("GeoBeagle", "lastUpdate");
                 BcachingCommunication bcachingCommunication = new BcachingCommunication("fafoofee",
                         "moocow");
-                Message.obtain(handler, 3).sendToTarget();
+                Message.obtain(handler, ProgressMessage.START.ordinal()).sendToTarget();
 
                 Hashtable<String, String> params = new Hashtable<String, String>();
                 if (!lastUpdate.equals(""))
@@ -153,7 +132,8 @@ public class MenuActionSyncBCaching extends MenuActionBase {
 
                     if (totalCount == -1) {
                         totalCount = obj.getInt("totalCount");
-                        Message.obtain(handler, 0, totalCount).sendToTarget();
+                        Message.obtain(handler, ProgressMessage.SET_MAX.ordinal(), totalCount, 0)
+                                .sendToTarget();
                         if (totalCount == 0) {
                             break;
                         }
@@ -164,13 +144,14 @@ public class MenuActionSyncBCaching extends MenuActionBase {
                     if (count < 50 || updatedCaches >= totalCount) {
                         break;
                     }
-                    Message.obtain(handler, 1, updatedCaches).sendToTarget();
+                    Message.obtain(handler, ProgressMessage.SET_PROGRESS.ordinal(), updatedCaches, 0)
+                            .sendToTarget();
                     getCacheDetails(bcachingCommunication, csvIds.toString(), updatedCaches);
                 }
             } catch (Exception ex) {
 
             }
-            Message.obtain(handler, 2).sendToTarget();
+            Message.obtain(handler, ProgressMessage.DONE.ordinal(), 0).sendToTarget();
             Log.d("GeoBeagle", "Setting bcaching_lastupdate to " + now);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("bcaching_lastupdate", now);

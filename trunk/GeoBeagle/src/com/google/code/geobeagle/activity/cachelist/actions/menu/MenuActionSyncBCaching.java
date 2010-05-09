@@ -20,6 +20,7 @@ import com.google.code.geobeagle.bcaching.BcachingCommunication;
 import com.google.code.geobeagle.cachedetails.WriterWrapper;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -34,6 +35,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.Hashtable;
 
@@ -49,7 +51,7 @@ public class MenuActionSyncBCaching extends MenuActionBase {
             this.sharedPreferences = sharedPreferences;
         }
 
-        private String readResponse(InputStream in) throws IOException {
+        private JSONObject readResponse(InputStream in) throws IOException, JSONException {
             BufferedReader rd = new BufferedReader(new InputStreamReader(in, Charset
                     .forName("UTF-8")), 8192);
 
@@ -59,11 +61,11 @@ public class MenuActionSyncBCaching extends MenuActionBase {
                 result.append(line);
                 result.append('\n');
             }
-            return result.toString();
+            return new JSONObject(result.toString());
         }
 
         private void getCacheDetails(BcachingCommunication bcachingCommunication, String csvIds,
-                int updatedCaches) throws Exception, IOException {
+                int updatedCaches) throws MalformedURLException, Exception  {
             Log.d("GeoBeagle", "Getting details: " + updatedCaches);
             Hashtable<String, String> params = new Hashtable<String, String>();
             params.put("a", "detail");
@@ -93,7 +95,6 @@ public class MenuActionSyncBCaching extends MenuActionBase {
             String now = Long.toString(System.currentTimeMillis());
             try {
                 String lastUpdate = sharedPreferences.getString("bcaching_lastupdate", "");
-                Log.d("GeoBeagle", "lastUpdate");
                 BcachingCommunication bcachingCommunication = new BcachingCommunication("fafoofee",
                         "moocow");
                 Message.obtain(handler, ProgressMessage.START.ordinal()).sendToTarget();
@@ -107,15 +108,19 @@ public class MenuActionSyncBCaching extends MenuActionBase {
                 params.put("app", "GeoBeagle");
 
                 int updatedCaches = 0;
-                int totalCount = -1; // not initialized
 
-                while (true) {
+                JSONObject obj = readResponse(bcachingCommunication.sendRequest(params));
+                int totalCount = obj.getInt("totalCount");
+                Message.obtain(handler, ProgressMessage.SET_MAX.ordinal(), totalCount, 0)
+                        .sendToTarget();
+                Log.d("GeoBeagle", "totalCount = " + totalCount);
+
+                while (totalCount > 0) {
+                    params.put("first", Integer.toString(updatedCaches));
+
                     if (updatedCaches > 0)
-                        params.put("first", Integer.toString(updatedCaches));
+                        obj = readResponse(bcachingCommunication.sendRequest(params));
 
-                    String response = readResponse(bcachingCommunication.sendRequest(params));
-
-                    JSONObject obj = new JSONObject(response);
                     JSONArray summary = obj.getJSONArray("data");
                     Log.d("GeoBeagle", summary.toString());
 
@@ -128,16 +133,6 @@ public class MenuActionSyncBCaching extends MenuActionBase {
                             csvIds.append(',');
                         }
                         csvIds.append(String.valueOf(id));
-                    }
-
-                    if (totalCount == -1) {
-                        totalCount = obj.getInt("totalCount");
-                        Message.obtain(handler, ProgressMessage.SET_MAX.ordinal(), totalCount, 0)
-                                .sendToTarget();
-                        if (totalCount == 0) {
-                            break;
-                        }
-                        Log.d("GeoBeagle", "totalCount = " + totalCount);
                     }
 
                     updatedCaches += count;

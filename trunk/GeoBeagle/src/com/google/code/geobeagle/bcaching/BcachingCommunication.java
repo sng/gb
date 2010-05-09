@@ -14,9 +14,12 @@
 
 package com.google.code.geobeagle.bcaching;
 
+import org.apache.http.HttpException;
+
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -62,7 +65,7 @@ public class BcachingCommunication {
     }
 
     private String encodeQueryString(String username, String hashword, String params)
-            throws Exception {
+            throws NoSuchAlgorithmException, DigestException {
 
         if (username == null)
             throw new IllegalArgumentException("username is required.");
@@ -85,8 +88,8 @@ public class BcachingCommunication {
         return sb.toString();
     }
 
-    public InputStream sendRequest(Hashtable<String, String> params) throws MalformedURLException,
-            Exception {
+    public InputStream sendRequest(Hashtable<String, String> params) throws IOException,
+            HttpException, NoSuchAlgorithmException, DigestException {
         if (params == null || params.size() == 0)
             throw new IllegalArgumentException("params are required.");
         if (!params.containsKey("a"))
@@ -108,7 +111,8 @@ public class BcachingCommunication {
         return sendRequest(request);
     }
 
-    public InputStream sendRequest(String query) throws MalformedURLException, Exception {
+    public InputStream sendRequest(String query) throws IOException, HttpException,
+            NoSuchAlgorithmException, DigestException {
         if (query == null || query.length() == 0)
             throw new IllegalArgumentException("query is required");
 
@@ -130,13 +134,13 @@ public class BcachingCommunication {
             while ((line = reader.readLine()) != null) {
                 sb.append(line + "\n");
             }
-            throw new Exception(sb.toString());
+            throw new HttpException(sb.toString());
         }
         return in;
     }
 
     private URL getURL(String username, String hashword, String params)
-            throws MalformedURLException, Exception {
+            throws MalformedURLException, NoSuchAlgorithmException, DigestException {
         return new URL(mBaseUrl + "/q.ashx?" + encodeQueryString(username, hashword, params));
     }
 

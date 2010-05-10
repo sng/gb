@@ -26,6 +26,7 @@ import com.google.code.geobeagle.GraphicsGenerator.ListViewBitmapCopier;
 import com.google.code.geobeagle.LocationControlBuffered.GpsDisabledLocation;
 import com.google.code.geobeagle.actions.MenuActionMap;
 import com.google.code.geobeagle.actions.MenuActionSearchOnline;
+import com.google.code.geobeagle.actions.MenuActionSettings;
 import com.google.code.geobeagle.actions.MenuActions;
 import com.google.code.geobeagle.activity.ActivitySaver;
 import com.google.code.geobeagle.activity.cachelist.CacheListDelegate.ImportIntentManager;
@@ -270,6 +271,7 @@ public class CacheListDelegateDI {
         menuActions.add(new MenuActionSyncBCaching(listActivity, injector
                 .getInstance(SharedPreferences.class)));
         // menuActions.add(new MenuActionChooseFilter(listActivity));
+        menuActions.add(injector.getInstance(MenuActionSettings.class));
 
         final Intent geoBeagleMainIntent = new Intent(listActivity, GeoBeagle.class);
         final ContextActionView contextActionView = new ContextActionView(geocacheVectors,

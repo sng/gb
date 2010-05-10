@@ -88,8 +88,8 @@ public class ImportBCachingWorker extends Thread {
         String now = Long.toString(System.currentTimeMillis());
         try {
             String lastUpdate = sharedPreferences.getString("bcaching_lastupdate", "");
-            BcachingCommunication bcachingCommunication = new BcachingCommunication("fafoofee",
-                    "moocow");
+            BcachingCommunication bcachingCommunication = new BcachingCommunication("USERNAME",
+                    "PASSWORD");
             Message.obtain(handler, ProgressMessage.START.ordinal()).sendToTarget();
 
             Hashtable<String, String> params = new Hashtable<String, String>();

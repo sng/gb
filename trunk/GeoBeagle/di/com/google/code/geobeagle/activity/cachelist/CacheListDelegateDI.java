@@ -65,8 +65,10 @@ import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.U
 import com.google.code.geobeagle.activity.cachelist.view.GeocacheSummaryRowInflater;
 import com.google.code.geobeagle.activity.main.GeoBeagle;
 import com.google.code.geobeagle.bcaching.BCachingLastUpdated;
+import com.google.code.geobeagle.database.CacheWriter;
 import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.database.FilterNearestCaches;
+import com.google.code.geobeagle.database.ISQLiteDatabase;
 import com.google.code.geobeagle.database.LocationSaver;
 import com.google.code.geobeagle.database.TagWriterImpl;
 import com.google.code.geobeagle.database.TagWriterNull;
@@ -87,6 +89,7 @@ import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
 import com.google.code.geobeagle.xmlimport.GpxToCache.Aborter;
 import com.google.code.geobeagle.xmlimport.GpxToCacheDI.XmlPullParserWrapper;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 
 import roboguice.activity.GuiceListActivity;
 
@@ -153,7 +156,6 @@ public class CacheListDelegateDI {
         final XmlPullParserWrapper xmlPullParserWrapper = new XmlPullParserWrapper();
 
         final Resources resources = listActivity.getResources();
-        final DbFrontend dbFrontend = new DbFrontend(listActivity);
         final AttributePainter attributePainter = new AttributePainter(new Paint(), new Rect());
         final DifficultyAndTerrainPainter difficultyAndTerrainPainter = new DifficultyAndTerrainPainter(
                 attributePainter);
@@ -219,7 +221,8 @@ public class CacheListDelegateDI {
 
         final TitleUpdater titleUpdater = new TitleUpdater(listActivity, filterNearestCaches,
                 listTitleFormatter, timing);
-        final SqlCacheLoader sqlCacheLoader = new SqlCacheLoader(dbFrontend, filterNearestCaches,
+        final Provider<DbFrontend> dbFrontendProvider = injector.getProvider(DbFrontend.class);
+        final SqlCacheLoader sqlCacheLoader = new SqlCacheLoader(dbFrontendProvider , filterNearestCaches,
                 cacheListData, locationControlBuffered, titleUpdater, timing);
         final ActionManager actionManager = actionManagerFactory.create(sqlCacheLoader);
         final CacheListRefresh cacheListRefresh = new CacheListRefresh(actionManager, timing,
@@ -243,7 +246,8 @@ public class CacheListDelegateDI {
 
         final Aborter aborter = injector.getInstance(Aborter.class);
         final MessageHandlerInterface messageHandler = MessageHandler.create(listActivity);
-        final TagWriterImpl tagWriterImpl = new TagWriterImpl(dbFrontend);
+		final Provider<ISQLiteDatabase> database = injector.getProvider(ISQLiteDatabase.class);
+        final TagWriterImpl tagWriterImpl = new TagWriterImpl(database);
         final TagWriterNull tagWriterNull = new TagWriterNull();
         final CachePersisterFacadeFactory cachePersisterFacadeFactory = new CachePersisterFacadeFactory(
                 messageHandler, cacheTypeFactory, tagWriterImpl, tagWriterNull);
@@ -257,15 +261,17 @@ public class CacheListDelegateDI {
             }
         };
 
+        final Provider<CacheWriter> cacheWriterProvider = injector.getProvider(CacheWriter.class);
         final MenuActionSyncGpx menuActionSyncGpx = new MenuActionSyncGpx(nullAbortable,
-                cacheListRefresh, gpxImporterFactory, dbFrontend);
+                cacheListRefresh, gpxImporterFactory, cacheWriterProvider );
         final MenuActions menuActions = new MenuActions(resources);
         menuActions.add(menuActionSyncGpx);
-        menuActions.add(new MenuActionDeleteAllCaches(cacheListRefresh, listActivity, dbFrontend,
-                new AlertDialog.Builder(listActivity), injector.getInstance(BCachingLastUpdated.class)));
+        menuActions.add(new MenuActionDeleteAllCaches(cacheListRefresh, listActivity,
+                dbFrontendProvider, new AlertDialog.Builder(listActivity), injector
+                        .getInstance(BCachingLastUpdated.class)));
         menuActions.add(new MenuActionToggleFilter(filterNearestCaches, cacheListRefresh));
         menuActions.add(new MenuActionMyLocation(listActivity, errorDisplayer, geocacheFromMyLocationFactory,
-                new LocationSaver(dbFrontend)));
+                new LocationSaver(cacheWriterProvider)));
         menuActions.add(new MenuActionSearchOnline(listActivity));
         menuActions.add(new MenuActionMap(listActivity, locationControlBuffered));
         menuActions.add(injector.getInstance(MenuActionSyncBCaching.class));
@@ -277,7 +283,8 @@ public class CacheListDelegateDI {
         final ContextActionEdit contextActionEdit = new ContextActionEdit(geocacheVectors,
                 listActivity);
         final ContextActionDelete contextActionDelete = new ContextActionDelete(
-                geocacheListAdapter, geocacheVectors, titleUpdater, dbFrontend, listActivity, 0);
+                geocacheListAdapter, geocacheVectors, titleUpdater, cacheWriterProvider,
+                listActivity, 0);
 
         final ContextAction[] contextActions = new ContextAction[] {
                 contextActionDelete, contextActionView, contextActionEdit
@@ -293,7 +300,7 @@ public class CacheListDelegateDI {
         final ActivitySaver activitySaver = injector.getInstance(ActivitySaver.class);
         final ImportIntentManager importIntentManager = new ImportIntentManager(listActivity);
         return new CacheListDelegate(importIntentManager, activitySaver, cacheListRefresh,
-                geocacheListController, geocacheListPresenter, dbFrontend,
+                geocacheListController, geocacheListPresenter, dbFrontendProvider,
                 contextActionDeleteDialogHelper);
     }
 }

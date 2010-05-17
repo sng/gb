@@ -62,13 +62,13 @@ public class BCachingListImporterTest {
         params.put("first", "112");
         expect(bCachingListImportHelper.importList(params)).andReturn(bcachingList);
         expect(bcachingList.getTotalCount()).andReturn(42);
+        
         replayAll();
         assertEquals(42, new BCachingListImporter(params, bCachingListImportHelper)
                 .getTotalCount("7777"));
         verifyAll();
 
         assertFalse( params.containsKey("first"));
-        assertEquals("0", params.get("maxcount"));
         assertEquals("7777", params.get("since"));
     }
 }

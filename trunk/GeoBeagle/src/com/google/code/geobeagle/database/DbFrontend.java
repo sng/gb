@@ -17,7 +17,6 @@ package com.google.code.geobeagle.database;
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.database.DatabaseDI.GeoBeagleSqliteOpenHelper;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -33,18 +32,17 @@ import java.util.ArrayList;
  */
 public class DbFrontend {
     private CacheReader mCacheReader;
-    private CacheWriter mCacheWriter;
-    private final Context mContext;
-    private ISQLiteDatabase mDatabase;
-    private boolean mIsDatabaseOpen;
+    private static Context mContext;
+    private static ISQLiteDatabase mDatabase;
+    private static boolean mIsDatabaseOpen;
     private GeoBeagleSqliteOpenHelper mSqliteOpenHelper;
-    private final Provider<ISQLiteDatabase> mDatabaseProvider;
-
+    
     @Inject
-    DbFrontend(Context context, Provider<ISQLiteDatabase> databaseProvider) {
+    DbFrontend(Context context, CacheReader cacheReader) {
+        if (context != mContext)
+            mIsDatabaseOpen = false;
         mContext = context;
-        mIsDatabaseOpen = false;
-        mDatabaseProvider = databaseProvider;
+        mCacheReader = cacheReader;
     }
 
     public synchronized void closeDatabase() {
@@ -56,7 +54,6 @@ public class DbFrontend {
         mSqliteOpenHelper.close();
         mIsDatabaseOpen = false;
 
-        mCacheWriter = null;
         mDatabase = null;
     }
 
@@ -67,7 +64,8 @@ public class DbFrontend {
         countCursor.moveToFirst();
         int count = countCursor.getInt(0);
         countCursor.close();
-        Log.d("GeoBeagle", "DbFrontEnd.count:" + count);
+        
+        Log.d("GeoBeagle", this + ": DbFrontEnd.count:" + count);
         return count;
     }
 
@@ -78,16 +76,8 @@ public class DbFrontend {
         countCursor.moveToFirst();
         int count = countCursor.getInt(0);
         countCursor.close();
-        Log.d("GeoBeagle", "DbFrontEnd.count all:" + count);
+        Log.d("GeoBeagle", this + ": DbFrontEnd.count all:" + count);
         return count;
-    }
-
-    public CacheWriter getCacheWriter() {
-        if (mCacheWriter != null)
-            return mCacheWriter;
-        openDatabase();
-        mCacheWriter = DatabaseDI.createCacheWriter(mDatabaseProvider);
-        return mCacheWriter;
     }
 
     public ArrayList<Geocache> loadCaches(double latitude, double longitude,
@@ -113,8 +103,6 @@ public class DbFrontend {
         mSqliteOpenHelper = new GeoBeagleSqliteOpenHelper(mContext);
         final SQLiteDatabase sqDb = mSqliteOpenHelper.getWritableDatabase();
         mDatabase = new DatabaseDI.SQLiteWrapper(sqDb);
-
-        mCacheReader = DatabaseDI.createCacheReader(mDatabaseProvider);
         mIsDatabaseOpen = true;
     }
     

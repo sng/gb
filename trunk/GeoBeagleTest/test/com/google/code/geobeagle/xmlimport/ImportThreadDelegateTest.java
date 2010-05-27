@@ -55,19 +55,48 @@ public class ImportThreadDelegateTest {
     private OldCacheFilesCleaner oldCacheFilesCleaner;
     private FileDataVersionChecker fileDataVersionChecker;
     private DbFrontend dbFrontend;
+    private GpxLoader gpxLoader;
+    private Provider<String> gpxNameProvider;
+    private Provider<String> userNameProvider;
+    private GpxAndZipFiles gpxAndZipFiles;
+    private IGpxReader gpxFile;
+    private Reader reader;
+    private EventHelperFactory eventHelperFactory;
+    private EventHelper eventHelper;
+    private EventHandler eventHandler;
+    private EventHandlers eventHandlers;
+    private GpxFilesAndZipFilesIter gpxFilesAndZipFilesIter;
+    private ImportThreadHelper importThreadHelper;
+    private IGpxReader iGpxReader;
+    private MessageHandlerInterface messageHandler;
+    private ErrorDisplayer errorDisplayer;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         fileDataVersionWriter = PowerMock.createMock(FileDataVersionWriter.class);
         oldCacheFilesCleaner = PowerMock.createMock(OldCacheFilesCleaner.class);
         fileDataVersionChecker = PowerMock.createMock(FileDataVersionChecker.class);
         dbFrontend = PowerMock.createMock(DbFrontend.class);
+        gpxLoader = PowerMock.createMock(GpxLoader.class);
+        gpxNameProvider = PowerMock.createMock(Provider.class);
+        userNameProvider = PowerMock.createMock(Provider.class);
+        gpxAndZipFiles = PowerMock.createMock(GpxAndZipFiles.class);
+        gpxFile = PowerMock.createMock(IGpxReader.class);
+        reader = PowerMock.createMock(Reader.class);
+        eventHelperFactory = PowerMock.createMock(EventHelperFactory.class);
+        eventHelper = PowerMock.createMock(EventHelper.class);
+        eventHandler = PowerMock.createMock(EventHandler.class);
+        eventHandlers = PowerMock.createMock(EventHandlers.class);
+        gpxFilesAndZipFilesIter = PowerMock.createMock(GpxFilesAndZipFilesIter.class);
+        importThreadHelper = PowerMock.createMock(ImportThreadHelper.class);
+        iGpxReader = PowerMock.createMock(IGpxReader.class);
+        messageHandler = PowerMock.createMock(MessageHandler.class);
+        errorDisplayer = PowerMock.createMock(ErrorDisplayer.class);
     }
 
     @Test
     public void testHelperCleanup() {
-        MessageHandlerInterface messageHandler = PowerMock.createMock(MessageHandler.class);
-
         messageHandler.loadComplete();
 
         PowerMock.replayAll();
@@ -75,17 +104,9 @@ public class ImportThreadDelegateTest {
         PowerMock.verifyAll();
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testHelperEndNoFiles() {
-        GpxLoader gpxLoader = PowerMock.createMock(GpxLoader.class);
-        Provider<String> gpxNameProvider = PowerMock.createMock(Provider.class);
-        Provider<String> userNameProvider = new Provider<String>() {
-            @Override
-            public String get() {
-                return "";
-            }
-        };
+        EasyMock.expect(userNameProvider.get()).andReturn("");
         EasyMock.expect(gpxNameProvider.get()).andReturn("/sdcard/download");
         gpxLoader.end();
 
@@ -102,14 +123,6 @@ public class ImportThreadDelegateTest {
     @Test
     public void testHelperProcessFileAndEnd() throws XmlPullParserException, IOException,
             ImportException {
-        GpxLoader gpxLoader = PowerMock.createMock(GpxLoader.class);
-        IGpxReader gpxFile = PowerMock.createMock(IGpxReader.class);
-        Reader reader = PowerMock.createMock(Reader.class);
-        EventHelperFactory eventHelperFactory = PowerMock.createMock(EventHelperFactory.class);
-        EventHelper eventHelper = PowerMock.createMock(EventHelper.class);
-        EventHandler eventHandler = PowerMock.createMock(EventHandler.class);
-        EventHandlers eventHandlers = PowerMock.createMock(EventHandlers.class);
-
         EasyMock.expect(gpxFile.getFilename()).andReturn("foo.gpx");
         EasyMock.expect(eventHandlers.get("gpx")).andReturn(eventHandler);
         EasyMock.expect(eventHelperFactory.create(eventHandler)).andReturn(eventHelper);
@@ -128,8 +141,6 @@ public class ImportThreadDelegateTest {
 
     @Test
     public void testHelperStart() {
-        GpxLoader gpxLoader = PowerMock.createMock(GpxLoader.class);
-
         oldCacheFilesCleaner.clean();
         gpxLoader.start();
 
@@ -142,19 +153,13 @@ public class ImportThreadDelegateTest {
     @Test
     public void testRun() throws FileNotFoundException, XmlPullParserException, IOException,
             ImportException {
-        GpxAndZipFiles gpxAndZipFiles = PowerMock.createMock(GpxAndZipFiles.class);
-        GpxFilesAndZipFilesIter gpxFilesAndZipFilesIter = PowerMock
-                .createMock(GpxFilesAndZipFilesIter.class);
-        ImportThreadHelper importThreadHelper = PowerMock.createMock(ImportThreadHelper.class);
-        IGpxReader iGpxFile = PowerMock.createMock(IGpxReader.class);
-
         expect(fileDataVersionChecker.needsUpdating()).andReturn(true);
         dbFrontend.forceUpdate();
         expect(gpxAndZipFiles.iterator()).andReturn(gpxFilesAndZipFilesIter);
         importThreadHelper.start();
         expect(gpxFilesAndZipFilesIter.hasNext()).andReturn(true);
-        expect(gpxFilesAndZipFilesIter.next()).andReturn(iGpxFile);
-        expect(importThreadHelper.processFile(iGpxFile)).andReturn(true);
+        expect(gpxFilesAndZipFilesIter.next()).andReturn(iGpxReader);
+        expect(importThreadHelper.processFile(iGpxReader)).andReturn(true);
         expect(gpxFilesAndZipFilesIter.hasNext()).andReturn(false);
         importThreadHelper.end();
         importThreadHelper.cleanup();
@@ -170,18 +175,12 @@ public class ImportThreadDelegateTest {
     @Test
     public void testRunAborted() throws FileNotFoundException, XmlPullParserException, IOException,
             ImportException {
-        GpxAndZipFiles gpxAndZipFiles = PowerMock.createMock(GpxAndZipFiles.class);
-        GpxFilesAndZipFilesIter gpxFilesAndZipFilesIter = PowerMock
-                .createMock(GpxFilesAndZipFilesIter.class);
-        ImportThreadHelper importThreadHelper = PowerMock.createMock(ImportThreadHelper.class);
-        IGpxReader iGpxFile = PowerMock.createMock(IGpxReader.class);
-
         expect(fileDataVersionChecker.needsUpdating()).andReturn(false);
         expect(gpxAndZipFiles.iterator()).andReturn(gpxFilesAndZipFilesIter);
         importThreadHelper.start();
         expect(gpxFilesAndZipFilesIter.hasNext()).andReturn(true);
-        expect(gpxFilesAndZipFilesIter.next()).andReturn(iGpxFile);
-        expect(importThreadHelper.processFile(iGpxFile)).andReturn(false);
+        expect(gpxFilesAndZipFilesIter.next()).andReturn(iGpxReader);
+        expect(importThreadHelper.processFile(iGpxReader)).andReturn(false);
         importThreadHelper.cleanup();
 
         PowerMock.replayAll();
@@ -192,9 +191,6 @@ public class ImportThreadDelegateTest {
 
     @Test
     public void testRunFileNotFound() {
-        GpxAndZipFiles gpxAndZipFiles = PowerMock.createMock(GpxAndZipFiles.class);
-        ImportThreadHelper importThreadHelper = PowerMock.createMock(ImportThreadHelper.class);
-        ErrorDisplayer errorDisplayer = PowerMock.createMock(ErrorDisplayer.class);
         final FileNotFoundException e = new FileNotFoundException("foo.gpx");
 
         errorDisplayer.displayError(R.string.error_opening_file, "foo.gpx");
@@ -215,9 +211,6 @@ public class ImportThreadDelegateTest {
 
     @Test
     public void testRunXmlPullParserException() {
-        GpxAndZipFiles gpxAndZipFiles = PowerMock.createMock(GpxAndZipFiles.class);
-        ImportThreadHelper importThreadHelper = PowerMock.createMock(ImportThreadHelper.class);
-        ErrorDisplayer errorDisplayer = PowerMock.createMock(ErrorDisplayer.class);
         final XmlPullParserException e = PowerMock.createMock(XmlPullParserException.class);
 
         EasyMock.expect(e.getMessage()).andReturn("xml exception");
@@ -239,9 +232,6 @@ public class ImportThreadDelegateTest {
 
     @Test
     public void testRunIOException() {
-        GpxAndZipFiles gpxAndZipFiles = PowerMock.createMock(GpxAndZipFiles.class);
-        ImportThreadHelper importThreadHelper = PowerMock.createMock(ImportThreadHelper.class);
-        ErrorDisplayer errorDisplayer = PowerMock.createMock(ErrorDisplayer.class);
         final IOException e = PowerMock.createMock(IOException.class);
         EasyMock.expect(e.getMessage()).andReturn("problem reading file");
         importThreadHelper.cleanup();
@@ -261,10 +251,6 @@ public class ImportThreadDelegateTest {
 
     @Test
     public void testRunIteratorFail() throws ImportException {
-        GpxAndZipFiles gpxAndZipFiles = PowerMock.createMock(GpxAndZipFiles.class);
-        ImportThreadHelper importThreadHelper = PowerMock.createMock(ImportThreadHelper.class);
-        ErrorDisplayer errorDisplayer = PowerMock.createMock(ErrorDisplayer.class);
-
         expect(fileDataVersionChecker.needsUpdating()).andReturn(false);
         expect(gpxAndZipFiles.iterator()).andThrow(
                 new ImportException(R.string.error_cant_read_sd, "/sdcard-path"));
@@ -281,11 +267,6 @@ public class ImportThreadDelegateTest {
 
     @Test
     public void testRunNoFiles() throws IOException, ImportException {
-        GpxAndZipFiles gpxAndZipFiles = PowerMock.createMock(GpxAndZipFiles.class);
-        GpxFilesAndZipFilesIter gpxFilesAndZipFilesIter = PowerMock
-                .createMock(GpxFilesAndZipFilesIter.class);
-        ImportThreadHelper importThreadHelper = PowerMock.createMock(ImportThreadHelper.class);
-
         expect(fileDataVersionChecker.needsUpdating()).andReturn(false);
         expect(gpxAndZipFiles.iterator()).andReturn(gpxFilesAndZipFilesIter);
         expect(gpxFilesAndZipFilesIter.hasNext()).andReturn(false);
@@ -303,11 +284,6 @@ public class ImportThreadDelegateTest {
 
     @Test
     public void testRunNoFilesToImport() throws FileNotFoundException, IOException, ImportException {
-        GpxAndZipFiles gpxAndZipFiles = PowerMock.createMock(GpxAndZipFiles.class);
-        GpxFilesAndZipFilesIter gpxFilesAndZipFilesIter = PowerMock
-                .createMock(GpxFilesAndZipFilesIter.class);
-        ImportThreadHelper importThreadHelper = PowerMock.createMock(ImportThreadHelper.class);
-
         expect(fileDataVersionChecker.needsUpdating()).andReturn(false);
         expect(gpxAndZipFiles.iterator()).andReturn(gpxFilesAndZipFilesIter);
         importThreadHelper.start();
@@ -325,9 +301,6 @@ public class ImportThreadDelegateTest {
 
     @Test
     public void testRunThrowRightAway() throws ImportException {
-        GpxAndZipFiles gpxAndZipFiles = PowerMock.createMock(GpxAndZipFiles.class);
-        ImportThreadHelper importThreadHelper = PowerMock.createMock(ImportThreadHelper.class);
-
         expect(fileDataVersionChecker.needsUpdating()).andReturn(false);
         expect(gpxAndZipFiles.iterator()).andThrow(new RuntimeException());
         importThreadHelper.cleanup();

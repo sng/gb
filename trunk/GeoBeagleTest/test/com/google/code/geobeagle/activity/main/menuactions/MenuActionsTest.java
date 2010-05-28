@@ -108,6 +108,7 @@ public class MenuActionsTest {
         Provider<AlertDialog> chooseNavDialogProvider = PowerMock.createMock(Provider.class);
         AlertDialog alertDialog = PowerMock.createMock(AlertDialog.class);
         EasyMock.expect(chooseNavDialogProvider.get()).andReturn(alertDialog);
+        alertDialog.show();
         PowerMock.replayAll();
 
         MenuActionGoogleMaps menuActionGoogleMaps = new MenuActionGoogleMaps(

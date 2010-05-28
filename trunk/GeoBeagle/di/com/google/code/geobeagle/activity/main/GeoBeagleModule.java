@@ -339,11 +339,12 @@ public class GeoBeagleModule extends AbstractAndroidModule {
 
     @ChooseNavDialog
     @Provides
-    public AlertDialog chooseNavDialogProvider(Provider<Context> contextProvider,
-            GeoBeagle geoBeagle, ErrorDisplayer errorDisplayer, IntentFactory intentFactory) {
-        final GeocacheToGoogleGeo geocacheToGoogleMaps = new GeocacheToGoogleGeo(contextProvider,
+    public AlertDialog chooseNavDialogProvider(Provider<Resources> resourcesProvider,
+            Provider<Context> contextProvider, GeoBeagle geoBeagle, ErrorDisplayer errorDisplayer,
+            IntentFactory intentFactory) {
+        final GeocacheToGoogleGeo geocacheToGoogleMaps = new GeocacheToGoogleGeo(resourcesProvider,
                 R.string.google_maps_intent);
-        final GeocacheToGoogleGeo geocacheToNavigate = new GeocacheToGoogleGeo(contextProvider,
+        final GeocacheToGoogleGeo geocacheToNavigate = new GeocacheToGoogleGeo(resourcesProvider,
                 R.string.navigate_intent);
 
         final IntentStarterGeo intentStarterRadar = new IntentStarterGeo(geoBeagle, new Intent(

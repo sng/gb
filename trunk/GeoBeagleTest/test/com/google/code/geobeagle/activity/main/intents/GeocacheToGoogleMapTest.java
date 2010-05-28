@@ -53,7 +53,7 @@ public class GeocacheToGoogleMapTest {
                 "geo:0,0?q=%1$.5f,%2$.5f (%3$s)");
 
         PowerMock.replayAll();
-        GeocacheToGoogleMap geocacheToCachePage = new GeocacheToGoogleMap(context);
+        GeocacheToGoogleGeo geocacheToCachePage = new GeocacheToGoogleGeo(context);
         assertEquals("geo:0,0?q=37.12300,122.34500 (GCFOO+pb+%26+j%5B1.5%2F3%5D)",
                 geocacheToCachePage.convert(geocache));
         PowerMock.verifyAll();

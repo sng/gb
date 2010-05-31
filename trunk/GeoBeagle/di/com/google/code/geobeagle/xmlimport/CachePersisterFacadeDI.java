@@ -25,7 +25,6 @@ import com.google.code.geobeagle.database.TagWriterImpl;
 import com.google.code.geobeagle.database.TagWriterNull;
 import com.google.code.geobeagle.database.CacheWriter.ClearCachesFromSourceImpl;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 import android.os.PowerManager.WakeLock;
 
@@ -58,14 +57,14 @@ public class CachePersisterFacadeDI {
             mTagWriterImpl = tagWriterImpl;
             mTagWriterNull = tagWriterNull;
             mClearCachesFromSource = clearCachesFromSourceImpl;
-
         }
 
-        public CachePersisterFacade create(CacheWriter cacheWriter, WakeLock wakeLock) {
+        public CachePersisterFacade create(CacheWriter cacheWriter, WakeLock wakeLock,
+                String detailsDirectory) {
             final CacheTagSqlWriter cacheTagSqlWriter = new CacheTagSqlWriter(cacheWriter,
                     mCacheTypeFactory, mTagWriterImpl, mTagWriterNull, mClearCachesFromSource);
             return new CachePersisterFacade(cacheTagSqlWriter, mFileFactory, mCacheDetailsWriter,
-                    mMessageHandler, wakeLock);
+                    mMessageHandler, wakeLock, detailsDirectory);
         }
     }
 

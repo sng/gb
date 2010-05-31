@@ -358,7 +358,6 @@ public class GeoBeagleModule extends AbstractAndroidModule {
         };
         OnClickListener onClickListener = new MenuActionGoogleMaps.OnClickListener(intentStarters);
         return new AlertDialog.Builder(contextProvider.get()).setItems(R.array.select_nav_choices,
-                onClickListener).create();
+                onClickListener).setTitle(R.string.select_nav_choices_title).create();
     }
-    
 }

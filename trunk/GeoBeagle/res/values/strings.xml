@@ -133,6 +133,7 @@
 	<array name="select_nav_choices">
 		<item>Radar</item>
 		<item>Google Maps</item>
-		<item>Navigation</item>
+		<item>Navigate</item>
 	</array>
+	<string name="select_nav_choices_title">Please select</string>
 </resources>

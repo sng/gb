@@ -18,6 +18,7 @@ import com.google.code.geobeagle.R;
 import com.google.inject.Inject;
 
 import android.app.Activity;
+import android.os.Environment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,59 +32,59 @@ public class CacheDetailsLoader {
     }
 
     static class DetailsError implements Details {
-        private final Activity mActivity;
-        private final String mPath;
-        private final int mResourceId;
+        private final Activity activity;
+        private final String path;
+        private final int resourceId;
 
         DetailsError(Activity activity, int resourceId, String path) {
-            mActivity = activity;
-            mResourceId = resourceId;
-            mPath = path;
+            this.activity = activity;
+            this.resourceId = resourceId;
+            this.path = path;
         }
 
         public String getString() {
-            return mActivity.getString(mResourceId, mPath);
+            return activity.getString(resourceId, path);
         }
     }
 
     static class DetailsImpl implements Details {
-        private final byte[] mBuffer;
+        private final byte[] buffer;
 
         DetailsImpl(byte[] buffer) {
-            mBuffer = buffer;
+            this.buffer = buffer;
         }
 
         public String getString() {
-            return new String(mBuffer);
+            return new String(buffer);
         }
     }
 
     public static class DetailsOpener {
-        private final Activity mActivity;
-        private final FileDataVersionChecker mFileDataVersionChecker;
+        private final Activity activity;
+        private final FileDataVersionChecker fileDataVersionChecker;
 
         @Inject
         public DetailsOpener(Activity activity, FileDataVersionChecker fileDataVersionChecker) {
-            mActivity = activity;
-            mFileDataVersionChecker = fileDataVersionChecker;
+            this.activity = activity;
+            this.fileDataVersionChecker = fileDataVersionChecker;
         }
 
         DetailsReader open(File file) {
             File sdcardPath = new File(CacheDetailsLoader.SDCARD_DIR);
             if (!sdcardPath.isDirectory())
-                return new DetailsReaderError(mActivity, R.string.error_cant_read_sdroot, "");
+                return new DetailsReaderError(activity, R.string.error_cant_read_sdroot, "");
             
             FileInputStream fileInputStream;
             String absolutePath = file.getAbsolutePath();
             try {
                 fileInputStream = new FileInputStream(file);
             } catch (FileNotFoundException e) {
-                int error = mFileDataVersionChecker.needsUpdating() ? R.string.error_details_file_version
+                int error = fileDataVersionChecker.needsUpdating() ? R.string.error_details_file_version
                         : R.string.error_opening_details_file;
-                return new DetailsReaderError(mActivity, error, e.getMessage());
+                return new DetailsReaderError(activity, error, e.getMessage());
             }
             byte[] buffer = new byte[(int)file.length()];
-            return new DetailsReaderImpl(mActivity, absolutePath, fileInputStream, buffer);
+            return new DetailsReaderImpl(activity, absolutePath, fileInputStream, buffer);
         }
     }
 
@@ -97,9 +98,9 @@ public class CacheDetailsLoader {
         private final int mError;
 
         DetailsReaderError(Activity activity, int error, String path) {
-            mActivity = activity;
-            mPath = path;
-            mError = error;
+            this.mActivity = activity;
+            this.mPath = path;
+            this.mError = error;
         }
 
         public Details read() {
@@ -108,26 +109,26 @@ public class CacheDetailsLoader {
     }
 
     static class DetailsReaderImpl implements DetailsReader {
-        private final Activity mActivity;
-        private final byte[] mBuffer;
-        private final FileInputStream mFileInputStream;
-        private final String mPath;
+        private final Activity activity;
+        private final byte[] buffer;
+        private final FileInputStream fileInputStream;
+        private final String path;
 
         DetailsReaderImpl(Activity activity, String path, FileInputStream fileInputStream,
                 byte[] buffer) {
-            mActivity = activity;
-            mFileInputStream = fileInputStream;
-            mPath = path;
-            mBuffer = buffer;
+            this.activity = activity;
+            this.fileInputStream = fileInputStream;
+            this.path = path;
+            this.buffer = buffer;
         }
 
         public Details read() {
             try {
-                mFileInputStream.read(mBuffer);
-                mFileInputStream.close();
-                return new DetailsImpl(mBuffer);
+                fileInputStream.read(buffer);
+                fileInputStream.close();
+                return new DetailsImpl(buffer);
             } catch (IOException e) {
-                return new DetailsError(mActivity, R.string.error_reading_details_file, mPath);
+                return new DetailsError(activity, R.string.error_reading_details_file, path);
             }
         }
     }
@@ -135,19 +136,19 @@ public class CacheDetailsLoader {
     public static final String SDCARD_DIR = "/sdcard/";
     public static final String DETAILS_DIR = SDCARD_DIR + "GeoBeagle/data/";
     public static final String OLD_DETAILS_DIR = SDCARD_DIR + "GeoBeagle";
-    private final DetailsOpener mDetailsOpener;
-    private final FilePathStrategy mFilePathStrategy;
+    private final DetailsOpener detailsOpener;
+    private final FilePathStrategy filePathStrategy;
 
     @Inject
     public CacheDetailsLoader(DetailsOpener detailsOpener, FilePathStrategy filePathStrategy) {
-        mDetailsOpener = detailsOpener;
-        mFilePathStrategy = filePathStrategy;
+        this.detailsOpener = detailsOpener;
+        this.filePathStrategy = filePathStrategy;
     }
 
     public String load(CharSequence sourceName, CharSequence cacheId) {
-        String path = mFilePathStrategy.getPath(sourceName, cacheId.toString());
+        String path = filePathStrategy.getPath(sourceName, cacheId.toString());
         File file = new File(path);
-        DetailsReader detailsReader = mDetailsOpener.open(file);
+        DetailsReader detailsReader = detailsOpener.open(file);
         Details details = detailsReader.read();
         return details.getString();
     }

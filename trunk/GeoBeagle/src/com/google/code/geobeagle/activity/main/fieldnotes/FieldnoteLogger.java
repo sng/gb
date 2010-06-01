@@ -40,23 +40,23 @@ public class FieldnoteLogger {
     }
 
     public static class OnClickOk implements OnClickListener {
-        private final CacheLogger mCacheLogger;
-        private final boolean mDnf;
-        private final EditText mEditText;
-        private final CharSequence mGeocacheId;
+        private final CacheLogger cacheLogger;
+        private final boolean dnf;
+        private final EditText editText;
+        private final CharSequence geocacheId;
 
         @Inject
         public OnClickOk(@GeocacheId CharSequence geocacheId, @Assisted EditText editText,
                 CacheLogger cacheLogger, @Assisted boolean dnf) {
-            mGeocacheId = geocacheId;
-            mEditText = editText;
-            mCacheLogger = cacheLogger;
-            mDnf = dnf;
+            this.geocacheId = geocacheId;
+            this.editText = editText;
+            this.cacheLogger = cacheLogger;
+            this.dnf = dnf;
         }
 
         @Override
         public void onClick(DialogInterface arg0, int arg1) {
-            mCacheLogger.log(mGeocacheId, mEditText.getText(), mDnf);
+            cacheLogger.log(geocacheId, editText.getText(), dnf);
         }
     }
 
@@ -65,31 +65,31 @@ public class FieldnoteLogger {
     }
 
     static final String FIELDNOTES_FILE = "/sdcard/GeoBeagleFieldNotes.txt";
-    private final DialogHelperCommon mDialogHelperCommon;
-    private final DialogHelperFile mDialogHelperFile;
-    private final DialogHelperSms mDialogHelperSms;
-    private final SharedPreferences mSharedPreferences;
+    private final DialogHelperCommon dialogHelperCommon;
+    private final DialogHelperFile dialogHelperFile;
+    private final DialogHelperSms dialogHelperSms;
+    private final SharedPreferences sharedPreferences;
 
     @Inject
     public FieldnoteLogger(DialogHelperCommon dialogHelperCommon,
             DialogHelperFile dialogHelperFile, @Assisted DialogHelperSms dialogHelperSms,
             @DefaultSharedPreferences SharedPreferences sharedPreferences) {
-        mDialogHelperSms = dialogHelperSms;
-        mDialogHelperFile = dialogHelperFile;
-        mDialogHelperCommon = dialogHelperCommon;
-        mSharedPreferences = sharedPreferences;
+        this.dialogHelperSms = dialogHelperSms;
+        this.dialogHelperFile = dialogHelperFile;
+        this.dialogHelperCommon = dialogHelperCommon;
+        this.sharedPreferences = sharedPreferences;
     }
 
     public void onPrepareDialog(Dialog dialog, String localDate, boolean dnf) {
-        final boolean fieldNoteTextFile = mSharedPreferences.getBoolean("field-note-text-file",
+        final boolean fieldNoteTextFile = sharedPreferences.getBoolean("field-note-text-file",
                 false);
-        DialogHelper dialogHelper = fieldNoteTextFile ? mDialogHelperFile : mDialogHelperSms;
+        DialogHelper dialogHelper = fieldNoteTextFile ? dialogHelperFile : dialogHelperSms;
         TextView fieldnoteCaveat = ((TextView)dialog.findViewById(R.id.fieldnote_caveat));
         dialogHelper.configureDialogText(dialog, fieldnoteCaveat);
         EditText editText = ((EditText)dialog.findViewById(R.id.fieldnote));
-        mDialogHelperCommon.configureDialogText(fieldnoteCaveat);
+        dialogHelperCommon.configureDialogText(fieldnoteCaveat);
 
         dialogHelper.configureEditor(editText);
-        mDialogHelperCommon.configureEditor(editText, localDate, dnf);
+        dialogHelperCommon.configureEditor(editText, localDate, dnf);
     }
 }

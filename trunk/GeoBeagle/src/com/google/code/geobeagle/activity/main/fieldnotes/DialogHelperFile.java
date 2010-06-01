@@ -23,11 +23,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class DialogHelperFile implements DialogHelper {
-    private final Context mContext;
+    private final Context context;
 
     @Inject
     public DialogHelperFile(Context context) {
-        mContext = context;
+        this.context = context;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class DialogHelperFile implements DialogHelper {
 
     @Override
     public void configureDialogText(Dialog dialog, TextView fieldnoteCaveat) {
-        fieldnoteCaveat.setText(String.format(mContext
+        fieldnoteCaveat.setText(String.format(context
                 .getString(R.string.field_note_file_caveat), FieldnoteLogger.FIELDNOTES_FILE));
         dialog.setTitle(R.string.log_cache_to_file);
     }

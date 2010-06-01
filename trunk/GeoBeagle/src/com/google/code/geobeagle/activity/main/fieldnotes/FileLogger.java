@@ -40,9 +40,9 @@ import java.util.Date;
  */
 
 public class FileLogger implements ICacheLogger {
-    private final Toaster mErrorToaster;
-    private final FieldnoteStringsFVsDnf mFieldnoteStringsFVsDnf;
-    private final DateFormatter mSimpleDateFormat;
+    private final Toaster errorToaster;
+    private final FieldnoteStringsFVsDnf fieldnoteStringsFVsDnf;
+    private final DateFormatter simpleDateFormat;
     
     @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
     public static @interface ToasterErrorWritingLog {}
@@ -50,9 +50,9 @@ public class FileLogger implements ICacheLogger {
     @Inject
     public FileLogger(FieldnoteStringsFVsDnf fieldnoteStringsFVsDnf,
             DateFormatter simpleDateFormat, @ToasterErrorWritingLog Toaster errorToaster) {
-        mFieldnoteStringsFVsDnf = fieldnoteStringsFVsDnf;
-        mSimpleDateFormat = simpleDateFormat;
-        mErrorToaster = errorToaster;
+        this.fieldnoteStringsFVsDnf = fieldnoteStringsFVsDnf;
+        this.simpleDateFormat = simpleDateFormat;
+        this.errorToaster = errorToaster;
     }
 
     public void log(CharSequence geocacheId, CharSequence logText, boolean dnf) {
@@ -60,14 +60,14 @@ public class FileLogger implements ICacheLogger {
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(
                     FieldnoteLogger.FIELDNOTES_FILE, true), "UTF-16");
             final Date date = new Date();
-            final String formattedDate = mSimpleDateFormat.format(date);
+            final String formattedDate = simpleDateFormat.format(date);
             final String logLine = String.format("%1$s,%2$s,%3$s,\"%4$s\"\n", geocacheId,
-                    formattedDate, mFieldnoteStringsFVsDnf.getString(R.array.fieldnote_file_code,
+                    formattedDate, fieldnoteStringsFVsDnf.getString(R.array.fieldnote_file_code,
                             dnf), logText.toString());
             writer.write(logLine);
             writer.close();
         } catch (IOException e) {
-            mErrorToaster.showToast();
+            errorToaster.showToast();
         }
     }
 }

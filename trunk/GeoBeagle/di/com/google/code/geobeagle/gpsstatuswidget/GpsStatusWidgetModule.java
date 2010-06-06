@@ -42,6 +42,9 @@ import java.lang.annotation.Target;
 public class GpsStatusWidgetModule extends AbstractAndroidModule {
     @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
     public static @interface LocationViewer {}
+    
+    @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
+    public static @interface AccuracyView {}
 
     @Override
     protected void configure() {
@@ -72,5 +75,11 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
     @LocationViewer
     TextView providesLocationViewer(GpsStatusWidget gpsStatusWidget) {
         return (TextView)gpsStatusWidget.findViewById(R.id.location_viewer);
+    }
+    
+    @Provides
+    @AccuracyView
+    TextView providesAccuracyView(GpsStatusWidget gpsStatusWidget) {
+        return (TextView)gpsStatusWidget.findViewById(R.id.accuracy);
     }
 }

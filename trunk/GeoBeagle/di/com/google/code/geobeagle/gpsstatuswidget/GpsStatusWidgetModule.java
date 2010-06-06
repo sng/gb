@@ -16,7 +16,6 @@ package com.google.code.geobeagle.gpsstatuswidget;
 
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget.InflatedGpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate.GpsStatusWidgetDelegateFactory;
-import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater.GpsWidgetAndUpdaterFactory;
 import com.google.code.geobeagle.gpsstatuswidget.MeterBars.MeterBarsFactory;
 import com.google.code.geobeagle.gpsstatuswidget.MeterFader.MeterFaderFactory;
 import com.google.code.geobeagle.gpsstatuswidget.TextLagUpdater.TextLagUpdaterFactory;
@@ -47,12 +46,10 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
                 FactoryProvider.newFactory(GpsStatusWidgetDelegateFactory.class,
                         GpsStatusWidgetDelegate.class));
         bind(InflatedGpsStatusWidget.class).in(ContextScoped.class);
-        bind(GpsWidgetAndUpdaterFactory.class).toProvider(
-                FactoryProvider.newFactory(GpsWidgetAndUpdaterFactory.class,
-                        GpsWidgetAndUpdater.class));
     }
 
     @Provides
+    @ContextScoped
     GpsStatusWidget providesGpsStatusWidget(InflatedGpsStatusWidget inflatedGpsStatusWidget,
             Context context) {
         GpsStatusWidget gpsStatusWidget = new GpsStatusWidget(context);

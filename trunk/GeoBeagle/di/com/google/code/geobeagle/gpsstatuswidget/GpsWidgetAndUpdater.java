@@ -8,22 +8,16 @@ import com.google.code.geobeagle.formatting.DistanceFormatter;
 import com.google.code.geobeagle.location.CombinedLocationManager;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.assistedinject.Assisted;
 
 import android.content.Context;
 import android.os.Handler;
-import android.view.View;
 
 public class GpsWidgetAndUpdater {
     private final GpsStatusWidgetDelegate mGpsStatusWidgetDelegate;
     private final UpdateGpsWidgetRunnable mUpdateGpsRunnable;
 
-    public interface GpsWidgetAndUpdaterFactory {
-        public GpsWidgetAndUpdater create(View gpsWidgetView);
-    }
-
     @Inject
-    public GpsWidgetAndUpdater(Context context, @Assisted View gpsWidgetView,
+    public GpsWidgetAndUpdater(Context context, GpsStatusWidget gpsWidgetView,
             LocationControlBuffered mLocationControlBuffered,
             CombinedLocationManager combinedLocationManager,
             Provider<DistanceFormatter> distanceFormatterProvider, ActivityVisible activityVisible,

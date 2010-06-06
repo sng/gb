@@ -14,12 +14,19 @@
 
 package com.google.code.geobeagle.gpsstatuswidget;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget.InflatedGpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate.GpsStatusWidgetDelegateFactory;
 import com.google.code.geobeagle.gpsstatuswidget.MeterBars.MeterBarsFactory;
 import com.google.code.geobeagle.gpsstatuswidget.MeterFader.MeterFaderFactory;
 import com.google.code.geobeagle.gpsstatuswidget.TextLagUpdater.TextLagUpdaterFactory;
 import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable.UpdateGpsWidgetRunnableFactory;
+import com.google.inject.BindingAnnotation;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryProvider;
 
@@ -28,8 +35,14 @@ import roboguice.inject.ContextScoped;
 
 import android.content.Context;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 public class GpsStatusWidgetModule extends AbstractAndroidModule {
+    @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
+    public static @interface LocationViewer {}
 
     @Override
     protected void configure() {
@@ -56,5 +69,11 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
         gpsStatusWidget.addView(inflatedGpsStatusWidget, ViewGroup.LayoutParams.FILL_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         return gpsStatusWidget;
+    }
+    
+    @Provides
+    @LocationViewer
+    TextView providesLocationViewer(GpsStatusWidget gpsStatusWidget) {
+        return (TextView)gpsStatusWidget.findViewById(R.id.location_viewer);
     }
 }

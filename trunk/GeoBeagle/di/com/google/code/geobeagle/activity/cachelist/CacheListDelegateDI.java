@@ -32,11 +32,11 @@ import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionDelet
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionSyncGpx.MenuActionSyncGpxFactory;
 import com.google.code.geobeagle.activity.cachelist.model.GeocacheVectors;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
+import com.google.code.geobeagle.activity.cachelist.presenter.GeoBeaglePackageAnnotations;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListAdapter;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter;
 import com.google.code.geobeagle.activity.cachelist.presenter.TitleUpdater;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter.GeocacheListPresenterFactory;
-import com.google.code.geobeagle.activity.main.GeoBeagle;
 import com.google.code.geobeagle.database.CacheWriter;
 import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget;
@@ -54,6 +54,7 @@ import com.google.code.geobeagle.xmlimport.CachePersisterFacadeDI.CachePersister
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
 import com.google.code.geobeagle.xmlimport.GpxToCache.Aborter;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Provider;
 
 import roboguice.activity.GuiceListActivity;
@@ -150,9 +151,7 @@ public class CacheListDelegateDI {
         menuActions.add(injector.getInstance(MenuActionMap.class));
         menuActions.add(injector.getInstance(MenuActionSettings.class));
 
-        final Intent geoBeagleMainIntent = new Intent(listActivity, GeoBeagle.class);
-        final ContextActionView contextActionView = new ContextActionView(geocacheVectors,
-                listActivity, geoBeagleMainIntent);
+        final ContextActionView contextActionView = injector.getInstance(ContextActionView.class);
         final ContextActionEdit contextActionEdit = new ContextActionEdit(geocacheVectors,
                 listActivity);
         final ContextActionDelete contextActionDelete = new ContextActionDelete(

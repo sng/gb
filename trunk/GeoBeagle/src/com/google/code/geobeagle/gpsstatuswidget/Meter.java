@@ -15,6 +15,8 @@
 package com.google.code.geobeagle.gpsstatuswidget;
 
 import com.google.code.geobeagle.formatting.DistanceFormatter;
+import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetModule.AccuracyView;
+import com.google.inject.Inject;
 
 import android.widget.TextView;
 
@@ -24,7 +26,8 @@ class Meter {
     private float mAzimuth;
     private final MeterBars mMeterView;
 
-    Meter(MeterBars meterBars, TextView accuracyView) {
+    @Inject
+    Meter(MeterBars meterBars, @AccuracyView TextView accuracyView) {
         mAccuracyView = accuracyView;
         mMeterView = meterBars;
     }

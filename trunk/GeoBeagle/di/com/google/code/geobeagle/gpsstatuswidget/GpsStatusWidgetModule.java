@@ -59,6 +59,7 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
                 FactoryProvider.newFactory(GpsStatusWidgetDelegateFactory.class,
                         GpsStatusWidgetDelegate.class));
         bind(InflatedGpsStatusWidget.class).in(ContextScoped.class);
+        bind(Meter.class).in(ContextScoped.class);
     }
 
     @Provides

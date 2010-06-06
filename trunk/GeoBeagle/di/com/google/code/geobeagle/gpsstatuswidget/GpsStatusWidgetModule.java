@@ -21,7 +21,7 @@ import com.google.code.geobeagle.gpsstatuswidget.MeterBars.MeterBarsFactory;
 import com.google.code.geobeagle.gpsstatuswidget.MeterFader.MeterFaderFactory;
 import com.google.code.geobeagle.gpsstatuswidget.TextLagUpdater.TextLagUpdaterFactory;
 import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable.UpdateGpsWidgetRunnableFactory;
-import com.google.inject.Inject;
+import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryProvider;
 
 import roboguice.config.AbstractAndroidModule;
@@ -52,20 +52,12 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
                         GpsWidgetAndUpdater.class));
     }
 
-    public static class GpsStatusWidgetFactory {
-        private final Context context;
-
-        @Inject
-        GpsStatusWidgetFactory(Context context) {
-            this.context = context;
-        }
-
-        public GpsStatusWidget create(InflatedGpsStatusWidget inflatedGpsStatusWidget) {
-            GpsStatusWidget gpsStatusWidget = new GpsStatusWidget(context);
-            gpsStatusWidget.addView(inflatedGpsStatusWidget, ViewGroup.LayoutParams.FILL_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            return gpsStatusWidget;
-        }
+    @Provides
+    GpsStatusWidget providesGpsStatusWidget(InflatedGpsStatusWidget inflatedGpsStatusWidget,
+            Context context) {
+        GpsStatusWidget gpsStatusWidget = new GpsStatusWidget(context);
+        gpsStatusWidget.addView(inflatedGpsStatusWidget, ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        return gpsStatusWidget;
     }
-
 }

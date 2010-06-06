@@ -37,7 +37,6 @@ import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
 import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater;
 import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget.InflatedGpsStatusWidget;
-import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetModule.GpsStatusWidgetFactory;
 import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater.GpsWidgetAndUpdaterFactory;
 import com.google.code.geobeagle.location.CombinedLocationListener;
 import com.google.code.geobeagle.location.CombinedLocationListener.CombinedLocationListenerFactory;
@@ -76,10 +75,7 @@ public class CacheListDelegateDI {
         final Injector injector = listActivity.getInjector();
         final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
                 .getInstance(InflatedGpsStatusWidget.class);
-        final GpsStatusWidgetFactory gpsStatusWidgetFactory = injector
-                .getInstance(GpsStatusWidgetFactory.class);
-        final GpsStatusWidget gpsStatusWidget = gpsStatusWidgetFactory
-                .create(inflatedGpsStatusWidget);
+        final GpsStatusWidget gpsStatusWidget = injector.getInstance(GpsStatusWidget.class);
         final GpsWidgetAndUpdaterFactory gpsWidgetAndUpdaterFactory = injector
                 .getInstance(GpsWidgetAndUpdaterFactory.class);
         final GpsWidgetAndUpdater gpsWidgetAndUpdater = gpsWidgetAndUpdaterFactory

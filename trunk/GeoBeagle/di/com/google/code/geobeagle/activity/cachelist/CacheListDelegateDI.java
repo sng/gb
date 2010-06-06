@@ -14,7 +14,6 @@
 
 package com.google.code.geobeagle.activity.cachelist;
 
-import com.google.code.geobeagle.LocationControlBuffered;
 import com.google.code.geobeagle.actions.MenuActionMap;
 import com.google.code.geobeagle.actions.MenuActionSearchOnline;
 import com.google.code.geobeagle.actions.MenuActionSettings;
@@ -86,8 +85,6 @@ public class CacheListDelegateDI {
 
     public static CacheListDelegate create(GuiceListActivity listActivity) {
         final Injector injector = listActivity.getInjector();
-        final LocationControlBuffered locationControlBuffered = injector
-                .getInstance(LocationControlBuffered.class);
         final GeocacheVectors geocacheVectors = injector.getInstance(GeocacheVectors.class);
         final ActivityVisible activityVisible = injector.getInstance(ActivityVisible.class);
         final GeocacheListAdapter geocacheListAdapter = injector
@@ -149,10 +146,9 @@ public class CacheListDelegateDI {
         
         menuActions.add(menuActionDeleteAllCachesFactory.create(cacheListRefresh));
         menuActions.add(injector.getInstance(MenuActionMyLocation.class));
-        menuActions.add(new MenuActionSearchOnline(listActivity));
-        menuActions.add(new MenuActionMap(listActivity, locationControlBuffered));
-        final MenuActionSettings menuActionSettings = injector.getInstance(MenuActionSettings.class);
-        menuActions.add(menuActionSettings);
+        menuActions.add(injector.getInstance(MenuActionSearchOnline.class));
+        menuActions.add(injector.getInstance(MenuActionMap.class));
+        menuActions.add(injector.getInstance(MenuActionSettings.class));
 
         final Intent geoBeagleMainIntent = new Intent(listActivity, GeoBeagle.class);
         final ContextActionView contextActionView = new ContextActionView(geocacheVectors,

@@ -14,7 +14,6 @@
 
 package com.google.code.geobeagle.activity.cachelist;
 
-import com.google.code.geobeagle.ErrorDisplayer;
 import com.google.code.geobeagle.LocationControlBuffered;
 import com.google.code.geobeagle.actions.MenuActionMap;
 import com.google.code.geobeagle.actions.MenuActionSearchOnline;
@@ -32,7 +31,6 @@ import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionMyLoc
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionSyncGpx;
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionDeleteAllCaches.MenuActionDeleteAllCachesFactory;
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionSyncGpx.MenuActionSyncGpxFactory;
-import com.google.code.geobeagle.activity.cachelist.model.GeocacheFromMyLocationFactory;
 import com.google.code.geobeagle.activity.cachelist.model.GeocacheVectors;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListAdapter;
@@ -42,7 +40,6 @@ import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresen
 import com.google.code.geobeagle.activity.main.GeoBeagle;
 import com.google.code.geobeagle.database.CacheWriter;
 import com.google.code.geobeagle.database.DbFrontend;
-import com.google.code.geobeagle.database.LocationSaver;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
 import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater;
@@ -89,11 +86,8 @@ public class CacheListDelegateDI {
 
     public static CacheListDelegate create(GuiceListActivity listActivity) {
         final Injector injector = listActivity.getInjector();
-        final ErrorDisplayer errorDisplayer = injector.getInstance(ErrorDisplayer.class);
         final LocationControlBuffered locationControlBuffered = injector
                 .getInstance(LocationControlBuffered.class);
-        final GeocacheFromMyLocationFactory geocacheFromMyLocationFactory = injector
-                .getInstance(GeocacheFromMyLocationFactory.class);
         final GeocacheVectors geocacheVectors = injector.getInstance(GeocacheVectors.class);
         final ActivityVisible activityVisible = injector.getInstance(ActivityVisible.class);
         final GeocacheListAdapter geocacheListAdapter = injector
@@ -154,9 +148,7 @@ public class CacheListDelegateDI {
                 .getInstance(MenuActionDeleteAllCachesFactory.class);
         
         menuActions.add(menuActionDeleteAllCachesFactory.create(cacheListRefresh));
-        final LocationSaver locationSaver = new LocationSaver(cacheWriterProvider);
-        menuActions.add(new MenuActionMyLocation(listActivity, errorDisplayer,
-                geocacheFromMyLocationFactory, locationSaver));
+        menuActions.add(injector.getInstance(MenuActionMyLocation.class));
         menuActions.add(new MenuActionSearchOnline(listActivity));
         menuActions.add(new MenuActionMap(listActivity, locationControlBuffered));
         final MenuActionSettings menuActionSettings = injector.getInstance(MenuActionSettings.class);

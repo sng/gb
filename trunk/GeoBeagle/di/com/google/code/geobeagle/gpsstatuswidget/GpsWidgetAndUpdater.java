@@ -36,8 +36,7 @@ public class GpsWidgetAndUpdater {
             LocationControlBuffered mLocationControlBuffered,
             CombinedLocationManager combinedLocationManager,
             Provider<DistanceFormatter> distanceFormatterProvider, ActivityVisible activityVisible,
-            Time time, Handler handler) {
-        final MeterFormatter meterFormatter = new MeterFormatter(context);
+            Time time, Handler handler, MeterFormatter meterFormatter) {
         final TextView locationViewer = (TextView)gpsWidgetView.findViewById(R.id.location_viewer);
         final MeterBars meterBars = new MeterBars(locationViewer, meterFormatter);
         final Meter meter = GpsStatusWidget.createMeterWrapper(gpsWidgetView, meterBars);

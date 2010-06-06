@@ -78,15 +78,4 @@ public class GpsStatusWidget extends LinearLayout {
     public GpsStatusWidget(Context context) {
         super(context);
     }
-
-    public static TextLagUpdater createTextLagUpdater(View gpsStatusWidget,
-            CombinedLocationManager combinedLocationManager, Time time) {
-        final TextView lag = (TextView)gpsStatusWidget.findViewById(R.id.lag);
-        final LagNull lagNull = new LagNull();
-        final LastKnownLocationUnavailable lastKnownLocationUnavailable = new LastKnownLocationUnavailable(
-                lagNull);
-        final LastLocationUnknown lastLocationUnknown = new LastLocationUnknown(
-                combinedLocationManager, lastKnownLocationUnavailable);
-        return new TextLagUpdater(lastLocationUnknown, lag, time);
-    }
 }

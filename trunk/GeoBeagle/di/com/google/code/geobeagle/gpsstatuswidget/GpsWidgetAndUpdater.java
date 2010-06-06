@@ -32,20 +32,21 @@ public class GpsWidgetAndUpdater {
     private final UpdateGpsWidgetRunnable mUpdateGpsRunnable;
 
     @Inject
-    public GpsWidgetAndUpdater(Context context, GpsStatusWidget gpsWidgetView,
+    public GpsWidgetAndUpdater(Context context, GpsStatusWidget gpsStatusWidget,
             LocationControlBuffered mLocationControlBuffered,
             CombinedLocationManager combinedLocationManager,
             Provider<DistanceFormatter> distanceFormatterProvider, ActivityVisible activityVisible,
             Time time, Handler handler, MeterFormatter meterFormatter) {
-        final TextView locationViewer = (TextView)gpsWidgetView.findViewById(R.id.location_viewer);
+        final TextView locationViewer = (TextView)gpsStatusWidget
+                .findViewById(R.id.location_viewer);
         final MeterBars meterBars = new MeterBars(locationViewer, meterFormatter);
-        final TextView accuracyView = (TextView)gpsWidgetView.findViewById(R.id.accuracy);
+        final TextView accuracyView = (TextView)gpsStatusWidget.findViewById(R.id.accuracy);
         final Meter meter = new Meter(meterBars, accuracyView);
-        final TextLagUpdater textLagUpdater = GpsStatusWidget.createTextLagUpdater(gpsWidgetView,
+        final TextLagUpdater textLagUpdater = GpsStatusWidget.createTextLagUpdater(gpsStatusWidget,
                 combinedLocationManager, time);
         mUpdateGpsRunnable = new UpdateGpsWidgetRunnable(handler, mLocationControlBuffered, meter,
                 textLagUpdater, activityVisible);
-        mGpsStatusWidgetDelegate = GpsStatusWidget.createGpsStatusWidgetDelegate(gpsWidgetView,
+        mGpsStatusWidgetDelegate = GpsStatusWidget.createGpsStatusWidgetDelegate(gpsStatusWidget,
                 time, combinedLocationManager, meter, distanceFormatterProvider, meterBars,
                 textLagUpdater, context);
     }

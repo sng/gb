@@ -23,7 +23,6 @@ import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget.InflatedGpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate.GpsStatusWidgetDelegateFactory;
 import com.google.code.geobeagle.gpsstatuswidget.MeterFader.MeterFaderFactory;
-import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable.UpdateGpsWidgetRunnableFactory;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Provides;
 import com.google.inject.assistedinject.FactoryProvider;
@@ -49,9 +48,6 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
     public static @interface Lag {}
     @Override
     protected void configure() {
-        bind(UpdateGpsWidgetRunnableFactory.class).toProvider(
-                FactoryProvider.newFactory(UpdateGpsWidgetRunnableFactory.class,
-                        UpdateGpsWidgetRunnable.class));
         bind(MeterFaderFactory.class).toProvider(
                 FactoryProvider.newFactory(MeterFaderFactory.class, MeterFader.class));
         bind(GpsStatusWidgetDelegateFactory.class).toProvider(
@@ -59,6 +55,7 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
                         GpsStatusWidgetDelegate.class));
         bind(InflatedGpsStatusWidget.class).in(ContextScoped.class);
         bind(Meter.class).in(ContextScoped.class);
+        bind(TextLagUpdater.class).in(ContextScoped.class);
     }
 
     @Provides

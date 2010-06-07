@@ -38,7 +38,6 @@ import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable;
 import com.google.code.geobeagle.location.CombinedLocationListener;
-import com.google.code.geobeagle.location.CombinedLocationListener.CombinedLocationListenerFactory;
 import com.google.code.geobeagle.xmlimport.MessageHandlerInterface;
 import com.google.code.geobeagle.xmlimport.CachePersisterFacadeDI.CachePersisterFacadeFactory;
 import com.google.code.geobeagle.xmlimport.CachePersisterFacadeDI.CachePersisterFacadeFactory.CachePersisterFacadeFactoryFactory;
@@ -60,11 +59,6 @@ public class CacheListDelegateDI {
 
         inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
 
-        final CombinedLocationListenerFactory combinedLocationListenerFactory = injector
-                .getInstance(CombinedLocationListenerFactory.class);
-        final CombinedLocationListener combinedLocationListener = combinedLocationListenerFactory
-                .create(gpsStatusWidgetDelegate);
-
         final UpdateGpsWidgetRunnable updateGpsWidgetRunnable = gpsWidgetAndUpdater
                 .getUpdateGpsWidgetRunnable();
 
@@ -72,6 +66,8 @@ public class CacheListDelegateDI {
 
         final GeocacheListPresenterFactory geocacheListPresenterFactory = injector
                 .getInstance(GeocacheListPresenterFactory.class);
+        final CombinedLocationListener combinedLocationListener = injector
+                .getInstance(CombinedLocationListener.class);
         final GeocacheListPresenter geocacheListPresenter = geocacheListPresenterFactory.create(
                 combinedLocationListener, gpsStatusWidget, updateGpsWidgetRunnable);
         final MessageHandlerInterface messageHandler = injector.getInstance(MessageHandler.class);

@@ -52,6 +52,7 @@ import com.google.code.geobeagle.activity.main.GeoBeagleModule.DefaultSharedPref
 import com.google.code.geobeagle.formatting.DistanceFormatter;
 import com.google.code.geobeagle.formatting.DistanceFormatterImperial;
 import com.google.code.geobeagle.formatting.DistanceFormatterMetric;
+import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
 import com.google.code.geobeagle.xmlimport.CachePersisterFacadeDI.CachePersisterFacadeFactory;
 import com.google.code.geobeagle.xmlimport.CachePersisterFacadeDI.CachePersisterFacadeFactory.CachePersisterFacadeFactoryFactory;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.Toaster;
@@ -115,6 +116,7 @@ public class CacheListModule extends AbstractAndroidModule {
                 .toProvider(
                         FactoryProvider.newFactory(CacheListDelegateFactory.class,
                                 CacheListDelegate.class));
+        bind(GpsStatusWidgetDelegate.class).in(ContextScoped.class);
     }
 
     static class DistanceFormatterProvider implements Provider<DistanceFormatter> {

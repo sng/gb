@@ -55,8 +55,8 @@ public class CacheListDelegateDI {
         final GpsStatusWidget gpsStatusWidget = injector.getInstance(GpsStatusWidget.class);
         final GpsWidgetAndUpdater gpsWidgetAndUpdater = injector
                 .getInstance(GpsWidgetAndUpdater.class);
-        final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = gpsWidgetAndUpdater
-                .getGpsStatusWidgetDelegate();
+        final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector
+                .getInstance(GpsStatusWidgetDelegate.class);
 
         inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
 

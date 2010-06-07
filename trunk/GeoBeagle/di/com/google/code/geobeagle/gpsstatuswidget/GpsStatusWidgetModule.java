@@ -21,10 +21,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget.InflatedGpsStatusWidget;
-import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate.GpsStatusWidgetDelegateFactory;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Provides;
-import com.google.inject.assistedinject.FactoryProvider;
 
 import roboguice.config.AbstractAndroidModule;
 import roboguice.inject.ContextScoped;
@@ -51,11 +49,9 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
 
     @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
     public static @interface Lag {}
+    
     @Override
     protected void configure() {
-        bind(GpsStatusWidgetDelegateFactory.class).toProvider(
-                FactoryProvider.newFactory(GpsStatusWidgetDelegateFactory.class,
-                        GpsStatusWidgetDelegate.class));
         bind(InflatedGpsStatusWidget.class).in(ContextScoped.class);
         bind(Meter.class).in(ContextScoped.class);
         bind(TextLagUpdater.class).in(ContextScoped.class);

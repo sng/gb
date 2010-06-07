@@ -16,10 +16,10 @@ package com.google.code.geobeagle.gpsstatuswidget;
 
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.formatting.DistanceFormatter;
+import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetModule.Status;
 import com.google.code.geobeagle.location.CombinedLocationManager;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.assistedinject.Assisted;
 
 import android.content.Context;
 import android.location.Location;
@@ -29,12 +29,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 public class GpsStatusWidgetDelegate implements LocationListener {
-    static interface GpsStatusWidgetDelegateFactory {
-        GpsStatusWidgetDelegate create(Meter meter, MeterFader meterFader,
-                @Assisted("Provider") TextView provider, @Assisted("Status") TextView status,
-                TextLagUpdater textLagUpdater);
-    }
-    
     private final CombinedLocationManager mCombinedLocationManager;
     private final Provider<DistanceFormatter> mDistanceFormatterProvider;
     private final MeterFader mMeterFader;
@@ -45,11 +39,13 @@ public class GpsStatusWidgetDelegate implements LocationListener {
     private final TextLagUpdater mTextLagUpdater;
 
     @Inject
-    public GpsStatusWidgetDelegate(CombinedLocationManager combinedLocationManager,
-            Provider<DistanceFormatter> distanceFormatterProvider, @Assisted Meter meter,
-            @Assisted MeterFader meterFader, @Assisted("Provider") TextView provider,
-            Context context, @Assisted("Status") TextView status,
-            @Assisted TextLagUpdater textLagUpdater) {
+    public GpsStatusWidgetDelegate(
+            CombinedLocationManager combinedLocationManager,
+            Provider<DistanceFormatter> distanceFormatterProvider,
+            Meter meter,
+            MeterFader meterFader,
+            @com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetModule.LocationProvider TextView provider,
+            Context context, @Status TextView status, TextLagUpdater textLagUpdater) {
         mCombinedLocationManager = combinedLocationManager;
         mDistanceFormatterProvider = distanceFormatterProvider;
         mMeterFader = meterFader;

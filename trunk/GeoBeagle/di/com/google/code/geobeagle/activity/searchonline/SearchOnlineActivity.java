@@ -22,7 +22,6 @@ import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
 import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
 import com.google.code.geobeagle.location.CombinedLocationListener;
-import com.google.code.geobeagle.location.CombinedLocationListener.CombinedLocationListenerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -101,9 +100,8 @@ public class SearchOnlineActivity extends GuiceActivity {
         mGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
         mGpsStatusWidget.setBackgroundColor(Color.BLACK);
 
-        mCombinedLocationListener = injector.getInstance(CombinedLocationListenerFactory.class)
-                .create(gpsStatusWidgetDelegate);
-        
+        mCombinedLocationListener = injector.getInstance(CombinedLocationListener.class);
+
         mSearchOnlineActivityDelegate = injector.getInstance(
                 SearchOnlineActivityDelegateFactory.class).create(
                 mHelpContentsView, mCombinedLocationListener);

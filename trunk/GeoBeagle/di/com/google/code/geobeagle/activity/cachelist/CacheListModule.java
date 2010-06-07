@@ -81,20 +81,23 @@ public class CacheListModule extends AbstractAndroidModule {
 
     @Override
     protected void configure() {
-        bind(GeocacheListAdapter.class).in(ContextScoped.class);
-        bind(GeocacheListPresenterFactory.class).toProvider(
-                FactoryProvider.newFactory(GeocacheListPresenterFactory.class,
-                        GeocacheListPresenter.class));
-        bind(MenuActionSyncBCaching.class).in(ContextScoped.class);
         bind(ActivityVisible.class).in(Singleton.class);
-        bind(DistanceFormatter.class).toProvider(DistanceFormatterProvider.class).in(
-                ContextScoped.class);
         bind(BearingFormatter.class).toProvider(BearingFormatterProvider.class).in(
                 ContextScoped.class);
         bind(CacheListData.class).in(ContextScoped.class);
+        bind(CacheListRefresh.class).in(ContextScoped.class);
+        bind(ContextActionDelete.class).in(ContextScoped.class);
+        bind(DistanceFormatter.class).toProvider(DistanceFormatterProvider.class).in(
+                ContextScoped.class);
+        bind(GeocacheListAdapter.class).in(ContextScoped.class);
+        bind(GpsStatusWidgetDelegate.class).in(ContextScoped.class);
+        bind(MenuActionSyncBCaching.class).in(ContextScoped.class);
         bind(Timing.class).in(Singleton.class);
         bind(UpdateFlag.class).in(Singleton.class);
-        bind(CacheListRefresh.class).in(ContextScoped.class);
+    
+        bind(GeocacheListPresenterFactory.class).toProvider(
+                FactoryProvider.newFactory(GeocacheListPresenterFactory.class,
+                        GeocacheListPresenter.class));
         bind(CachePersisterFacadeFactoryFactory.class).toProvider(
                 FactoryProvider.newFactory(CachePersisterFacadeFactoryFactory.class,
                         CachePersisterFacadeFactory.class));
@@ -108,7 +111,6 @@ public class CacheListModule extends AbstractAndroidModule {
         bind(MenuActionDeleteAllCachesFactory.class).toProvider(
                 FactoryProvider.newFactory(MenuActionDeleteAllCachesFactory.class,
                         MenuActionDeleteAllCaches.class));
-        bind(ContextActionDelete.class).in(ContextScoped.class);
         bind(GeocacheListControllerFactory.class).toProvider(
                 FactoryProvider.newFactory(GeocacheListControllerFactory.class,
                         GeocacheListController.class));
@@ -116,8 +118,7 @@ public class CacheListModule extends AbstractAndroidModule {
                 .toProvider(
                         FactoryProvider.newFactory(CacheListDelegateFactory.class,
                                 CacheListDelegate.class));
-        bind(GpsStatusWidgetDelegate.class).in(ContextScoped.class);
-    }
+        }
 
     static class DistanceFormatterProvider implements Provider<DistanceFormatter> {
         private final SharedPreferences preferenceManager;

@@ -37,7 +37,7 @@ import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
 import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater;
 import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget.InflatedGpsStatusWidget;
-import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater.GpsWidgetAndUpdaterFactory;
+import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetModule.CacheList;
 import com.google.code.geobeagle.location.CombinedLocationListener;
 import com.google.code.geobeagle.location.CombinedLocationListener.CombinedLocationListenerFactory;
 import com.google.code.geobeagle.xmlimport.MessageHandlerInterface;
@@ -45,6 +45,7 @@ import com.google.code.geobeagle.xmlimport.CachePersisterFacadeDI.CachePersister
 import com.google.code.geobeagle.xmlimport.CachePersisterFacadeDI.CachePersisterFacadeFactory.CachePersisterFacadeFactoryFactory;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 
 import roboguice.activity.GuiceListActivity;
 
@@ -73,13 +74,11 @@ public class CacheListDelegateDI {
 
     public static CacheListDelegate create(GuiceListActivity listActivity) {
         final Injector injector = listActivity.getInjector();
-        final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
-                .getInstance(InflatedGpsStatusWidget.class);
+        final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector.getInstance(Key.get(
+                InflatedGpsStatusWidget.class, CacheList.class));
         final GpsStatusWidget gpsStatusWidget = injector.getInstance(GpsStatusWidget.class);
-        final GpsWidgetAndUpdaterFactory gpsWidgetAndUpdaterFactory = injector
-                .getInstance(GpsWidgetAndUpdaterFactory.class);
-        final GpsWidgetAndUpdater gpsWidgetAndUpdater = gpsWidgetAndUpdaterFactory
-                .create(gpsStatusWidget);
+        final GpsWidgetAndUpdater gpsWidgetAndUpdater = injector.getInstance(Key.get(
+                GpsWidgetAndUpdater.class, CacheList.class));
         final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = gpsWidgetAndUpdater
                 .getGpsStatusWidgetDelegate();
 

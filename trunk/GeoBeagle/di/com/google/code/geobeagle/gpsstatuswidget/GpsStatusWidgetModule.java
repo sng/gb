@@ -43,6 +43,12 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
     
     @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
     public static @interface AccuracyView {}
+    
+    @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
+    public static @interface Status {}
+    
+    @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
+    public static @interface LocationProvider {}
 
     @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
     public static @interface Lag {}
@@ -86,4 +92,15 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
         return (TextView)gpsStatusWidget.findViewById(R.id.lag);
     }
 
+    @Provides
+    @Status
+    TextView providesStatus(GpsStatusWidget gpsStatusWidget) {
+        return (TextView)gpsStatusWidget.findViewById(R.id.status);
+    }
+    
+    @Provides
+    @LocationProvider
+    TextView providesProvider(GpsStatusWidget gpsStatusWidget) {
+        return (TextView)gpsStatusWidget.findViewById(R.id.provider);
+    }
 }

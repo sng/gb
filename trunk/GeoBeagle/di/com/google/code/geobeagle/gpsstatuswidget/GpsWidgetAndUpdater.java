@@ -18,10 +18,6 @@ public class GpsWidgetAndUpdater {
     private final GpsStatusWidgetDelegate mGpsStatusWidgetDelegate;
     private final UpdateGpsWidgetRunnable mUpdateGpsRunnable;
 
-    public interface GpsWidgetAndUpdaterFactory {
-        public GpsWidgetAndUpdater create(View gpsWidgetView);
-    }
-
     @Inject
     public GpsWidgetAndUpdater(Context context, @Assisted View gpsWidgetView,
             LocationControlBuffered mLocationControlBuffered,

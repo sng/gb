@@ -21,11 +21,12 @@ import com.google.code.geobeagle.activity.searchonline.SearchOnlineActivityDeleg
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
 import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget.InflatedGpsStatusWidget;
-import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater.GpsWidgetAndUpdaterFactory;
+import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetModule.SearchOnline;
 import com.google.code.geobeagle.location.CombinedLocationListener;
 import com.google.code.geobeagle.location.CombinedLocationListener.CombinedLocationListenerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 
 import roboguice.activity.GuiceActivity;
 import roboguice.inject.InjectView;
@@ -45,7 +46,6 @@ public class SearchOnlineActivity extends GuiceActivity {
 
     private CombinedLocationListener mCombinedLocationListener;
 
-    @InjectView(R.id.gps_widget_view)
     private InflatedGpsStatusWidget mGpsStatusWidget;
 
     private GpsWidgetAndUpdater mGpsWidgetAndUpdater;
@@ -92,12 +92,11 @@ public class SearchOnlineActivity extends GuiceActivity {
         setContentView(R.layout.search);
 
         Log.d("GeoBeagle", "SearchOnlineActivity onCreate");
-        
         Injector injector = this.getInjector();
-
-        mGpsWidgetAndUpdater = injector.getInstance(GpsWidgetAndUpdaterFactory.class).create(
-                mGpsStatusWidget);
-        
+        mGpsStatusWidget = injector.getInstance(Key.get(InflatedGpsStatusWidget.class,
+                SearchOnline.class));
+        mGpsWidgetAndUpdater = injector.getInstance(
+                Key.get(GpsWidgetAndUpdater.class, SearchOnline.class));
         GpsStatusWidgetDelegate gpsStatusWidgetDelegate = mGpsWidgetAndUpdater
                 .getGpsStatusWidgetDelegate();
         mGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);

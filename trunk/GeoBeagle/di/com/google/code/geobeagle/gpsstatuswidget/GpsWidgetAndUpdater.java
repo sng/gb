@@ -18,15 +18,12 @@ import com.google.code.geobeagle.LocationControlBuffered;
 import com.google.code.geobeagle.Time;
 import com.google.code.geobeagle.activity.cachelist.ActivityVisible;
 import com.google.code.geobeagle.formatting.DistanceFormatter;
-import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetModule.Lag;
-import com.google.code.geobeagle.gpsstatuswidget.TextLagUpdater.LastLocationUnknown;
 import com.google.code.geobeagle.location.CombinedLocationManager;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import android.content.Context;
 import android.os.Handler;
-import android.widget.TextView;
 
 public class GpsWidgetAndUpdater {
     private final GpsStatusWidgetDelegate mGpsStatusWidgetDelegate;
@@ -37,9 +34,8 @@ public class GpsWidgetAndUpdater {
             LocationControlBuffered mLocationControlBuffered,
             CombinedLocationManager combinedLocationManager,
             Provider<DistanceFormatter> distanceFormatterProvider, ActivityVisible activityVisible,
-            Time time, Handler handler, MeterBars meterBars, Meter meter, @Lag TextView lag,
-            LastLocationUnknown lastLocationUnknown) {
-        final TextLagUpdater textLagUpdater = new TextLagUpdater(lastLocationUnknown, lag, time);
+            Time time, Handler handler, MeterBars meterBars, Meter meter,
+            TextLagUpdater textLagUpdater) {
         mUpdateGpsRunnable = new UpdateGpsWidgetRunnable(handler, mLocationControlBuffered, meter,
                 textLagUpdater, activityVisible);
         mGpsStatusWidgetDelegate = GpsStatusWidget.createGpsStatusWidgetDelegate(gpsStatusWidget,

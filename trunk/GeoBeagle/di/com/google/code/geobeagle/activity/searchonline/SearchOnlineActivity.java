@@ -19,8 +19,8 @@ import com.google.code.geobeagle.activity.ActivityRestorer;
 import com.google.code.geobeagle.activity.cachelist.CacheListActivity;
 import com.google.code.geobeagle.activity.searchonline.SearchOnlineActivityDelegate.SearchOnlineActivityDelegateFactory;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
-import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
+import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable;
 import com.google.code.geobeagle.location.CombinedLocationListener;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -46,8 +46,6 @@ public class SearchOnlineActivity extends GuiceActivity {
     @InjectView(R.id.gps_widget_view)
     private InflatedGpsStatusWidget mGpsStatusWidget;
 
-    private GpsWidgetAndUpdater mGpsWidgetAndUpdater;
-
     @InjectView(R.id.help_contents)
     private WebView mHelpContentsView;
 
@@ -55,6 +53,8 @@ public class SearchOnlineActivity extends GuiceActivity {
     private JsInterface mJsInterface;
 
     private SearchOnlineActivityDelegate mSearchOnlineActivityDelegate;
+
+    private UpdateGpsWidgetRunnable mUpdateGpsWidgetRunnable;
 
     public ActivityRestorer getActivityRestorer() {
         return mActivityRestorer;
@@ -66,10 +66,6 @@ public class SearchOnlineActivity extends GuiceActivity {
 
     InflatedGpsStatusWidget getGpsStatusWidget() {
         return mGpsStatusWidget;
-    }
-
-    GpsWidgetAndUpdater getGpsWidgetAndUpdater() {
-        return mGpsWidgetAndUpdater;
     }
 
     WebView getHelpContentsView() {
@@ -91,12 +87,10 @@ public class SearchOnlineActivity extends GuiceActivity {
 
         Log.d("GeoBeagle", "SearchOnlineActivity onCreate");
         
-        Injector injector = this.getInjector();
-
-        mGpsWidgetAndUpdater = injector.getInstance(GpsWidgetAndUpdater.class);
-        
-        GpsStatusWidgetDelegate gpsStatusWidgetDelegate = mGpsWidgetAndUpdater
-                .getGpsStatusWidgetDelegate();
+        Injector injector = getInjector();
+        mUpdateGpsWidgetRunnable = injector.getInstance(UpdateGpsWidgetRunnable.class);
+        GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector
+                .getInstance(GpsStatusWidgetDelegate.class);
         mGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
         mGpsStatusWidget.setBackgroundColor(Color.BLACK);
 
@@ -135,6 +129,6 @@ public class SearchOnlineActivity extends GuiceActivity {
         super.onResume();
         Log.d("GeoBeagle", "SearchOnlineActivity onResume");
         mSearchOnlineActivityDelegate.onResume();
-        mGpsWidgetAndUpdater.getUpdateGpsWidgetRunnable().run();
+        mUpdateGpsWidgetRunnable.run();
     }
 }

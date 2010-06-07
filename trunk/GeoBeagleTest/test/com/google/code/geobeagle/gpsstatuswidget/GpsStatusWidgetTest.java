@@ -37,7 +37,6 @@ import android.location.Location;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -49,7 +48,7 @@ import android.widget.TextView;
 public class GpsStatusWidgetTest {
     @Test
     public void testFadeMeter() {
-        View parent = PowerMock.createMock(View.class);
+        GpsStatusWidget parent = PowerMock.createMock(GpsStatusWidget.class);
         Time time = PowerMock.createMock(Time.class);
         MeterBars meterBars = PowerMock.createMock(MeterBars.class);
 
@@ -65,7 +64,7 @@ public class GpsStatusWidgetTest {
 
     @Test
     public void testFadeMeterLastDelay() {
-        View parent = PowerMock.createMock(View.class);
+        GpsStatusWidget parent = PowerMock.createMock(GpsStatusWidget.class);
         Time time = PowerMock.createMock(Time.class);
         MeterBars meterBars = PowerMock.createMock(MeterBars.class);
 
@@ -86,7 +85,7 @@ public class GpsStatusWidgetTest {
 
     @Test
     public void testFadeMeterReset() {
-        View parent = PowerMock.createMock(View.class);
+        GpsStatusWidget parent = PowerMock.createMock(GpsStatusWidget.class);
         Time time = PowerMock.createMock(Time.class);
         MeterBars meterBars = PowerMock.createMock(MeterBars.class);
 
@@ -116,7 +115,7 @@ public class GpsStatusWidgetTest {
 
     @Test
     public void testFadeMeterTwice() {
-        View parent = PowerMock.createMock(View.class);
+        GpsStatusWidget parent = PowerMock.createMock(GpsStatusWidget.class);
         Time time = PowerMock.createMock(Time.class);
         MeterBars meterBars = PowerMock.createMock(MeterBars.class);
 

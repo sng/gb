@@ -34,7 +34,6 @@ import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresen
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter.GeocacheListPresenterFactory;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
-import com.google.code.geobeagle.gpsstatuswidget.GpsWidgetAndUpdater;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable;
 import com.google.code.geobeagle.location.CombinedLocationListener;
@@ -52,15 +51,13 @@ public class CacheListDelegateDI {
         final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
                 .getInstance(InflatedGpsStatusWidget.class);
         final GpsStatusWidget gpsStatusWidget = injector.getInstance(GpsStatusWidget.class);
-        final GpsWidgetAndUpdater gpsWidgetAndUpdater = injector
-                .getInstance(GpsWidgetAndUpdater.class);
         final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector
                 .getInstance(GpsStatusWidgetDelegate.class);
 
         inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
 
-        final UpdateGpsWidgetRunnable updateGpsWidgetRunnable = gpsWidgetAndUpdater
-                .getUpdateGpsWidgetRunnable();
+        final UpdateGpsWidgetRunnable updateGpsWidgetRunnable = injector
+                .getInstance(UpdateGpsWidgetRunnable.class);
 
         final CacheListRefresh cacheListRefresh = injector.getInstance(CacheListRefresh.class);
 

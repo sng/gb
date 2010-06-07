@@ -54,6 +54,7 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
         bind(InflatedGpsStatusWidget.class).in(ContextScoped.class);
         bind(Meter.class).in(ContextScoped.class);
         bind(TextLagUpdater.class).in(ContextScoped.class);
+        bind(UpdateGpsWidgetRunnable.class).in(ContextScoped.class);
     }
 
     @Provides

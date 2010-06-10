@@ -56,7 +56,7 @@ public class GeoBeaglePackageModule extends AbstractAndroidModule {
     @Provides
     @GeoBeagle
     public Intent geoBeagleIntent(Context context) {
-        return new Intent(context, com.google.code.geobeagle.activity.main.GeoBeagle.class);
+        return new Intent(context, GeoBeagle.class);
     }
 
     @Provides

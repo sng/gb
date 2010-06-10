@@ -29,9 +29,14 @@ import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionMyLoc
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionSyncGpx;
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionDeleteAllCaches.MenuActionDeleteAllCachesFactory;
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionSyncGpx.MenuActionSyncGpxFactory;
+import com.google.code.geobeagle.activity.cachelist.model.GeocacheVectors;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
+import com.google.code.geobeagle.activity.cachelist.presenter.GeoBeaglePackageAnnotations;
+import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListAdapter;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter.GeocacheListPresenterFactory;
+import com.google.code.geobeagle.database.CacheWriter;
+import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
@@ -42,12 +47,19 @@ import com.google.code.geobeagle.xmlimport.CachePersisterFacadeDI.CachePersister
 import com.google.code.geobeagle.xmlimport.CachePersisterFacadeDI.CachePersisterFacadeFactory.CachePersisterFacadeFactoryFactory;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Provider;
 
 import roboguice.activity.GuiceListActivity;
 
 public class CacheListDelegateDI {
     public static CacheListDelegate create(GuiceListActivity listActivity) {
         final Injector injector = listActivity.getInjector();
+        final GeocacheVectors geocacheVectors = injector.getInstance(GeocacheVectors.class);
+        final ActivityVisible activityVisible = injector.getInstance(ActivityVisible.class);
+        final GeocacheListAdapter geocacheListAdapter = injector
+                .getInstance(GeocacheListAdapter.class);
+
         final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
                 .getInstance(InflatedGpsStatusWidget.class);
         final GpsStatusWidget gpsStatusWidget = injector.getInstance(GpsStatusWidget.class);
@@ -95,9 +107,11 @@ public class CacheListDelegateDI {
         menuActions.add(injector.getInstance(MenuActionSettings.class));
 
         final ContextActionView contextActionView = injector.getInstance(ContextActionView.class);
-        final ContextActionEdit contextActionEdit = injector.getInstance(ContextActionEdit.class);
-        final ContextActionDelete contextActionDelete = injector
-                .getInstance(ContextActionDelete.class);
+        final ContextActionEdit contextActionEdit = new ContextActionEdit(geocacheVectors,
+                listActivity);
+        final ContextActionDelete contextActionDelete = new ContextActionDelete(
+                geocacheListAdapter, geocacheVectors, titleUpdater, cacheWriterProvider,
+                listActivity, 0);
 
         final ContextAction[] contextActions = new ContextAction[] {
                 contextActionDelete, contextActionView, contextActionEdit

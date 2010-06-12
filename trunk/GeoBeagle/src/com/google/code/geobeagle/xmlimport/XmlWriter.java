@@ -19,11 +19,11 @@ import com.google.code.geobeagle.cachedetails.Writer;
 import com.google.code.geobeagle.cachedetails.WriterWrapper.WriterFactory;
 import com.google.inject.Inject;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 class XmlWriter implements EventHandler {
     static class Tag {
@@ -54,10 +54,6 @@ class XmlWriter implements EventHandler {
             writer = null;
         }
 
-        public void endCDataText() throws IOException {
-            writer.write("]]>");
-        }
-
         public void endTag(String name) throws IOException {
             mLevel--;
             if (writer != null)
@@ -69,14 +65,11 @@ class XmlWriter implements EventHandler {
         }
 
         public void open(String path) throws IOException {
+            Log.d("GeoBeagle", "OPENING: " + path);
             mLevel = 0;
             new File(new File(path).getParent()).mkdirs();
             writer = writerFactory.create(path);
             writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-        }
-
-        public void startCDataText() throws IOException {
-            writer.write("<![CDATA[");
         }
 
         public void startTag(Tag tag) throws IOException {
@@ -93,48 +86,48 @@ class XmlWriter implements EventHandler {
             writer.write("\n" + SPACES.substring(0, Math.min(mLevel, SPACES.length())));
         }
 
-        public void text(String text, boolean isCData) throws IOException {
-            if (isCData) {
-                startCDataText();
-                writer.write(text);
-                endCDataText();
-            } else {
-                writer.write(text.replace("<", "&lt;").replace(">", "&gt;"));
-            }
+        public void text(String text) throws IOException {
+            writer.write(text.replace("<", "&lt;").replace(">", "&gt;"));
         }
     }
 
     private final FilePathStrategy filePathStrategy;
-    private String mFilename;
-    private ArrayList<Tag> tagStack;
+    private String filename;
     private final TagWriter tagWriter;
-    private HashMap<String, Integer> textPaths;
+    private Tag tagWpt;
 
     @Inject
     public XmlWriter(FilePathStrategy filePathStrategy, TagWriter tagWriter) {
         this.filePathStrategy = filePathStrategy;
         this.tagWriter = tagWriter;
-        textPaths = new HashMap<String, Integer>();
-        textPaths.put(EventHandlerGpx.SHORT_DESCRIPTION, 1);
-        textPaths.put(EventHandlerGpx.LONG_DESCRIPTION, 1);
-        textPaths.put(EventHandlerGpx.LOG_TEXT, 1);
-        tagStack = new ArrayList<Tag>();
     }
 
     public void endTag(String name, String previousFullPath) throws IOException {
-        tagWriter.endTag(name);
+        if (!previousFullPath.startsWith("/gpx/wpt"))
+            return;
+
+        if (tagWriter.isOpen())
+            tagWriter.endTag(name);
+
         if (previousFullPath.equals(EventHandlerGpx.XPATH_WPT)) {
+            tagWriter.endTag("gpx");
             tagWriter.close();
         }
     }
 
+    @Override
     public void open(String filename) {
-        mFilename = filename;
+        this.filename = filename;
     }
 
     @Override
     public void startTag(String name, String fullPath, XmlPullParserWrapper xmlPullParser)
             throws IOException {
+        if (!fullPath.startsWith("/gpx/wpt"))
+            return;
+
+        Log.d("GeoBeagle", "start tag: " + fullPath);
+
         HashMap<String, String> attributes = new HashMap<String, String>();
 
         int attributeCount = xmlPullParser.getAttributeCount();
@@ -143,28 +136,30 @@ class XmlWriter implements EventHandler {
         }
         Tag tag = new Tag(name, attributes);
 
-        if (tagWriter.isOpen()) {
+        if (fullPath.equals("/gpx/wpt")) {
+            tagWpt = tag;
+        } else if (tagWriter.isOpen()) {
             tagWriter.startTag(tag);
-        } else {
-            tagStack.add(tag);
         }
     }
 
     public boolean text(String fullPath, String text) throws IOException {
+        if (!fullPath.startsWith("/gpx/wpt"))
+            return true;
+
+        if (text.trim().length() == 0)
+            return true;
+
+        Log.d("GeoBeagle", "xmlwriter: " + fullPath);
         if (fullPath.equals(EventHandlerGpx.XPATH_WPTNAME)) {
-            Iterator<Tag> itrTagStack = tagStack.iterator();
-            tagWriter.open(filePathStrategy.getPath(mFilename, text, "gpx"));
-            while (itrTagStack.hasNext()) {
-                tagWriter.startTag(itrTagStack.next());
-            }
+            tagWriter.open(filePathStrategy.getPath(filename, text, "gpx"));
+            tagWriter.startTag(new Tag("gpx", new HashMap<String, String>()));
+            tagWriter.startTag(tagWpt);
+            tagWriter.startTag(new Tag("name", new HashMap<String, String>()));
         }
 
-        tagWriter.text(text, isText(fullPath));
+        if (tagWriter.isOpen())
+            tagWriter.text(text);
         return true;
     }
-
-    private boolean isText(String previousFullPath) {
-        return textPaths.containsKey(previousFullPath);
-    }
-
 }

@@ -16,6 +16,8 @@ package com.google.code.geobeagle.xmlimport;
 
 import com.google.code.geobeagle.activity.main.GeoBeagleModule.DefaultSharedPreferences;
 import com.google.code.geobeagle.activity.main.GeoBeagleModule.ExternalStorageDirectory;
+import com.google.code.geobeagle.cachedetails.WriterWrapper.WriterFactory;
+import com.google.code.geobeagle.cachedetails.WriterWrapper.WriterWrapperFactory;
 import com.google.code.geobeagle.database.GpxWriter;
 import com.google.code.geobeagle.xmlimport.EventHelper.XmlPathBuilder;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
@@ -34,6 +36,8 @@ import android.os.Environment;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 
+import java.util.Arrays;
+
 public class XmlimportModule extends AbstractAndroidModule {
 
     @Override
@@ -41,13 +45,19 @@ public class XmlimportModule extends AbstractAndroidModule {
         bind(MessageHandler.class).in(ContextScoped.class);
         bind(XmlPullParserWrapper.class).in(ContextScoped.class);
         bind(GpxWriter.class).in(ContextScoped.class);
+        bind(WriterFactory.class).to(WriterWrapperFactory.class);
     }
 
     @Provides
     @GpxAnnotation
     EventHelper eventHelperGpxProvider(XmlPathBuilder xmlPathBuilder,
-            EventHandlerGpx eventHandlerGpx, XmlPullParserWrapper xmlPullParser) {
-        return new EventHelper(xmlPathBuilder, eventHandlerGpx, xmlPullParser);
+            EventHandlerGpx eventHandlerGpx, XmlPullParserWrapper xmlPullParser,
+            XmlWriter xmlWriter) {
+
+        EventHandlerComposite eventHandlerComposite = new EventHandlerComposite(Arrays
+                .asList(xmlWriter, eventHandlerGpx));
+        
+        return new EventHelper(xmlPathBuilder, eventHandlerComposite, xmlPullParser);
     }
 
     @Provides
@@ -65,7 +75,7 @@ public class XmlimportModule extends AbstractAndroidModule {
             return string + "/";
         return string;
     }
-    
+
     private static final String DETAILS_DIR = "GeoBeagle/data/";
 
     @Provides
@@ -73,7 +83,7 @@ public class XmlimportModule extends AbstractAndroidModule {
     String detailsDirectoryProvider(@ExternalStorageDirectory String externalStorageDirectory) {
         return externalStorageDirectory + "/" + DETAILS_DIR;
     }
-    
+
     @Provides
     @VersionPath
     String versionDirectoryProvider(@DetailsDirectory String detailsDirectory) {
@@ -85,5 +95,5 @@ public class XmlimportModule extends AbstractAndroidModule {
     String oldDetailsDirectoryProvider(@ExternalStorageDirectory String externalStorageDirectory) {
         return externalStorageDirectory + "/" + "GeoBeagle";
     }
-    
+
 }

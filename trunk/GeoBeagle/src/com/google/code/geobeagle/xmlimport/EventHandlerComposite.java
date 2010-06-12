@@ -1,11 +1,12 @@
 
 package com.google.code.geobeagle.xmlimport;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.List;
 
 public class EventHandlerComposite implements EventHandler {
-
     private final List<EventHandler> eventHandlers;
 
     EventHandlerComposite(List<EventHandler> eventHandlers) {
@@ -21,10 +22,12 @@ public class EventHandlerComposite implements EventHandler {
 
     @Override
     public void open(String filename) {
+        Log.d("GeoBeagle", "COMPOSITE OPENING: " + filename);
+
         for (EventHandler eventHandler : eventHandlers) {
+            Log.d("GeoBeagle", "COMPOSITE OPENING: " + eventHandler);
             eventHandler.open(filename);
         }
-
     }
 
     @Override
@@ -33,7 +36,6 @@ public class EventHandlerComposite implements EventHandler {
         for (EventHandler eventHandler : eventHandlers) {
             eventHandler.startTag(name, fullPath, xmlPullParser);
         }
-
     }
 
     @Override

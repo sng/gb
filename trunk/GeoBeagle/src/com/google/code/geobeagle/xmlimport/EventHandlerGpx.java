@@ -17,6 +17,8 @@ package com.google.code.geobeagle.xmlimport;
 import com.google.code.geobeagle.GeocacheFactory.Source;
 import com.google.inject.Inject;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 public class EventHandlerGpx implements EventHandler {
@@ -132,5 +134,6 @@ public class EventHandlerGpx implements EventHandler {
 
     @Override
     public void open(String filename) {
+        Log.d("GeoBeagle", "EHG OPENING: " + filename);
     }
 }

@@ -17,14 +17,12 @@ package com.google.code.geobeagle.xmlimport;
 import com.google.code.geobeagle.GeocacheFactory.Source;
 import com.google.inject.Inject;
 
-import android.util.Log;
-
 import java.io.IOException;
-import java.util.HashMap;
 
 public class EventHandlerGpx implements EventHandler {
     static final String LOG_TEXT = "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:text";
     static final String LONG_DESCRIPTION = "/gpx/wpt/groundspeak:cache/groundspeak:long_description";
+    static final String SHORT_DESCRIPTION = "/gpx/wpt/groundspeak:cache/groundspeak:short_description";
     static final String XPATH_CACHE_CONTAINER = "/gpx/wpt/groundspeak:cache/groundspeak:container";
     static final String XPATH_CACHE_DIFFICULTY = "/gpx/wpt/groundspeak:cache/groundspeak:difficulty";
     static final String XPATH_CACHE_TERRAIN = "/gpx/wpt/groundspeak:cache/groundspeak:terrain";
@@ -40,7 +38,6 @@ public class EventHandlerGpx implements EventHandler {
     static final String XPATH_TERRACACHINGGPXTIME = "/gpx/metadata/time";
     static final String XPATH_GROUNDSPEAKNAME = "/gpx/wpt/groundspeak:cache/groundspeak:name";
     static final String XPATH_HINT = "/gpx/wpt/groundspeak:cache/groundspeak:encoded_hints";
-    static final String SHORT_DESCRIPTION = "/gpx/wpt/groundspeak:cache/groundspeak:short_description";
     static final String XPATH_CACHE = "/gpx/wpt/groundspeak:cache";
     static final String XPATH_LOGDATE = "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:date";
     static final String[] XPATH_PLAINLINES = {
@@ -77,33 +74,21 @@ public class EventHandlerGpx implements EventHandler {
     }
 
     @Override
-    public void startTag(String name, String fullPath, XmlPullParserWrapper xmlPullParser)
-            throws IOException {
-        HashMap<String, String> attributes = new HashMap<String, String>();
-        
-        int attributeCount = xmlPullParser.getAttributeCount();
-        for (int i = 0; i < attributeCount; i++) {
-            attributes.put(xmlPullParser.getAttributeName(i), xmlPullParser.getAttributeValue(i));
-        }
-
-        Log.d("GeoBeagle", "startTag: name/fullpath: " + name + "/" + fullPath);
-
+    public void startTag(String name, String fullPath, XmlPullParserWrapper xmlPullParser) {
         if (fullPath.equals(XPATH_WPT)) {
-            Log.d("GeoBeagle", "starting cache");
             mCachePersisterFacade.startCache();
-            mCachePersisterFacade.wpt(attributes.get("lat"), attributes.get("lon"));
-        } else if (fullPath.equals(EventHandlerGpx.XPATH_CACHE)) {
-            mCachePersisterFacade.available(attributes.get("available"));
-            mCachePersisterFacade.archived(attributes.get("archived"));
+            mCachePersisterFacade.wpt(xmlPullParser.getAttributeValue(null, "lat"), xmlPullParser
+                    .getAttributeValue(null, "lon"));
+        } else if (fullPath.equals(XPATH_CACHE)) {
+            mCachePersisterFacade.available(xmlPullParser.getAttributeValue(null, "available"));
+            mCachePersisterFacade.archived(xmlPullParser.getAttributeValue(null, "archived"));
         }
     }
 
+    @Override
     public boolean text(String fullPath, String text) throws IOException {
         String trimmedText = text.trim();
-        if (trimmedText.length() == 0) {
-            return true;
-        }
-        Log.d("GeoBeagle", "fullPath " + fullPath + ", text " + text);
+//        Log.d("GeoBeagle", "fullPath " + fullPath + ", text " + text);
         if (fullPath.equals(XPATH_WPTNAME)) {
             mCachePersisterFacade.wptName(trimmedText);
         } else if (fullPath.equals(XPATH_WPTDESC)) {

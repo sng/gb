@@ -85,4 +85,5 @@ public class XmlimportModule extends AbstractAndroidModule {
     String oldDetailsDirectoryProvider(@ExternalStorageDirectory String externalStorageDirectory) {
         return externalStorageDirectory + "/" + "GeoBeagle";
     }
+    
 }

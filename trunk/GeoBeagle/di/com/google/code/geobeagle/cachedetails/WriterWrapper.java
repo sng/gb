@@ -19,10 +19,14 @@ import android.util.Log;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 
-public class WriterWrapper {
-    private Writer mWriter;
+public class WriterWrapper implements com.google.code.geobeagle.cachedetails.Writer {
+
+    public static interface WriterFactory {
+        Writer create(String path) throws IOException;
+    }
+
+    private java.io.Writer mWriter;
 
     public void close() throws IOException {
         mWriter.close();

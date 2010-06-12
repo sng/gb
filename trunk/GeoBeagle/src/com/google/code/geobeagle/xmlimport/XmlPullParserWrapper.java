@@ -34,12 +34,26 @@ public class XmlPullParserWrapper {
         return mXmlPullParser.getAttributeValue(namespace, name);
     }
 
+    public int getAttributeCount() {
+        return mXmlPullParser.getAttributeCount();
+    }
+
+    public String getAttributeName(int index) {
+        return mXmlPullParser.getAttributeName(index);
+    }
+
+    public String getAttributeValue(int index) {
+        return mXmlPullParser.getAttributeValue(index);
+    }
+
     public int getEventType() throws XmlPullParserException {
-        return mXmlPullParser.getEventType();
+        final int eventType = mXmlPullParser.getEventType();
+        return eventType;
     }
 
     public String getName() {
-        return mXmlPullParser.getName();
+        final String name = mXmlPullParser.getName();
+        return name;
     }
 
     public String getSource() {
@@ -47,7 +61,8 @@ public class XmlPullParserWrapper {
     }
 
     public String getText() {
-        return mXmlPullParser.getText();
+        final String text = mXmlPullParser.getText();
+        return text;
     }
 
     public int next() throws XmlPullParserException, IOException {

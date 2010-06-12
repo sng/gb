@@ -152,4 +152,12 @@ public class CachePersisterFacade {
             mCacheTagWriter.available(attributeValue.equalsIgnoreCase("True"));
     }
 
+    public double getLatitude() {
+        return mCacheTagWriter.getLatitude();
+    }
+
+    public double getLongitude() {
+        return mCacheTagWriter.getLongitude();
+    }
+
 }

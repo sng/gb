@@ -21,7 +21,7 @@ public class EventHandlerLocTest {
                 .createMock(CachePersisterFacade.class);
 
         PowerMock.replayAll();
-        new EventHandlerLoc(cachePersisterFacade).endTag("/random");
+        new EventHandlerLoc(cachePersisterFacade).endTag("/random", null);
         PowerMock.verifyAll();
     }
 
@@ -33,7 +33,7 @@ public class EventHandlerLocTest {
         cachePersisterFacade.endCache(Source.LOC);
 
         PowerMock.replayAll();
-        new EventHandlerLoc(cachePersisterFacade).endTag(EventHandlerLoc.XPATH_WPT);
+        new EventHandlerLoc(cachePersisterFacade).endTag(EventHandlerLoc.XPATH_WPT, null);
         PowerMock.verifyAll();
     }
 
@@ -49,7 +49,7 @@ public class EventHandlerLocTest {
 
         PowerMock.replayAll();
         new EventHandlerLoc(cachePersisterFacade).startTag(EventHandlerLoc.XPATH_COORD,
-                xmlPullParser);
+                null, xmlPullParser);
         PowerMock.verifyAll();
     }
 
@@ -65,7 +65,7 @@ public class EventHandlerLocTest {
 
         PowerMock.replayAll();
         new EventHandlerLoc(cachePersisterFacade).startTag(EventHandlerLoc.XPATH_WPTNAME,
-                xmlPullParser);
+                null, xmlPullParser);
         PowerMock.verifyAll();
     }
 

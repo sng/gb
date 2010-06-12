@@ -15,22 +15,35 @@
 package com.google.code.geobeagle.xmlimport;
 
 import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
+
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.anyObject;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import com.google.code.geobeagle.GeocacheFactory.Source;
+import com.google.code.geobeagle.activity.cachelist.GeoBeagleTest;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 @RunWith(PowerMockRunner.class)
-public class EventHandlerGpxTest {
+public class EventHandlerGpxTest extends GeoBeagleTest {
 
-    private final CachePersisterFacade mCachePersisterFacade = createMock(CachePersisterFacade.class);
+    private CachePersisterFacade mCachePersisterFacade;
+    private XmlWriter xmlWriter;
+
+    @Before
+    public void setUp() {
+        mCachePersisterFacade = createMock(CachePersisterFacade.class);
+        xmlWriter = createMock(XmlWriter.class);
+    }
 
     @Test
     public void testDesc() throws IOException {
@@ -38,152 +51,179 @@ public class EventHandlerGpxTest {
 
         cachePersisterFacade.wptDesc("a cache");
         cachePersisterFacade.line("a cache");
+        xmlWriter.text(EventHandlerGpx.XPATH_WPTDESC, "a cache");
 
-        replay(cachePersisterFacade);
-        new EventHandlerGpx(cachePersisterFacade).text(EventHandlerGpx.XPATH_WPTDESC, "a cache");
-        verify(cachePersisterFacade);
+        replayAll();
+        new EventHandlerGpx(cachePersisterFacade, xmlWriter).text(EventHandlerGpx.XPATH_WPTDESC,
+                "a cache");
+        verifyAll();
     }
 
     @Test
     public void testEndTag() throws IOException {
         mCachePersisterFacade.endCache(Source.GPX);
+        xmlWriter.endTag("wpt", "/gpx/wpt");
 
-        replay(mCachePersisterFacade);
-        new EventHandlerGpx(mCachePersisterFacade).endTag("/gpx/wpt");
-        verify(mCachePersisterFacade);
+        replayAll();
+        new EventHandlerGpx(mCachePersisterFacade, xmlWriter).endTag("wpt", "/gpx/wpt");
+        verifyAll();
     }
 
     @Test
     public void testGpxTime() throws IOException {
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
 
+        xmlWriter.text(EventHandlerGpx.XPATH_GPXTIME, "today");
         expect(cachePersisterFacade.gpxTime("today")).andReturn(true);
 
-        replay(cachePersisterFacade);
-        new EventHandlerGpx(cachePersisterFacade).text(EventHandlerGpx.XPATH_GPXTIME, "today");
-        verify(cachePersisterFacade);
+        replayAll();
+        new EventHandlerGpx(cachePersisterFacade, xmlWriter).text(EventHandlerGpx.XPATH_GPXTIME,
+                "today");
+        verifyAll();
     }
 
     @Test
     public void testGroundspeakName() throws IOException {
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
-
+        xmlWriter.text(EventHandlerGpx.XPATH_GROUNDSPEAKNAME, "my wpt");
         cachePersisterFacade.groundspeakName("my wpt");
 
-        replay(cachePersisterFacade);
-        new EventHandlerGpx(cachePersisterFacade).text(EventHandlerGpx.XPATH_GROUNDSPEAKNAME,
-                "my wpt");
-        verify(cachePersisterFacade);
+        replayAll();
+        new EventHandlerGpx(cachePersisterFacade, xmlWriter).text(
+                EventHandlerGpx.XPATH_GROUNDSPEAKNAME, "my wpt");
+        verifyAll();
     }
 
     @Test
     public void testHint() throws IOException {
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
+        xmlWriter.text(EventHandlerGpx.XPATH_HINT, " look under the rock");
 
         cachePersisterFacade.hint("look under the rock");
 
-        replay(cachePersisterFacade);
-        new EventHandlerGpx(cachePersisterFacade).text(EventHandlerGpx.XPATH_HINT,
+        replayAll();
+        new EventHandlerGpx(cachePersisterFacade, xmlWriter).text(EventHandlerGpx.XPATH_HINT,
                 " look under the rock");
-        verify(cachePersisterFacade);
+        verifyAll();
     }
 
     @Test
     public void testHintEmpty() throws IOException {
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
 
-        replay(cachePersisterFacade);
-        new EventHandlerGpx(cachePersisterFacade).text(EventHandlerGpx.XPATH_HINT, "   ");
-        verify(cachePersisterFacade);
+        replayAll();
+        new EventHandlerGpx(cachePersisterFacade, null).text(EventHandlerGpx.XPATH_HINT, "   ");
+        verifyAll();
     }
 
     @Test
     public void testLogDate() throws IOException {
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
 
+        xmlWriter.text(EventHandlerGpx.XPATH_LOGDATE, "date");
+
         cachePersisterFacade.logDate("date");
 
-        replay(cachePersisterFacade);
-        new EventHandlerGpx(cachePersisterFacade).text(EventHandlerGpx.XPATH_LOGDATE, "date");
-        verify(cachePersisterFacade);
+        replayAll();
+        new EventHandlerGpx(cachePersisterFacade, xmlWriter).text(EventHandlerGpx.XPATH_LOGDATE,
+                "date");
+        verifyAll();
     }
 
     @Test
     public void testMatchNothing() throws IOException {
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
+        xmlWriter.text("/gpx/foo", "hello");
 
-        replay(cachePersisterFacade);
-        new EventHandlerGpx(cachePersisterFacade).text("/gpx/foo", "hello");
-        verify(cachePersisterFacade);
+        replayAll();
+        new EventHandlerGpx(cachePersisterFacade, xmlWriter).text("/gpx/foo", "hello");
+        verifyAll();
     }
 
     @Test
     public void testPlainLine() throws IOException {
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
+        xmlWriter.text(EventHandlerGpx.XPATH_PLAINLINES[0], " hello  \t");
 
         cachePersisterFacade.line("hello");
 
-        replay(cachePersisterFacade);
-        EventHandlerGpx eventHandlerGpx = new EventHandlerGpx(cachePersisterFacade);
+        replayAll();
+        EventHandlerGpx eventHandlerGpx = new EventHandlerGpx(cachePersisterFacade, xmlWriter);
         eventHandlerGpx.text(EventHandlerGpx.XPATH_PLAINLINES[0], " hello  \t");
-        verify(cachePersisterFacade);
+        verifyAll();
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void testStartTagCache() {
+    public void testStartTagCache() throws IOException {
         XmlPullParserWrapper xmlPullParser = createMock(XmlPullParserWrapper.class);
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
 
+        expect(xmlPullParser.getAttributeCount()).andReturn(2);
         cachePersisterFacade.startCache();
-        expect(xmlPullParser.getAttributeValue(null, "lat")).andReturn("37");
-        expect(xmlPullParser.getAttributeValue(null, "lon")).andReturn("122");
+        expect(xmlPullParser.getAttributeName(0)).andReturn("lat");
+        expect(xmlPullParser.getAttributeValue(0)).andReturn("37");
+        expect(xmlPullParser.getAttributeName(1)).andReturn("lon");
+        expect(xmlPullParser.getAttributeValue(1)).andReturn("122");
+        xmlWriter.startTag(eq("wpt"), (HashMap<String, String>)anyObject());
         cachePersisterFacade.wpt("37", "122");
 
-        replay(cachePersisterFacade);
-        replay(xmlPullParser);
-        new EventHandlerGpx(cachePersisterFacade).startTag("/gpx/wpt", xmlPullParser);
-        verify(xmlPullParser);
-        verify(cachePersisterFacade);
+        replayAll();
+        new EventHandlerGpx(cachePersisterFacade, xmlWriter).startTag("wpt", "/gpx/wpt",
+                xmlPullParser);
+        verifyAll();
     }
 
-
+    @SuppressWarnings("unchecked")
     @Test
-    public void testAvailable() {
+    public void testAvailable() throws IOException {
         XmlPullParserWrapper xmlPullParser = createMock(XmlPullParserWrapper.class);
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
 
-        expect(xmlPullParser.getAttributeValue(null, "available")).andReturn("true");
-        expect(xmlPullParser.getAttributeValue(null, "archived")).andReturn("false");
+        expect(xmlPullParser.getAttributeCount()).andReturn(2);
+        expect(xmlPullParser.getAttributeName(0)).andReturn("available");
+        expect(xmlPullParser.getAttributeValue(0)).andReturn("true");
+        expect(xmlPullParser.getAttributeName(1)).andReturn("archived");
+        expect(xmlPullParser.getAttributeValue(1)).andReturn("false");
+        xmlWriter.startTag(eq("groundspeak:cache"), (HashMap<String, String>)anyObject());
         cachePersisterFacade.available("true");
         cachePersisterFacade.archived("false");
-        
-        replay(cachePersisterFacade);
-        replay(xmlPullParser);
-        new EventHandlerGpx(cachePersisterFacade).startTag("/gpx/wpt/groundspeak:cache",
-                xmlPullParser);
-        verify(xmlPullParser);
-        verify(cachePersisterFacade);
+
+        replayAll();
+        new EventHandlerGpx(cachePersisterFacade, xmlWriter).startTag("groundspeak:cache",
+                "/gpx/wpt/groundspeak:cache", xmlPullParser);
+        verifyAll();
     }
-    
+
     @Test
-    public void testStartTagNotCache() {
-        new EventHandlerGpx(null).startTag("/gpx/wptNot", null);
+    public void testStartTagNotCache() throws IOException {
+        XmlPullParserWrapper xmlPullParser = createMock(XmlPullParserWrapper.class);
+        expect(xmlPullParser.getAttributeCount()).andReturn(0);
+
+        new EventHandlerGpx(null, xmlWriter).startTag("wptNot", "/gpx/wptNot", xmlPullParser);
     }
 
     @Test
     public void testTextSymbol() throws IOException {
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
 
+        xmlWriter.text(EventHandlerGpx.XPATH_SYM, "Geocache Found");
+
         cachePersisterFacade.symbol("Geocache Found");
 
-        replay(cachePersisterFacade);
-        new EventHandlerGpx(cachePersisterFacade).text(EventHandlerGpx.XPATH_SYM, "Geocache Found");
-        verify(cachePersisterFacade);
+        replayAll();
+        new EventHandlerGpx(cachePersisterFacade, xmlWriter).text(EventHandlerGpx.XPATH_SYM,
+                "Geocache Found");
+        verifyAll();
     }
 
     @Test
     public void testTextCacheType() throws IOException {
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
+        xmlWriter.text(EventHandlerGpx.XPATH_CACHE_TYPE, "cache type");
+        xmlWriter.text(EventHandlerGpx.XPATH_CACHE_DIFFICULTY, "difficulty");
+        xmlWriter.text(EventHandlerGpx.XPATH_CACHE_TERRAIN, "terrain");
+        xmlWriter.text(EventHandlerGpx.XPATH_CACHE_CONTAINER, "container");
 
         cachePersisterFacade.cacheType("cache type");
         cachePersisterFacade.line("cache type");
@@ -192,23 +232,25 @@ public class EventHandlerGpxTest {
         cachePersisterFacade.container("container");
         cachePersisterFacade.line("container");
 
-        replay(cachePersisterFacade);
-        final EventHandlerGpx eventHandlerGpx = new EventHandlerGpx(cachePersisterFacade);
+        replayAll();
+        final EventHandlerGpx eventHandlerGpx = new EventHandlerGpx(cachePersisterFacade, xmlWriter);
         eventHandlerGpx.text(EventHandlerGpx.XPATH_CACHE_TYPE, "cache type");
         eventHandlerGpx.text(EventHandlerGpx.XPATH_CACHE_DIFFICULTY, "difficulty");
         eventHandlerGpx.text(EventHandlerGpx.XPATH_CACHE_TERRAIN, "terrain");
         eventHandlerGpx.text(EventHandlerGpx.XPATH_CACHE_CONTAINER, "container");
-        verify(cachePersisterFacade);
+        verifyAll();
     }
 
     @Test
     public void testTextWptName() throws IOException {
         CachePersisterFacade cachePersisterFacade = createMock(CachePersisterFacade.class);
+        xmlWriter.text(EventHandlerGpx.XPATH_WPTNAME, "my wpt");
 
         cachePersisterFacade.wptName("my wpt");
 
-        replay(cachePersisterFacade);
-        new EventHandlerGpx(cachePersisterFacade).text(EventHandlerGpx.XPATH_WPTNAME, "my wpt");
-        verify(cachePersisterFacade);
+        replayAll();
+        new EventHandlerGpx(cachePersisterFacade, xmlWriter).text(EventHandlerGpx.XPATH_WPTNAME,
+                "my wpt");
+        verifyAll();
     }
 }

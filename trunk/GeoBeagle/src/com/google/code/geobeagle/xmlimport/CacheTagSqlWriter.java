@@ -160,4 +160,12 @@ public class CacheTagSqlWriter {
     public void available(boolean fAvailable) {
         mAvailable = fAvailable;
     }
+
+    public double getLatitude() {
+        return mLatitude;
+    }
+
+    public double getLongitude() {
+        return mLongitude;
+    }
 }

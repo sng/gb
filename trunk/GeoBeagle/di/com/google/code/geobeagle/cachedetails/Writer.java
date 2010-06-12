@@ -12,18 +12,14 @@
  ** limitations under the License.
  */
 
-package com.google.code.geobeagle.xmlimport;
+package com.google.code.geobeagle.cachedetails;
 
 import java.io.IOException;
 
-interface EventHandler {
+public interface Writer {
+    public void close() throws IOException;
 
-    void endTag(String name, String previousFullPath) throws IOException;
+    public void open(String path) throws IOException;
 
-    void startTag(String name, String mFullPath, XmlPullParserWrapper mXmlPullParser)
-            throws IOException;
-
-    boolean text(String mFullPath, String text) throws IOException;
-
-    void open(String filename);
+    public void write(String str) throws IOException;
 }

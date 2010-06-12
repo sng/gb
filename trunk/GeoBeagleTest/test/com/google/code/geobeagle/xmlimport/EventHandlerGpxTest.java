@@ -15,9 +15,6 @@
 package com.google.code.geobeagle.xmlimport;
 
 import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
 
 import com.google.code.geobeagle.GeocacheFactory.Source;
 
@@ -124,7 +121,7 @@ public class EventHandlerGpxTest {
 
         cachePersisterFacade.line("hello");
 
-        replay(cachePersisterFacade);
+        replayAll();
         EventHandlerGpx eventHandlerGpx = new EventHandlerGpx(cachePersisterFacade);
         eventHandlerGpx.text(EventHandlerGpx.XPATH_PLAINLINES[0], " hello  \t");
         verifyAll();

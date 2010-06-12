@@ -87,7 +87,7 @@ class XmlWriter implements EventHandler {
         }
 
         public void text(String text) throws IOException {
-            writer.write(text.replace("<", "&lt;").replace(">", "&gt;"));
+            writer.write(text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"));
         }
     }
 

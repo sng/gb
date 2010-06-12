@@ -47,7 +47,7 @@ public class EventHandlerGpxTest {
         mCachePersisterFacade.endCache(Source.GPX);
 
         replayAll();
-        new EventHandlerGpx(mCachePersisterFacade).endTag("/gpx/wpt");
+        new EventHandlerGpx(mCachePersisterFacade).endTag("wpt", "/gpx/wpt");
         verifyAll();
     }
 
@@ -138,13 +138,13 @@ public class EventHandlerGpxTest {
         cachePersisterFacade.wpt("37", "122");
 
         replayAll();
-        new EventHandlerGpx(cachePersisterFacade).startTag("/gpx/wpt", xmlPullParser);
+        new EventHandlerGpx(cachePersisterFacade).startTag("wpt", "/gpx/wpt", xmlPullParser);
         verifyAll();
     }
 
     @Test
     public void testStartTagNotCache() {
-        new EventHandlerGpx(null).startTag("/gpx/wptNot", null);
+        new EventHandlerGpx(null).startTag("wptNot", "/gpx/wptNot", null);
     }
 
     @Test

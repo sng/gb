@@ -62,19 +62,15 @@ public class EventHandlerGpx implements EventHandler {
     static final String XPATH_WPTDESC = "/gpx/wpt/desc";
     static final String XPATH_WPTNAME = "/gpx/wpt/name";
     static final String XPATH_WAYPOINT_TYPE = "/gpx/wpt/type";
-
     private final CachePersisterFacade mCachePersisterFacade;
-    private final XmlWriter mXmlWriter;
 
     @Inject
-    public EventHandlerGpx(CachePersisterFacade cachePersisterFacade, XmlWriter xmlWriter) {
+    public EventHandlerGpx(CachePersisterFacade cachePersisterFacade) {
         mCachePersisterFacade = cachePersisterFacade;
-        mXmlWriter = xmlWriter;
     }
 
     @Override
     public void endTag(String name, String previousFullPath) throws IOException {
-        mXmlWriter.endTag(name, previousFullPath);
         if (previousFullPath.equals(XPATH_WPT)) {
             mCachePersisterFacade.endCache(Source.GPX);
         }
@@ -90,7 +86,6 @@ public class EventHandlerGpx implements EventHandler {
             attributes.put(xmlPullParser.getAttributeName(i), xmlPullParser.getAttributeValue(i));
         }
 
-        mXmlWriter.startTag(name, attributes);
         Log.d("GeoBeagle", "startTag: name/fullpath: " + name + "/" + fullPath);
 
         if (fullPath.equals(XPATH_WPT)) {
@@ -108,7 +103,6 @@ public class EventHandlerGpx implements EventHandler {
         if (trimmedText.length() == 0) {
             return true;
         }
-        mXmlWriter.text(fullPath, text);
         Log.d("GeoBeagle", "fullPath " + fullPath + ", text " + text);
         if (fullPath.equals(XPATH_WPTNAME)) {
             mCachePersisterFacade.wptName(trimmedText);
@@ -153,6 +147,5 @@ public class EventHandlerGpx implements EventHandler {
 
     @Override
     public void open(String filename) {
-        mXmlWriter.open(filename);
     }
 }

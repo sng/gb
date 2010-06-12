@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-class XmlWriter {
+class XmlWriter implements EventHandler {
     static class Tag {
         final HashMap<String, String> attributes;
         final String name;
@@ -132,7 +132,15 @@ class XmlWriter {
         mFilename = filename;
     }
 
-    public void startTag(String name, HashMap<String, String> attributes) throws IOException {
+    @Override
+    public void startTag(String name, String fullPath, XmlPullParserWrapper xmlPullParser)
+            throws IOException {
+        HashMap<String, String> attributes = new HashMap<String, String>();
+
+        int attributeCount = xmlPullParser.getAttributeCount();
+        for (int i = 0; i < attributeCount; i++) {
+            attributes.put(xmlPullParser.getAttributeName(i), xmlPullParser.getAttributeValue(i));
+        }
         Tag tag = new Tag(name, attributes);
 
         if (tagWriter.isOpen()) {
@@ -142,7 +150,7 @@ class XmlWriter {
         }
     }
 
-    public void text(String fullPath, String text) throws IOException {
+    public boolean text(String fullPath, String text) throws IOException {
         if (fullPath.equals(EventHandlerGpx.XPATH_WPTNAME)) {
             Iterator<Tag> itrTagStack = tagStack.iterator();
             tagWriter.open(filePathStrategy.getPath(mFilename, text, "gpx"));
@@ -152,9 +160,11 @@ class XmlWriter {
         }
 
         tagWriter.text(text, isText(fullPath));
+        return true;
     }
 
     private boolean isText(String previousFullPath) {
         return textPaths.containsKey(previousFullPath);
     }
+
 }

@@ -53,6 +53,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.FilenameFilter;
+import java.util.Arrays;
 
 public class GpxImporterDI {
     // Can't test this due to final methods in base.
@@ -328,12 +329,14 @@ public class GpxImporterDI {
         final ToastFactory toastFactory = new ToastFactory();
         final ImportThreadWrapper importThreadWrapper = new ImportThreadWrapper(messageHandler,
                 xmlPullParserWrapper, aborter);
-        final EventHandlerGpx eventHandlerGpx = new EventHandlerGpx(cachePersisterFacade, injector
-                .getInstance(XmlWriter.class));
+        final EventHandlerGpx eventHandlerGpx = new EventHandlerGpx(cachePersisterFacade);
         final EventHandlerLoc eventHandlerLoc = new EventHandlerLoc(cachePersisterFacade);
-
+        final XmlWriter xmlWriter = injector.getInstance(XmlWriter.class);
+        
+        final EventHandlerComposite eventHandlerComposite = new EventHandlerComposite(Arrays
+                .asList(xmlWriter, eventHandlerGpx));
         final EventHandlers eventHandlers = new EventHandlers();
-        eventHandlers.add("gpx", eventHandlerGpx);
+        eventHandlers.add("gpx", eventHandlerComposite);
         eventHandlers.add("loc", eventHandlerLoc);
 
         return new GpxImporter(geocacheListPresenter, gpxLoader, context, importThreadWrapper,

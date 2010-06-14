@@ -31,17 +31,16 @@ public class WriterWrapper implements com.google.code.geobeagle.cachedetails.Wri
             return new WriterWrapper(path);
         }
     }
+
     private java.io.Writer mWriter;
 
     public WriterWrapper() {
-        Log.d("GeoBeagle", "WW null");
     }
-    
+
     public WriterWrapper(String path) throws IOException {
-        Log.d("GeoBeagle", "WW path " + path);
         open(path);
     }
-    
+
     public void close() throws IOException {
         mWriter.close();
     }

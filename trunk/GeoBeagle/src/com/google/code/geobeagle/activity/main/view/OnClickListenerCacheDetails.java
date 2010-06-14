@@ -52,12 +52,13 @@ public class OnClickListenerCacheDetails implements View.OnClickListener {
         mAlertDialogBuilder.setView(detailsView);
 
         WebView webView = (WebView)detailsView.findViewById(R.id.webview);
+        String details;
         try {
-            webView.loadDataWithBaseURL(null, mCacheDetailsLoader.load(geocache.getSourceName(), id),
-                    "text/html", "utf-8", "about:blank");
+            details = mCacheDetailsLoader.load(geocache.getSourceName(), id);
         } catch (XmlPullParserException e) {
-            e.printStackTrace();
+            details = "Error loading details: " + e.getLocalizedMessage();
         }
+        webView.loadDataWithBaseURL(null, details, "text/html", "utf-8", "about:blank");
         mAlertDialogBuilder.create().show();
     }
 }

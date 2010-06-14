@@ -16,6 +16,11 @@ package com.google.code.geobeagle.xmlimport;
 
 import com.google.code.geobeagle.activity.main.GeoBeagleModule.DefaultSharedPreferences;
 import com.google.code.geobeagle.activity.main.GeoBeagleModule.ExternalStorageDirectory;
+import com.google.code.geobeagle.cachedetails.CacheDetailsWriter;
+import com.google.code.geobeagle.cachedetails.FilePathStrategy;
+import com.google.code.geobeagle.cachedetails.HtmlWriter;
+import com.google.code.geobeagle.cachedetails.StringWriterWrapper;
+import com.google.code.geobeagle.cachedetails.WriterWrapper;
 import com.google.code.geobeagle.cachedetails.WriterWrapper.WriterFactory;
 import com.google.code.geobeagle.cachedetails.WriterWrapper.WriterWrapperFactory;
 import com.google.code.geobeagle.database.GpxWriter;
@@ -24,9 +29,12 @@ import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
 import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.DetailsDirectory;
 import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.GpxAnnotation;
 import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.ImportDirectory;
+import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.LoadDetails;
 import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.OldDetailsDirectory;
 import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.VersionPath;
+import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.WriteDetails;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 
 import roboguice.config.AbstractAndroidModule;
 import roboguice.inject.ContextScoped;
@@ -42,6 +50,7 @@ public class XmlimportModule extends AbstractAndroidModule {
 
     @Override
     protected void configure() {
+        bind(StringWriterWrapper.class).in(Singleton.class);
         bind(MessageHandler.class).in(ContextScoped.class);
         bind(XmlPullParserWrapper.class).in(ContextScoped.class);
         bind(GpxWriter.class).in(ContextScoped.class);
@@ -51,12 +60,11 @@ public class XmlimportModule extends AbstractAndroidModule {
     @Provides
     @GpxAnnotation
     EventHelper eventHelperGpxProvider(XmlPathBuilder xmlPathBuilder,
-            EventHandlerGpx eventHandlerGpx, XmlPullParserWrapper xmlPullParser,
+            @WriteDetails EventHandlerGpx eventHandlerGpx, XmlPullParserWrapper xmlPullParser,
             XmlWriter xmlWriter) {
+        EventHandlerComposite eventHandlerComposite = new EventHandlerComposite(Arrays.asList(
+                xmlWriter, eventHandlerGpx));
 
-        EventHandlerComposite eventHandlerComposite = new EventHandlerComposite(Arrays
-                .asList(xmlWriter, eventHandlerGpx));
-        
         return new EventHelper(xmlPathBuilder, eventHandlerComposite, xmlPullParser);
     }
 
@@ -96,4 +104,48 @@ public class XmlimportModule extends AbstractAndroidModule {
         return externalStorageDirectory + "/" + "GeoBeagle";
     }
 
+    @Provides
+    @WriteDetails
+    HtmlWriter htmlWriterWriteDetailsProvider(WriterWrapper writerWrapper) {
+        return new HtmlWriter(writerWrapper);
+    }
+
+    @Provides
+    @WriteDetails
+    CacheDetailsWriter cacheDetailsWriterWriteDetailsProvider(@WriteDetails HtmlWriter htmlWriter,
+            FilePathStrategy filePathStrategy) {
+        return new CacheDetailsWriter(htmlWriter, filePathStrategy);
+    }
+
+    @Provides
+    @WriteDetails
+    EventHandlerGpx eventHandlerGpxWriteDetailsProvider(CachePersisterFacade cachePersisterFacade) {
+        return new EventHandlerGpx(cachePersisterFacade);
+    }
+
+    @Provides
+    @LoadDetails
+    HtmlWriter htmlWriterLoadDetailsProvider(StringWriterWrapper stringWriterWrapper) {
+        return new HtmlWriter(stringWriterWrapper);
+    }
+
+    @Provides
+    @LoadDetails
+    CacheDetailsWriter cacheDetailsWriterLoadDetailsProvider(@LoadDetails HtmlWriter htmlWriter,
+            FilePathStrategy filePathStrategy) {
+        return new CacheDetailsWriter(htmlWriter, filePathStrategy);
+    }
+
+    @Provides
+    @LoadDetails
+    EventHandlerGpx eventHandlerGpxLoadDetailsProvider(CacheTagsToDetails cachePersisterFacade) {
+        return new EventHandlerGpx(cachePersisterFacade);
+    }
+
+    @Provides
+    @LoadDetails
+    EventHelper eventHelperGpxLoadDetailsProvider(XmlPathBuilder xmlPathBuilder,
+            @LoadDetails EventHandlerGpx eventHandlerGpx, XmlPullParserWrapper xmlPullParser) {
+        return new EventHelper(xmlPathBuilder, eventHandlerGpx, xmlPullParser);
+    }
 }

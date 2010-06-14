@@ -20,6 +20,8 @@ import com.google.code.geobeagle.activity.main.GeoBeagle;
 import com.google.code.geobeagle.cachedetails.CacheDetailsLoader;
 import com.google.inject.Inject;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.app.AlertDialog.Builder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,8 +52,12 @@ public class OnClickListenerCacheDetails implements View.OnClickListener {
         mAlertDialogBuilder.setView(detailsView);
 
         WebView webView = (WebView)detailsView.findViewById(R.id.webview);
-        webView.loadDataWithBaseURL(null, mCacheDetailsLoader.load(geocache.getSourceName(), id),
-                "text/html", "utf-8", "about:blank");
+        try {
+            webView.loadDataWithBaseURL(null, mCacheDetailsLoader.load(geocache.getSourceName(), id),
+                    "text/html", "utf-8", "about:blank");
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
         mAlertDialogBuilder.create().show();
     }
 }

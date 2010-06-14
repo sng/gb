@@ -18,13 +18,14 @@ import com.google.code.geobeagle.GeocacheFactory.Source;
 import com.google.code.geobeagle.cachedetails.CacheDetailsWriter;
 import com.google.code.geobeagle.xmlimport.CachePersisterFacadeDI.FileFactory;
 import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.DetailsDirectory;
+import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.LoadDetails;
 import com.google.inject.Inject;
 
 import android.os.PowerManager.WakeLock;
 
 import java.io.IOException;
 
-public class CachePersisterFacade {
+public class CachePersisterFacade implements ICachePersisterFacade {
     private final CacheDetailsWriter mCacheDetailsWriter;
     private String mCacheName = "";
     private final CacheTagSqlWriter mCacheTagWriter;
@@ -36,7 +37,7 @@ public class CachePersisterFacade {
 
     @Inject
     CachePersisterFacade(CacheTagSqlWriter cacheTagSqlWriter, FileFactory fileFactory,
-            CacheDetailsWriter cacheDetailsWriter, MessageHandlerInterface messageHandler,
+            @LoadDetails CacheDetailsWriter cacheDetailsWriter, MessageHandlerInterface messageHandler,
             WakeLock wakeLock, @DetailsDirectory String detailsDirectory) {
         mCacheDetailsWriter = cacheDetailsWriter;
         mCacheTagWriter = cacheTagSqlWriter;
@@ -46,87 +47,87 @@ public class CachePersisterFacade {
         mDetailsDirectory = detailsDirectory;
     }
 
-    void cacheType(String text) {
+    public void cacheType(String text) {
         mCacheTagWriter.cacheType(text);
     }
 
-    void close(boolean success) {
+    public void close(boolean success) {
         mCacheTagWriter.stopWriting(success);
     }
 
-    void container(String text) {
+    public void container(String text) {
         mCacheTagWriter.container(text);
     }
 
-    void difficulty(String text) {
+    public void difficulty(String text) {
         mCacheTagWriter.difficulty(text);
     }
 
-    void end() {
+    public void end() {
         mCacheTagWriter.end();
     }
 
-    void endCache(Source source) throws IOException {
+    public void endCache(Source source) throws IOException {
         mMessageHandler.updateName(mCacheName);
         mCacheDetailsWriter.close();
         mCacheTagWriter.write(source);
     }
 
-    boolean gpxTime(String gpxTime) {
+    public boolean gpxTime(String gpxTime) {
         return mCacheTagWriter.gpxTime(gpxTime);
     }
 
-    void groundspeakName(String text) {
+    public void groundspeakName(String text) {
         mCacheTagWriter.cacheName(text);
     }
 
-    void hint(String text) throws IOException {
+    public void hint(String text) throws IOException {
         mCacheDetailsWriter.writeHint(text);
     }
 
-    void line(String text) throws IOException {
+    public void line(String text) throws IOException {
         mCacheDetailsWriter.writeLine(text);
     }
 
-    void logDate(String text) throws IOException {
+    public void logDate(String text) throws IOException {
         mCacheDetailsWriter.writeLogDate(text);
     }
 
-    void open(String path) {
+    public void open(String path) {
         mMessageHandler.updateSource(path);
         mCacheTagWriter.startWriting();
         mCacheTagWriter.gpxName(path);
         mCacheDetailsWriter.gpxName(path);
     }
 
-    void start() {
+    public void start() {
         mFileFactory.createFile(mDetailsDirectory).mkdirs();
     }
 
-    void startCache() {
+    public void startCache() {
         mCacheName = "";
         mCacheTagWriter.clear();
     }
 
-    void symbol(String text) {
+    public void symbol(String text) {
         mCacheTagWriter.symbol(text);
     }
 
-    void terrain(String text) {
+    public void terrain(String text) {
         mCacheTagWriter.terrain(text);
     }
 
-    void wpt(String latitude, String longitude) {
+    public void wpt(String latitude, String longitude) {
         mCacheTagWriter.latitudeLongitude(latitude, longitude);
         mCacheDetailsWriter.latitudeLongitude(latitude, longitude);
     }
 
-    void wptDesc(String cacheName) {
+    public void wptDesc(String cacheName) {
         mCacheName = cacheName;
         mCacheTagWriter.cacheName(cacheName);
     }
 
-    void wptName(String wpt) throws IOException {
+    public void wptName(String wpt) throws IOException {
         mCacheDetailsWriter.open(wpt);
         mCacheDetailsWriter.writeWptName(wpt);
         mCacheTagWriter.id(wpt);

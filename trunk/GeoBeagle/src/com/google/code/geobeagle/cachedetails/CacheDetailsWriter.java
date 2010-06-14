@@ -27,7 +27,6 @@ public class CacheDetailsWriter {
     private String mLongitude;
     private String mGpxName;
 
-    @Inject
     public CacheDetailsWriter(HtmlWriter htmlWriter, FilePathStrategy filePathStrategy) {
         mHtmlWriter = htmlWriter;
         mFilePathStrategy = filePathStrategy;

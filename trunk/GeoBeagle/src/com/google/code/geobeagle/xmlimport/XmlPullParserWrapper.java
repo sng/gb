@@ -27,9 +27,6 @@ public class XmlPullParserWrapper {
     private String mSource;
     private XmlPullParser mXmlPullParser;
 
-    public XmlPullParserWrapper() {
-    }
-
     public String getAttributeValue(String namespace, String name) {
         return mXmlPullParser.getAttributeValue(namespace, name);
     }

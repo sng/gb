@@ -44,8 +44,7 @@ public class XmlPullParserWrapper {
     }
 
     public int getEventType() throws XmlPullParserException {
-        final int eventType = mXmlPullParser.getEventType();
-        return eventType;
+        return mXmlPullParser.getEventType();
     }
 
     public String getName() {
@@ -57,8 +56,7 @@ public class XmlPullParserWrapper {
     }
 
     public String getText() {
-        final String text = mXmlPullParser.getText();
-        return text;
+        return mXmlPullParser.getText();
     }
 
     public int next() throws XmlPullParserException, IOException {

@@ -64,7 +64,6 @@ public class XmlPullParserWrapper {
     }
 
     public void open(String path, Reader reader) throws XmlPullParserException {
-        Log.d("GeoBeagle", "XmlPullParserWrapper open: " + this + ", " + path + ", " + reader);
         XmlPullParser newPullParser = XmlPullParserFactory.newInstance().newPullParser();
         newPullParser.setInput(reader);
         mSource = path;

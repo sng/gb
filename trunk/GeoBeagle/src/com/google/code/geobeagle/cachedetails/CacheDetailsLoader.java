@@ -105,7 +105,7 @@ public class CacheDetailsLoader {
     }
 
     interface DetailsReader {
-        Details read() throws XmlPullParserException;
+        Details read();
     }
 
     static class DetailsReaderError implements DetailsReader {
@@ -174,7 +174,7 @@ public class CacheDetailsLoader {
     }
 
     public String load(CharSequence sourceName, CharSequence cacheId)
-            throws XmlPullParserException {
+             {
         String path = mFilePathStrategy.getPath(sourceName, cacheId.toString(), "gpx");
         File file = new File(path);
         DetailsReader detailsReader = mDetailsOpener.open(file);

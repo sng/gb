@@ -19,7 +19,6 @@ import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.GeocacheFactory;
 
 import android.database.Cursor;
-import android.util.Log;
 
 public class CacheReaderCursor {
     private final Cursor mCursor;
@@ -38,10 +37,6 @@ public class CacheReaderCursor {
     }
 
     public Geocache getCache() {
-        Log.d("GeoBeagle", "GETCACHE: " + mCursor.getString(0) + ", " + mCursor.getString(1) + ", "
-                + mCursor.getString(2) + ", " + mCursor.getString(3) + ", " + mCursor.getString(4)
-                + ", " + mCursor.getString(5) + ", " + mCursor.getString(6) + ", "
-                + mCursor.getString(7) + ", ");
         String sourceName = mCursor.getString(4);
 
         CacheType cacheType = mGeocacheFactory.cacheTypeFromInt(Integer.parseInt(mCursor

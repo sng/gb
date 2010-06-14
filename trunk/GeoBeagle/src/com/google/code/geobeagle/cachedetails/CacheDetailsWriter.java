@@ -15,7 +15,6 @@
 package com.google.code.geobeagle.cachedetails;
 
 import com.google.code.geobeagle.activity.main.Util;
-import com.google.inject.Inject;
 
 import java.io.File;
 import java.io.IOException;

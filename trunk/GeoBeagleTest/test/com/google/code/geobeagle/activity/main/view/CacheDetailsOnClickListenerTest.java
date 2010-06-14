@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -40,7 +41,7 @@ import android.webkit.WebView;
 public class CacheDetailsOnClickListenerTest {
 
     @Test
-    public void testOnClick() {
+    public void testOnClick() throws XmlPullParserException {
         GeoBeagle geobeagle = PowerMock.createMock(GeoBeagle.class);
         Builder builder = PowerMock.createMock(Builder.class);
         AlertDialog alertDialog = PowerMock.createMock(AlertDialog.class);

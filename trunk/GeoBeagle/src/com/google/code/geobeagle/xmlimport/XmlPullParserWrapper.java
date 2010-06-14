@@ -49,8 +49,7 @@ public class XmlPullParserWrapper {
     }
 
     public String getName() {
-        final String name = mXmlPullParser.getName();
-        return name;
+        return mXmlPullParser.getName();
     }
 
     public String getSource() {

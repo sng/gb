@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 
 public class CacheDetailsLoader {
 
@@ -89,10 +90,10 @@ public class CacheDetailsLoader {
             if (!Environment.MEDIA_MOUNTED.equals(state)) {
                 return new DetailsReaderError(mActivity, R.string.error_cant_read_sdroot, state);
             }
-            final FileReader fileReader;
+            final Reader fileReader;
             String absolutePath = file.getAbsolutePath();
             try {
-                fileReader = new FileReader(absolutePath);
+                fileReader = new BufferedReader(new FileReader(absolutePath));
             } catch (FileNotFoundException e) {
                 int error = mFileDataVersionChecker.needsUpdating() ? R.string.error_details_file_version
                         : R.string.error_opening_details_file;
@@ -128,25 +129,23 @@ public class CacheDetailsLoader {
         private final String mPath;
         private final EventHelper mEventHelper;
         private final XmlPullParserWrapper mXmlPullParserWrapper;
-        private final FileReader mFileReader;
+        private final Reader mReader;
         private final StringWriterWrapper mStringWriterWrapper;
 
-        DetailsReaderImpl(Activity activity, FileReader fileReader, String path,
+        DetailsReaderImpl(Activity activity, Reader fileReader, String path,
                 EventHelper eventHelper, XmlPullParserWrapper xmlPullParserWrapper,
                 StringWriterWrapper stringWriterWrapper) {
             mActivity = activity;
             mPath = path;
             mEventHelper = eventHelper;
             mXmlPullParserWrapper = xmlPullParserWrapper;
-            mFileReader = fileReader;
+            mReader = fileReader;
             mStringWriterWrapper = stringWriterWrapper;
         }
 
-        public Details read() throws XmlPullParserException {
-            BufferedReader bufferedReader = new BufferedReader(mFileReader);
-
-            mXmlPullParserWrapper.open(mPath, bufferedReader);
+        public Details read() {
             try {
+                mXmlPullParserWrapper.open(mPath, mReader);
                 int eventType;
                 for (eventType = mXmlPullParserWrapper.getEventType(); eventType != XmlPullParser.END_DOCUMENT; eventType = mXmlPullParserWrapper
                         .next()) {
@@ -157,6 +156,8 @@ public class CacheDetailsLoader {
                 mEventHelper.handleEvent(eventType);
 
                 return new DetailsImpl(mStringWriterWrapper.toString());
+            } catch (XmlPullParserException e) {
+                return new DetailsError(mActivity, R.string.error_reading_details_file, mPath);
             } catch (IOException e) {
                 return new DetailsError(mActivity, R.string.error_reading_details_file, mPath);
             }

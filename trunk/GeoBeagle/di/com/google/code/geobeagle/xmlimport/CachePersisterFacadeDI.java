@@ -61,7 +61,7 @@ public class CachePersisterFacadeDI {
             mCacheDetailsWriter = new CacheDetailsWriter(mHtmlWriter, filePathStrategy);
             mCacheTypeFactory = cacheTypeFactory;
             mTagWriterImpl = tagWriterImpl;
-               mTagWriterNull = tagWriterNull;
+            mTagWriterNull = tagWriterNull;
             mClearCachesFromSource = clearCachesFromSourceImpl;
         }
 

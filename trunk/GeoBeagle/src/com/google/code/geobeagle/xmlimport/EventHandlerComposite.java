@@ -48,4 +48,10 @@ public class EventHandlerComposite implements EventHandler {
         return ret;
     }
 
+    @Override
+    public void open(String filename) {
+        for (EventHandler eventHandler : eventHandlers) {
+            eventHandler.open(filename);
+        }
+    }
 }

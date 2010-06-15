@@ -47,52 +47,64 @@ public class CachePersisterFacade implements ICachePersisterFacade {
         mDetailsDirectory = detailsDirectory;
     }
 
+    @Override
     public void cacheType(String text) {
         mCacheTagWriter.cacheType(text);
     }
 
+    @Override
     public void close(boolean success) {
         mCacheTagWriter.stopWriting(success);
     }
 
+    @Override
     public void container(String text) {
         mCacheTagWriter.container(text);
     }
 
+    @Override
     public void difficulty(String text) {
         mCacheTagWriter.difficulty(text);
     }
 
+    @Override
     public void end() {
         mCacheTagWriter.end();
     }
 
+    @Override
     public void endCache(Source source) throws IOException {
         mMessageHandler.updateName(mCacheName);
         mCacheDetailsWriter.close();
         mCacheTagWriter.write(source);
     }
 
+    @Override
     public boolean gpxTime(String gpxTime) {
         return mCacheTagWriter.gpxTime(gpxTime);
     }
 
+    @Override
     public void groundspeakName(String text) {
         mCacheTagWriter.cacheName(text);
     }
 
+    @Override
     public void hint(String text) throws IOException {
         mCacheDetailsWriter.writeHint(text);
     }
 
+    @Override
     public void line(String text) throws IOException {
         mCacheDetailsWriter.writeLine(text);
     }
 
+    @Override
     public void logDate(String text) throws IOException {
         mCacheDetailsWriter.writeLogDate(text);
     }
 
+    @Override
     public void open(String path) {
         mMessageHandler.updateSource(path);
         mCacheTagWriter.startWriting();
@@ -100,33 +112,40 @@ public class CachePersisterFacade implements ICachePersisterFacade {
         mCacheDetailsWriter.gpxName(path);
     }
 
+    @Override
     public void start() {
         mFileFactory.createFile(mDetailsDirectory).mkdirs();
     }
 
+    @Override
     public void startCache() {
         mCacheName = "";
         mCacheTagWriter.clear();
     }
 
+    @Override
     public void symbol(String text) {
         mCacheTagWriter.symbol(text);
     }
 
+    @Override
     public void terrain(String text) {
         mCacheTagWriter.terrain(text);
     }
 
+    @Override
     public void wpt(String latitude, String longitude) {
         mCacheTagWriter.latitudeLongitude(latitude, longitude);
         mCacheDetailsWriter.latitudeLongitude(latitude, longitude);
     }
 
+    @Override
     public void wptDesc(String cacheName) {
         mCacheName = cacheName;
         mCacheTagWriter.cacheName(cacheName);
     }
 
+    @Override
     public void wptName(String wpt) throws IOException {
         mCacheDetailsWriter.open(wpt);
         mCacheDetailsWriter.writeWptName(wpt);
@@ -135,28 +154,34 @@ public class CachePersisterFacade implements ICachePersisterFacade {
         mWakeLock.acquire(GpxLoader.WAKELOCK_DURATION);
     }
 
+    @Override
     public void lastModified(String trimmedText) {
         mLastModified = trimmedText;
     }
 
+    @Override
     public String getLastModified() {
         return mLastModified;
     }
 
+    @Override
     public void archived(String attributeValue) {
         if (attributeValue != null)
             mCacheTagWriter.archived(attributeValue.equalsIgnoreCase("True"));
     }
 
+    @Override
     public void available(String attributeValue) {
         if (attributeValue != null)
             mCacheTagWriter.available(attributeValue.equalsIgnoreCase("True"));
     }
 
+    @Override
     public double getLatitude() {
         return mCacheTagWriter.getLatitude();
     }
 
+    @Override
     public double getLongitude() {
         return mCacheTagWriter.getLongitude();
     }

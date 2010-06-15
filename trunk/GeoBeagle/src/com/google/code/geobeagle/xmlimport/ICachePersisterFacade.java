@@ -1,3 +1,16 @@
+/*
+ ** Licensed under the Apache License, Version 2.0 (the "License");
+ ** you may not use this file except in compliance with the License.
+ ** You may obtain a copy of the License at
+ **
+ **     http://www.apache.org/licenses/LICENSE-2.0
+ **
+ ** Unless required by applicable law or agreed to in writing, software
+ ** distributed under the License is distributed on an "AS IS" BASIS,
+ ** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ** See the License for the specific language governing permissions and
+ ** limitations under the License.
+ */
 
 package com.google.code.geobeagle.xmlimport;
 
@@ -7,54 +20,53 @@ import java.io.IOException;
 
 public interface ICachePersisterFacade {
 
-    public abstract void cacheType(String text);
+    public void archived(String attributeValue);
 
-    public abstract void close(boolean success);
+    public void available(String attributeValue);
 
-    public abstract void container(String text);
+    public void cacheType(String text);
 
-    public abstract void difficulty(String text);
+    public void close(boolean success);
 
-    public abstract void end();
+    public void container(String text);
 
-    public abstract void endCache(Source source) throws IOException;
+    public void difficulty(String text);
 
-    public abstract boolean gpxTime(String gpxTime);
+    public void end();
 
-    public abstract void groundspeakName(String text);
+    public void endCache(Source source) throws IOException;
 
-    public abstract void hint(String text) throws IOException;
+    public String getLastModified();
 
-    public abstract void line(String text) throws IOException;
+    public boolean gpxTime(String gpxTime);
 
-    public abstract void logDate(String text) throws IOException;
+    public void groundspeakName(String text);
 
-    public abstract void open(String path);
+    public void hint(String text) throws IOException;
 
-    public abstract void start();
+    public void lastModified(String trimmedText);
 
-    public abstract void startCache();
+    public void line(String text) throws IOException;
 
-    public abstract void symbol(String text);
+    public void logDate(String text) throws IOException;
 
-    public abstract void terrain(String text);
+    public void open(String path);
 
-    public abstract void wpt(String latitude, String longitude);
+    public void start();
 
-    public abstract void wptDesc(String cacheName);
+    public void startCache();
 
-    public abstract void wptName(String wpt) throws IOException;
+    public void symbol(String text);
 
-    public abstract void lastModified(String trimmedText);
+    public void terrain(String text);
 
-    public abstract String getLastModified();
+    public void wpt(String latitude, String longitude);
 
-    public abstract void archived(String attributeValue);
+    public void wptDesc(String cacheName);
 
-    public abstract void available(String attributeValue);
+    public void wptName(String wpt) throws IOException;
 
-    public abstract double getLatitude();
+    public double getLatitude();
 
-    public abstract double getLongitude();
-
+    public double getLongitude();
 }

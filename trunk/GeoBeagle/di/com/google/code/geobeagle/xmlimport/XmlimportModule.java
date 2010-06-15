@@ -21,8 +21,6 @@ import com.google.code.geobeagle.cachedetails.FilePathStrategy;
 import com.google.code.geobeagle.cachedetails.HtmlWriter;
 import com.google.code.geobeagle.cachedetails.StringWriterWrapper;
 import com.google.code.geobeagle.cachedetails.WriterWrapper;
-import com.google.code.geobeagle.cachedetails.WriterWrapper.WriterFactory;
-import com.google.code.geobeagle.cachedetails.WriterWrapper.WriterWrapperFactory;
 import com.google.code.geobeagle.database.GpxWriter;
 import com.google.code.geobeagle.xmlimport.EventHelper.XmlPathBuilder;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
@@ -54,7 +52,6 @@ public class XmlimportModule extends AbstractAndroidModule {
         bind(MessageHandler.class).in(ContextScoped.class);
         bind(XmlPullParserWrapper.class).in(ContextScoped.class);
         bind(GpxWriter.class).in(ContextScoped.class);
-        bind(WriterFactory.class).to(WriterWrapperFactory.class);
     }
 
     @Provides

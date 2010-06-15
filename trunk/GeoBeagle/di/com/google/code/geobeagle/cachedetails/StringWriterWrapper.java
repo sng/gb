@@ -17,16 +17,21 @@ public class StringWriterWrapper implements com.google.code.geobeagle.cachedetai
     }
 
     @Override
-    public void open(String path) throws IOException {
+    public boolean isOpen() {
+        return true;
     }
 
     @Override
-    public void write(String str) throws IOException {
-        stringWriter.write(str);
+    public void open(String path) throws IOException {
     }
 
     @Override
     public String toString() {
         return stringWriter.toString();
+    }
+
+    @Override
+    public void write(String str) throws IOException {
+        stringWriter.write(str);
     }
 }

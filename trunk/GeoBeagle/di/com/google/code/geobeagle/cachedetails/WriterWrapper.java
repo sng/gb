@@ -22,33 +22,20 @@ import java.io.IOException;
 
 public class WriterWrapper implements com.google.code.geobeagle.cachedetails.Writer {
 
-    public static interface WriterFactory {
-        public com.google.code.geobeagle.cachedetails.Writer create(String path) throws IOException;
-    }
-
-    public static class WriterWrapperFactory implements WriterFactory {
-        public com.google.code.geobeagle.cachedetails.Writer create(String path) throws IOException {
-            return new WriterWrapper(path);
-        }
-    }
-
     private java.io.Writer mWriter;
 
-    public WriterWrapper() {
-    }
-
-    public WriterWrapper(String path) throws IOException {
-        open(path);
-    }
-
+    @Override
     public void close() throws IOException {
         mWriter.close();
+        mWriter = null;
     }
 
+    @Override
     public void open(String path) throws IOException {
         mWriter = new BufferedWriter(new FileWriter(path), 4000);
     }
 
+    @Override
     public void write(String str) throws IOException {
         if (mWriter == null) {
             Log.e("GeoBeagle", "Attempting to write string but no waypoint received yet: " + str);
@@ -59,5 +46,10 @@ public class WriterWrapper implements com.google.code.geobeagle.cachedetails.Wri
         } catch (IOException e) {
             throw new IOException("Error writing line '" + str + "'");
         }
+    }
+
+    @Override
+    public boolean isOpen() {
+        return mWriter != null;
     }
 }

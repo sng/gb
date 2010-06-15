@@ -131,9 +131,8 @@ public class EventHandlerGpx implements EventHandler {
 
         return true;
     }
-
+    
     @Override
     public void open(String filename) {
-        Log.d("GeoBeagle", "EHG OPENING: " + filename);
     }
 }

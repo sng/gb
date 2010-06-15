@@ -173,8 +173,7 @@ public class CacheDetailsLoader {
         mFilePathStrategy = filePathStrategy;
     }
 
-    public String load(CharSequence sourceName, CharSequence cacheId)
-             {
+    public String load(CharSequence sourceName, CharSequence cacheId) {
         String path = mFilePathStrategy.getPath(sourceName, cacheId.toString(), "gpx");
         File file = new File(path);
         DetailsReader detailsReader = mDetailsOpener.open(file);

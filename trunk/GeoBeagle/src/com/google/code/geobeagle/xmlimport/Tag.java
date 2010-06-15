@@ -12,16 +12,17 @@
  ** limitations under the License.
  */
 
-package com.google.code.geobeagle.cachedetails;
+package com.google.code.geobeagle.xmlimport;
 
-import java.io.IOException;
+import java.util.HashMap;
 
-public interface Writer {
-    public void close() throws IOException;
+class Tag {
+    final HashMap<String, String> attributes;
+    final String name;
 
-    public void open(String path) throws IOException;
+    Tag(String name, HashMap<String, String> attributes) {
+        this.name = name;
+        this.attributes = attributes;
+    }
 
-    public void write(String str) throws IOException;
-
-    public boolean isOpen();
 }

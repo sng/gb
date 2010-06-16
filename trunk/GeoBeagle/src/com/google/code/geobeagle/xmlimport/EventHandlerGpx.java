@@ -17,14 +17,10 @@ package com.google.code.geobeagle.xmlimport;
 import com.google.code.geobeagle.GeocacheFactory.Source;
 import com.google.inject.Inject;
 
-import android.util.Log;
-
 import java.io.IOException;
 
 public class EventHandlerGpx implements EventHandler {
-    static final String LOG_TEXT = "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:text";
-    static final String LONG_DESCRIPTION = "/gpx/wpt/groundspeak:cache/groundspeak:long_description";
-    static final String SHORT_DESCRIPTION = "/gpx/wpt/groundspeak:cache/groundspeak:short_description";
+    static final String XPATH_CACHE = "/gpx/wpt/groundspeak:cache";
     static final String XPATH_CACHE_CONTAINER = "/gpx/wpt/groundspeak:cache/groundspeak:container";
     static final String XPATH_CACHE_DIFFICULTY = "/gpx/wpt/groundspeak:cache/groundspeak:difficulty";
     static final String XPATH_CACHE_TERRAIN = "/gpx/wpt/groundspeak:cache/groundspeak:terrain";
@@ -36,19 +32,20 @@ public class EventHandlerGpx implements EventHandler {
     static final String XPATH_GEOCACHEHINT = "/gpx/wpt/geocache/hints";
     static final String XPATH_GEOCACHELOGDATE = "/gpx/wpt/geocache/logs/log/time";
     static final String XPATH_GEOCACHENAME = "/gpx/wpt/geocache/name";
+    static final String XPATH_GPXNAME = "/gpx/name";
     static final String XPATH_GPXTIME = "/gpx/time";
     static final String XPATH_TERRACACHINGGPXTIME = "/gpx/metadata/time";
     static final String XPATH_GROUNDSPEAKNAME = "/gpx/wpt/groundspeak:cache/groundspeak:name";
     static final String XPATH_HINT = "/gpx/wpt/groundspeak:cache/groundspeak:encoded_hints";
-    static final String XPATH_CACHE = "/gpx/wpt/groundspeak:cache";
     static final String XPATH_LOGDATE = "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:date";
     static final String[] XPATH_PLAINLINES = {
             "/gpx/wpt/cmt", "/gpx/wpt/desc", "/gpx/wpt/groundspeak:cache/groundspeak:type",
-            "/gpx/wpt/groundspeak:cache/groundspeak:container", SHORT_DESCRIPTION,
-            LONG_DESCRIPTION,
+            "/gpx/wpt/groundspeak:cache/groundspeak:container",
+            "/gpx/wpt/groundspeak:cache/groundspeak:short_description",
+            "/gpx/wpt/groundspeak:cache/groundspeak:long_description",
             "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:type",
             "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:finder",
-            LOG_TEXT,
+            "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:text",
             /* here are the geocaching.com.au entries */
             "/gpx/wpt/geocache/owner", "/gpx/wpt/geocache/type", "/gpx/wpt/geocache/summary",
             "/gpx/wpt/geocache/description", "/gpx/wpt/geocache/logs/log/geocacher",
@@ -61,10 +58,11 @@ public class EventHandlerGpx implements EventHandler {
     static final String XPATH_WPTDESC = "/gpx/wpt/desc";
     static final String XPATH_WPTNAME = "/gpx/wpt/name";
     static final String XPATH_WAYPOINT_TYPE = "/gpx/wpt/type";
+    
     private final ICachePersisterFacade mCachePersisterFacade;
 
     @Inject
-    public EventHandlerGpx(ICachePersisterFacade cachePersisterFacade) {
+    public EventHandlerGpx(CachePersisterFacade cachePersisterFacade) {
         mCachePersisterFacade = cachePersisterFacade;
     }
 
@@ -121,14 +119,14 @@ public class EventHandlerGpx implements EventHandler {
             mCachePersisterFacade.container(trimmedText);
         } else if (fullPath.equals(XPATH_LAST_MODIFIED)) {
             mCachePersisterFacade.lastModified(trimmedText);
-        } 
+        }
+        
         for (String writeLineMatch : XPATH_PLAINLINES) {
             if (fullPath.equals(writeLineMatch)) {
                 mCachePersisterFacade.line(trimmedText);
                 return true;
             }
         }
-
         return true;
     }
     

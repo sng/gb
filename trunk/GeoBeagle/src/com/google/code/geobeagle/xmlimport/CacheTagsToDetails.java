@@ -82,8 +82,8 @@ public class CacheTagsToDetails implements ICachePersisterFacade {
     }
 
     @Override
-    public void open(String path) {
-        mCacheDetailsWriter.gpxName(path);
+    public void open(String path) throws IOException {
+        mCacheDetailsWriter.open(path);
     }
 
     @Override
@@ -113,7 +113,6 @@ public class CacheTagsToDetails implements ICachePersisterFacade {
 
     @Override
     public void wptName(String wpt) throws IOException {
-        mCacheDetailsWriter.open(wpt);
         mCacheDetailsWriter.writeWptName(wpt);
     }
 

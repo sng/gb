@@ -23,10 +23,10 @@ public class StringWriterWrapper implements com.google.code.geobeagle.cachedetai
 
     @Override
     public void open(String path) throws IOException {
+        stringWriter.getBuffer().setLength(0);
     }
 
-    @Override
-    public String toString() {
+    public String getString() {
         return stringWriter.toString();
     }
 

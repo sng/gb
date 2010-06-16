@@ -133,7 +133,7 @@ public class CacheDetailsLoader {
         private final StringWriterWrapper mStringWriterWrapper;
 
         DetailsReaderImpl(Activity activity, Reader fileReader, String path,
-                EventHelper eventHelper, XmlPullParserWrapper xmlPullParserWrapper,
+                @LoadDetails EventHelper eventHelper, XmlPullParserWrapper xmlPullParserWrapper,
                 StringWriterWrapper stringWriterWrapper) {
             mActivity = activity;
             mPath = path;
@@ -145,6 +145,7 @@ public class CacheDetailsLoader {
 
         public Details read() {
             try {
+                mEventHelper.open(mPath);
                 mXmlPullParserWrapper.open(mPath, mReader);
                 int eventType;
                 for (eventType = mXmlPullParserWrapper.getEventType(); eventType != XmlPullParser.END_DOCUMENT; eventType = mXmlPullParserWrapper
@@ -155,7 +156,7 @@ public class CacheDetailsLoader {
                 // Pick up END_DOCUMENT event as well.
                 mEventHelper.handleEvent(eventType);
 
-                return new DetailsImpl(mStringWriterWrapper.toString());
+                return new DetailsImpl(mStringWriterWrapper.getString());
             } catch (XmlPullParserException e) {
                 return new DetailsError(mActivity, R.string.error_reading_details_file, mPath);
             } catch (IOException e) {

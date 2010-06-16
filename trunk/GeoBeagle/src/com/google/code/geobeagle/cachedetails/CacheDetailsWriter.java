@@ -16,19 +16,15 @@ package com.google.code.geobeagle.cachedetails;
 
 import com.google.code.geobeagle.activity.main.Util;
 
-import java.io.File;
 import java.io.IOException;
 
 public class CacheDetailsWriter {
     private final HtmlWriter mHtmlWriter;
-    private final FilePathStrategy mFilePathStrategy;
     private String mLatitude;
     private String mLongitude;
-    private String mGpxName;
 
-    public CacheDetailsWriter(HtmlWriter htmlWriter, FilePathStrategy filePathStrategy) {
+    public CacheDetailsWriter(HtmlWriter htmlWriter) {
         mHtmlWriter = htmlWriter;
-        mFilePathStrategy = filePathStrategy;
     }
 
     public void close() throws IOException {
@@ -39,13 +35,6 @@ public class CacheDetailsWriter {
     public void latitudeLongitude(String latitude, String longitude) {
         mLatitude = (String)Util.formatDegreesAsDecimalDegreesString(Double.valueOf(latitude));
         mLongitude = (String)Util.formatDegreesAsDecimalDegreesString(Double.valueOf(longitude));
-    }
-
-    public void open(String wpt) throws IOException {
-        String path = mFilePathStrategy.getPath(mGpxName, wpt, "html");
-        
-        new File(new File(path).getParent()).mkdirs();
-        mHtmlWriter.open(path);
     }
 
     public static String replaceIllegalFileChars(String wpt) {
@@ -72,7 +61,7 @@ public class CacheDetailsWriter {
         mLatitude = mLongitude = null;
     }
 
-    public void gpxName(String gpxName) {
-        mGpxName = gpxName;
+    public void open(String path) throws IOException {
+        mHtmlWriter.open(path);
     }
 }

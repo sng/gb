@@ -55,16 +55,6 @@ public class CacheTagsToDetails implements ICachePersisterFacade {
     }
 
     @Override
-    public double getLatitude() {
-        return 0;
-    }
-
-    @Override
-    public double getLongitude() {
-        return 0;
-    }
-
-    @Override
     public boolean gpxTime(String gpxTime) {
         return true;
     }

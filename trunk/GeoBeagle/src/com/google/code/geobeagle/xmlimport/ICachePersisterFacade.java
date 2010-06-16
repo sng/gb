@@ -65,8 +65,4 @@ public interface ICachePersisterFacade {
     public void wptDesc(String cacheName);
 
     public void wptName(String wpt) throws IOException;
-
-    public double getLatitude();
-
-    public double getLongitude();
 }

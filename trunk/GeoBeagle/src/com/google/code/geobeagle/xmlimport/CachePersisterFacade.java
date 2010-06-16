@@ -175,15 +175,4 @@ public class CachePersisterFacade implements ICachePersisterFacade {
         if (attributeValue != null)
             mCacheTagWriter.available(attributeValue.equalsIgnoreCase("True"));
     }
-
-    @Override
-    public double getLatitude() {
-        return mCacheTagWriter.getLatitude();
-    }
-
-    @Override
-    public double getLongitude() {
-        return mCacheTagWriter.getLongitude();
-    }
-
 }

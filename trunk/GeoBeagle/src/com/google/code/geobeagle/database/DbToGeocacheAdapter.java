@@ -18,8 +18,6 @@ import com.google.code.geobeagle.GeocacheFactory.Source;
 
 public class DbToGeocacheAdapter {
     public Source sourceNameToSourceType(String sourceName) {
-        if (sourceName == null)
-            return Source.GPX;
         if (sourceName.equals("intent"))
             return Source.WEB_URL;
         else if (sourceName.equals("mylocation"))

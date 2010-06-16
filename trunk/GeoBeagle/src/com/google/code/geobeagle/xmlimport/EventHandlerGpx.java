@@ -62,7 +62,7 @@ public class EventHandlerGpx implements EventHandler {
     private final ICachePersisterFacade mCachePersisterFacade;
 
     @Inject
-    public EventHandlerGpx(CachePersisterFacade cachePersisterFacade) {
+    public EventHandlerGpx(ICachePersisterFacade cachePersisterFacade) {
         mCachePersisterFacade = cachePersisterFacade;
     }
 

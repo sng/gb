@@ -22,7 +22,6 @@ import com.google.code.geobeagle.xmlimport.MessageHandlerInterface;
 import com.google.inject.Inject;
 
 import android.os.Message;
-import android.util.Log;
 
 class MessageHandlerAdapter implements MessageHandlerInterface {
 
@@ -33,7 +32,6 @@ class MessageHandlerAdapter implements MessageHandlerInterface {
 
     @Inject
     public MessageHandlerAdapter(ProgressHandler handler, ProgressManager progressManager) {
-        Log.d("GeoBeagle", "MHA: " + handler);
         this.handler = handler;
         this.progressManager = progressManager;
         waypoint = "";

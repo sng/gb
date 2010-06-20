@@ -157,10 +157,10 @@ public class CacheDetailsWriter {
         mTime = time;
     }
 
-
     public void writeShortDescription(String trimmedText) throws IOException {
         mHtmlWriter.writeSeparator();
-        mHtmlWriter.write(trimmedText);
+        mHtmlWriter.writeln(trimmedText);
+        mHtmlWriter.writeln("");
     }
 
     public void writeLongDescription(String trimmedText) throws IOException {

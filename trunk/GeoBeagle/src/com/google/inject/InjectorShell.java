@@ -132,19 +132,17 @@ class InjectorShell {
         new TypeConverterBindingProcessor(errors).prepareBuiltInConverters(injector);
       }
 
+      stopwatch.resetAndLog("Module execution0");
       elements.addAll(Elements.getElements(stage, modules));
       stopwatch.resetAndLog("Module execution");
 
       new MessageProcessor(errors).process(injector, elements);
-
-      
-
-
-
-
+      stopwatch.resetAndLog("Module execution1");
 
       new TypeListenerBindingProcessor(errors).process(injector, elements);
+      stopwatch.resetAndLog("Module execution2");
       List<TypeListenerBinding> listenerBindings = injector.state.getTypeListenerBindings();
+      stopwatch.resetAndLog("Module execution3");
       injector.membersInjectorStore = new MembersInjectorStore(injector, listenerBindings);
       stopwatch.resetAndLog("TypeListeners creation");
 

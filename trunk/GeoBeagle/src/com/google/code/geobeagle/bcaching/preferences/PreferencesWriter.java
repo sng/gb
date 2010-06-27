@@ -14,7 +14,8 @@
 
 package com.google.code.geobeagle.bcaching.preferences;
 
-import com.google.code.geobeagle.activity.main.GeoBeagleModule.DefaultSharedPreferences;
+import com.google.code.geobeagle.GeoBeaglePackageModule;
+import com.google.code.geobeagle.GeoBeaglePackageModule.DefaultSharedPreferences;
 import com.google.inject.Inject;
 
 import android.content.SharedPreferences;
@@ -23,7 +24,7 @@ class PreferencesWriter {
     private final SharedPreferences sharedPreferences;
 
     @Inject
-    PreferencesWriter(@DefaultSharedPreferences SharedPreferences sharedPreferences) {
+    PreferencesWriter(@GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
     }
 

@@ -21,6 +21,7 @@ import com.google.code.geobeagle.activity.cachelist.model.GeocacheVectors;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
 import com.google.code.geobeagle.xmlimport.GpxToCache.Aborter;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import android.util.Log;
 import android.view.ContextMenu;
@@ -57,19 +58,17 @@ public class GeocacheListController {
     public static final String SELECT_CACHE = "SELECT_CACHE";
     private final CacheListRefresh mCacheListRefresh;
     private final ContextActions mContextActions;
-    private final MenuActions mMenuActions;
-    private final MenuActionSyncGpx mMenuActionSyncGpx;
+    private final Provider<MenuActions> mMenuActionsProvider;
+    private final Provider<MenuActionSyncGpx> mMenuActionSyncGpxProvider;
     private final Aborter mAborter;
 
     @Inject
-    public GeocacheListController(CacheListRefresh cacheListRefresh,
-            ContextActions contextActions, MenuActionSyncGpx menuActionSyncGpx,
-            MenuActions menuActions, Aborter aborter) {
+    public GeocacheListController(CacheListRefresh cacheListRefresh) {
         mCacheListRefresh = cacheListRefresh;
-        mContextActions = contextActions;
-        mMenuActionSyncGpx = menuActionSyncGpx;
-        mMenuActions = menuActions;
-        mAborter = aborter;
+        mContextActions = null;
+        mMenuActionSyncGpxProvider = null;
+        mMenuActionsProvider = null;
+        mAborter = null;
     }
 
     public boolean onContextItemSelected(MenuItem menuItem) {
@@ -80,7 +79,7 @@ public class GeocacheListController {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        return mMenuActions.onCreateOptionsMenu(menu);
+        return mMenuActionsProvider.get().onCreateOptionsMenu(menu);
     }
 
     public void onListItemClick(int position) {
@@ -91,18 +90,18 @@ public class GeocacheListController {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        return mMenuActions.act(item.getItemId());
+        return mMenuActionsProvider.get().act(item.getItemId());
     }
 
     public void onPause() {
         Log.d("GeoBeagle", "onPause aborting");
         mAborter.abort();
-        mMenuActionSyncGpx.abort();
+        mMenuActionSyncGpxProvider.get().abort();
     }
 
     public void onResume(boolean fImport) {
         mCacheListRefresh.forceRefresh();
         if (fImport)
-            mMenuActionSyncGpx.act();
+            mMenuActionSyncGpxProvider.get().act();
     }
 }

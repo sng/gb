@@ -37,6 +37,6 @@ public class AdapterCachesSorter implements RefreshAction {
     public void refresh() {
         mLocationControlBuffered.getSortStrategy().sort(mCacheListData.get());
         mTiming.lap("sort time");
-        Debug.stopMethodTracing();
+//        Debug.stopMethodTracing();
     }
 }

@@ -39,21 +39,4 @@ public class SearchOnlineModule extends AbstractAndroidModule {
                 FactoryProvider.newFactory(SearchOnlineActivityDelegateFactory.class,
                         SearchOnlineActivityDelegate.class));
     }
-
-    @Provides
-    @ContextScoped
-    LocationControlBuffered providesLocationControlBuffered(LocationManager locationManager,
-            LocationControl locationControl, NullSortStrategy nullSortStrategy,
-            DistanceSortStrategy distanceSortStrategy, GpsDisabledLocation gpsDisabledLocation) {
-
-        IGpsLocation lastGpsLocation;
-        final Location lastKnownLocation = locationManager.getLastKnownLocation("gps");
-        if (lastKnownLocation == null)
-            lastGpsLocation = gpsDisabledLocation;
-        else
-            lastGpsLocation = new GpsEnabledLocation((float)lastKnownLocation.getLatitude(),
-                    (float)lastKnownLocation.getLongitude());
-        return new LocationControlBuffered(locationControl, distanceSortStrategy, nullSortStrategy,
-                gpsDisabledLocation, lastGpsLocation, lastKnownLocation);
-    }
 }

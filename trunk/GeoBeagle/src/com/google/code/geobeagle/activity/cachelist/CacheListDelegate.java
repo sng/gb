@@ -73,18 +73,17 @@ public class CacheListDelegate {
     private final ActivityVisible mActivityVisible;
 
     @Inject
-    public CacheListDelegate(ImportIntentManager importIntentManager, ActivitySaver activitySaver,
+    public CacheListDelegate(ImportIntentManager importIntentManager, 
             CacheListRefresh cacheListRefresh, GeocacheListController geocacheListController,
             GeocacheListPresenter geocacheListPresenter, Provider<DbFrontend> dbFrontendProvider,
-            ContextActionDeleteDialogHelper contextActionDeleteDialogHelper,
             ActivityVisible activityVisible) {
-        mActivitySaver = activitySaver;
+        mActivitySaver = null;
         mCacheListRefresh = cacheListRefresh;
         mController = geocacheListController;
         mPresenter = geocacheListPresenter;
         mImportIntentManager = importIntentManager;
         mDbFrontendProvider = dbFrontendProvider;
-        mContextActionDeleteDialogHelper = contextActionDeleteDialogHelper;
+        mContextActionDeleteDialogHelper = null;
         mActivityVisible = activityVisible;
     }
 

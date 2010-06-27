@@ -65,7 +65,7 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
     static abstract class GpsStatusWidgetPrivateModule extends PrivateModule {
         @Provides
         @ContextScoped
-        Meter providesMeter(@GpsStatusWidgetView View gpsStatusWidget, MeterFormatter meterFormatter) {
+        Meter providesMeter(GpsStatusWidget gpsStatusWidget, MeterFormatter meterFormatter) {
             Log.d("GeoBeagle", "PROVIDING METER: " + gpsStatusWidget);
             TextView locationViewer = (TextView)gpsStatusWidget.findViewById(R.id.location_viewer);
             MeterBars meterBars = new MeterBars(locationViewer, meterFormatter);
@@ -75,7 +75,7 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
         @Provides
         @ContextScoped
         TextLagUpdater providesTextLagUpdater(LastLocationUnknown lastKnownLocation, Time time,
-                @GpsStatusWidgetView View gpsStatusWidget) {
+                GpsStatusWidget gpsStatusWidget) {
             final TextLagUpdater textLagUpdater = new TextLagUpdater(lastKnownLocation, (TextView)gpsStatusWidget
                             .findViewById(R.id.lag), time);
             return textLagUpdater;
@@ -86,7 +86,7 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
                 CombinedLocationManager combinedLocationManager,
                 Provider<DistanceFormatter> distanceFormatterProvider, Meter meter,
                 Context context, TextLagUpdater textLagUpdater,
-                @GpsStatusWidgetView View gpsStatusWidget, Time time) {
+                GpsStatusWidget gpsStatusWidget, Time time) {
             TextView locationViewer = (TextView)gpsStatusWidget.findViewById(R.id.location_viewer);
             MeterFader meterFader = new MeterFader(gpsStatusWidget, locationViewer, time);
             return new GpsStatusWidgetDelegate(combinedLocationManager, distanceFormatterProvider,
@@ -139,17 +139,39 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
         install(new GpsStatusWidgetCacheListModule());
     }
 
+    static class InflatedGpsStatusWidgetProvider {
+        private final Activity activity;
+        private InflatedGpsStatusWidget inflatedGpsStatusWidget;
+
+        InflatedGpsStatusWidgetProvider(Activity activity) {
+            this.activity = activity;
+        }
+        
+        InflatedGpsStatusWidget get() {
+            if (inflatedGpsStatusWidget != null)
+                return inflatedGpsStatusWidget;
+            
+            inflatedGpsStatusWidget = (InflatedGpsStatusWidget)activity
+                    .findViewById(R.id.gps_widget_view);
+            if (inflatedGpsStatusWidget == null) {
+                LinearLayout gpsStatusWidget = new LinearLayout(activity);
+                inflatedGpsStatusWidget = new InflatedGpsStatusWidget(
+                        activity);
+                gpsStatusWidget.addView(inflatedGpsStatusWidget,
+                        ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+            return inflatedGpsStatusWidget;
+        }
+    }
+
     @Provides
     @ContextScoped
     @CacheList
-    InflatedGpsStatusWidget providesInflatedGpsStatusWidget(Context context,
+    InflatedGpsStatusWidget providesInflatedGpsStatusWidget(Activity activity,
             GpsStatusWidget gpsStatusWidget) {
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.reset();
-        new LinearLayout(context);
-        stopwatch.resetAndLog("BUILT LINEARLAYOTU");
-        
-        InflatedGpsStatusWidget inflatedGpsStatusWidget = new InflatedGpsStatusWidget(context);
+        final View findViewById = activity.findViewById(R.id.gps_widget_view);
+        Log.d("GeoBeagle", "FVBYID: " + findViewById);
+        InflatedGpsStatusWidget inflatedGpsStatusWidget = new InflatedGpsStatusWidget(activity);
         gpsStatusWidget.addView(inflatedGpsStatusWidget, ViewGroup.LayoutParams.FILL_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         return inflatedGpsStatusWidget;

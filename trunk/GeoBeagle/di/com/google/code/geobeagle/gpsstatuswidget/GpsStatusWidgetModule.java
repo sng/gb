@@ -28,7 +28,6 @@ import com.google.code.geobeagle.gpsstatuswidget.TextLagUpdater.LastLocationUnkn
 import com.google.code.geobeagle.location.CombinedLocationListener;
 import com.google.code.geobeagle.location.CombinedLocationManager;
 import com.google.inject.BindingAnnotation;
-import com.google.inject.Key;
 import com.google.inject.PrivateModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;

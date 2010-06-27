@@ -24,6 +24,7 @@ import com.google.code.geobeagle.database.CacheWriter;
 import com.google.code.geobeagle.database.GpxWriter;
 import com.google.code.geobeagle.xmlimport.GpxImporter;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 import android.util.Log;
@@ -39,19 +40,19 @@ public class MenuActionSyncGpx extends MenuActionBase {
     private Abortable mNullAbortable;
 
     @Inject
-    public MenuActionSyncGpx(Provider<ImportBCachingWorker> importBCachingWorkerProvider,
+    public MenuActionSyncGpx(Injector injector,
             NullAbortable nullAbortable, CacheListRefresh cacheListRefresh,
-            GpxImporterFactory gpxImporterFactory, Provider<CacheWriter> cacheWriterProvider,
+            Provider<CacheWriter> cacheWriterProvider,
             Provider<GpxWriter> gpxWriterProvider) {
         super(R.string.menu_sync);
         mNullAbortable = nullAbortable;
         mSdcardImportAbortable = nullAbortable;
         mBCachingWorkerAborter = nullAbortable;
         mCacheListRefresh = cacheListRefresh;
-        mGpxImporterFactory = gpxImporterFactory;
+        mGpxImporterFactory = null;
         mCacheWriterProvider = cacheWriterProvider;
         mGpxWriterProvider = gpxWriterProvider;
-        mImportBCachingWorkerProvider = importBCachingWorkerProvider;
+        mImportBCachingWorkerProvider = null;
     }
 
     public void abort() {

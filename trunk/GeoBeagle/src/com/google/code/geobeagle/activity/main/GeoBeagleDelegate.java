@@ -16,13 +16,14 @@ package com.google.code.geobeagle.activity.main;
 
 import com.google.code.geobeagle.CacheType;
 import com.google.code.geobeagle.CompassListener;
+import com.google.code.geobeagle.GeoBeaglePackageModule;
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.GeocacheFactory;
+import com.google.code.geobeagle.GeoBeaglePackageModule.DefaultSharedPreferences;
 import com.google.code.geobeagle.GeocacheFactory.Source;
 import com.google.code.geobeagle.actions.MenuActions;
 import com.google.code.geobeagle.activity.ActivitySaver;
 import com.google.code.geobeagle.activity.ActivityType;
-import com.google.code.geobeagle.activity.main.GeoBeagleModule.DefaultSharedPreferences;
 import com.google.code.geobeagle.activity.main.GeoBeagleModule.ExternalStorageDirectory;
 import com.google.code.geobeagle.activity.main.GeoBeagleModule.GeoBeagleActivity;
 import com.google.code.geobeagle.activity.main.view.GeocacheViewer;
@@ -92,7 +93,7 @@ public class GeoBeagleDelegate {
             GeocacheFromParcelFactory geocacheFromParcelFactory,
             Provider<DbFrontend> dbFrontendProvider, RadarView radarView,
             SensorManager sensorManager,
-            @DefaultSharedPreferences SharedPreferences sharedPreferences,
+            @GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences sharedPreferences,
             WebPageAndDetailsButtonEnabler webPageButtonEnabler,
             Provider<CacheWriter> cacheWriterProvider,
             @ExternalStorageDirectory String externalStorageDirectory) {

@@ -15,6 +15,7 @@
 package com.google.code.geobeagle.gpsstatuswidget;
 
 import com.google.inject.Inject;
+import com.google.inject.internal.Stopwatch;
 
 import android.content.Context;
 import android.widget.LinearLayout;

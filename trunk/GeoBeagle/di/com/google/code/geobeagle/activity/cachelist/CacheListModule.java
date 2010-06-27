@@ -19,6 +19,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import com.google.code.geobeagle.GeoBeaglePackageModule;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.Timing;
 import com.google.code.geobeagle.LocationControlBuffered.GpsDisabledLocation;
@@ -34,7 +35,6 @@ import com.google.code.geobeagle.activity.cachelist.actions.context.ContextActio
 import com.google.code.geobeagle.activity.cachelist.actions.menu.Abortable;
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionDeleteAllCaches;
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionMyLocation;
-import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionSyncBCaching;
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionSyncGpx;
 import com.google.code.geobeagle.activity.cachelist.model.CacheListData;
 import com.google.code.geobeagle.activity.cachelist.presenter.AbsoluteBearingFormatter;
@@ -51,7 +51,6 @@ import com.google.code.geobeagle.activity.cachelist.presenter.SqlCacheLoader;
 import com.google.code.geobeagle.activity.cachelist.presenter.ToleranceStrategy;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.ActionManager;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
-import com.google.code.geobeagle.activity.main.GeoBeagleModule.DefaultSharedPreferences;
 import com.google.code.geobeagle.formatting.DistanceFormatter;
 import com.google.code.geobeagle.formatting.DistanceFormatterImperial;
 import com.google.code.geobeagle.formatting.DistanceFormatterMetric;
@@ -82,18 +81,16 @@ public class CacheListModule extends AbstractAndroidModule {
     @Override
     protected void configure() {
         bind(GeocacheListAdapter.class).in(ContextScoped.class);
-        bind(MenuActionSyncBCaching.class).in(ContextScoped.class);
-        bind(MenuActionSyncGpx.class).in(ContextScoped.class);
         bind(ActivityVisible.class).in(Singleton.class);
         bind(DistanceFormatter.class).toProvider(DistanceFormatterProvider.class).in(
                 ContextScoped.class);
         bind(BearingFormatter.class).toProvider(BearingFormatterProvider.class).in(
                 ContextScoped.class);
         bind(CacheListData.class).in(ContextScoped.class);
-        bind(Timing.class).in(Singleton.class);
+//        bind(Timing.class).in(Singleton.class);
         bind(UpdateFlag.class).in(Singleton.class);
         bind(CacheListRefresh.class).in(ContextScoped.class);
-        bind(ContextActionDelete.class).in(ContextScoped.class);
+//        bind(ContextActionDelete.class).in(ContextScoped.class);
     }
 
     static class DistanceFormatterProvider implements Provider<DistanceFormatter> {
@@ -102,12 +99,10 @@ public class CacheListModule extends AbstractAndroidModule {
         private final DistanceFormatterImperial distanceFormatterImperial;
 
         @Inject
-        DistanceFormatterProvider(@DefaultSharedPreferences SharedPreferences preferenceManager,
-                DistanceFormatterMetric distanceFormatterMetric,
-                DistanceFormatterImperial distanceFormatterImperial) {
+        DistanceFormatterProvider(@GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences preferenceManager) {
             this.preferenceManager = preferenceManager;
-            this.distanceFormatterMetric = distanceFormatterMetric;
-            this.distanceFormatterImperial = distanceFormatterImperial;
+            this.distanceFormatterMetric = new DistanceFormatterMetric();
+            this.distanceFormatterImperial = null;
         }
 
         @Override
@@ -123,12 +118,10 @@ public class CacheListModule extends AbstractAndroidModule {
         private final SharedPreferences preferenceManager;
 
         @Inject
-        BearingFormatterProvider(@DefaultSharedPreferences SharedPreferences preferenceManager,
-                AbsoluteBearingFormatter absoluteBearingFormatter,
-                RelativeBearingFormatter relativeBearingFormatter) {
+        BearingFormatterProvider(@GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences preferenceManager) {
             this.preferenceManager = preferenceManager;
-            this.absoluteBearingFormatter = absoluteBearingFormatter;
-            this.relativeBearingFormatter = relativeBearingFormatter;
+            this.absoluteBearingFormatter = null;
+            this.relativeBearingFormatter = new RelativeBearingFormatter();
         }
 
         @Override
@@ -164,18 +157,23 @@ public class CacheListModule extends AbstractAndroidModule {
 
         return new ActionManager(actionAndTolerances);
     }
-
+/*
     @Provides
     @ToasterSyncAborted
     Toaster toasterProvider(Context context) {
         return new Toaster(context, R.string.import_canceled, Toast.LENGTH_LONG);
     }
-
     @Provides
     Abortable providesAbortable() {
         return new NullAbortable();
     }
-    
+
+    @Provides 
+    MenuActions providesMenuActions() {
+        return null;
+    }
+*/
+    /*
     @Provides
     MenuActions providesMenuActions(MenuActionSyncGpx menuActionSyncGpx,
             MenuActionDeleteAllCaches menuActionDeleteAllCaches,
@@ -191,7 +189,6 @@ public class CacheListModule extends AbstractAndroidModule {
         menuActions.add(menuActionSettings);
         return menuActions;
     }
-
     @Provides
     ContextActions provideContextActions(ContextActionDelete contextActionDelete,
             ContextActionEdit contextActionEdit, ContextActionView contextActionView) {
@@ -199,4 +196,9 @@ public class CacheListModule extends AbstractAndroidModule {
                 contextActionDelete, contextActionView, contextActionEdit
         });
     }
+    @Provides
+    ContextActions provideContextActions() {
+        return null;
+    }
+   */
 }

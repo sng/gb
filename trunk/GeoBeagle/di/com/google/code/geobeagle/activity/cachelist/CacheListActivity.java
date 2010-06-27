@@ -14,14 +14,17 @@
 
 package com.google.code.geobeagle.activity.cachelist;
 
+import com.google.code.geobeagle.GeoBeagleApplication;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetModule.CacheList;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Module;
 
 import roboguice.activity.GuiceListActivity;
+import roboguice.application.GuiceApplication;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,6 +39,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class CacheListActivity extends GuiceListActivity {
     static class OnClickCancel implements OnClickListener {
         public void onClick(DialogInterface dialog, int whichButton) {
@@ -44,6 +49,7 @@ public class CacheListActivity extends GuiceListActivity {
     }
 
     private CacheListDelegate mCacheListDelegate;
+    private Injector injector;
     
     // This is the ctor that Android will use.
     public CacheListActivity() {
@@ -59,6 +65,17 @@ public class CacheListActivity extends GuiceListActivity {
         return mCacheListDelegate.onContextItemSelected(item) || super.onContextItemSelected(item);
     }
 
+    @Override
+    public Injector getInjector() {
+        if (injector == null) {
+            ((GeoBeagleApplication)getApplication()).initInstanceMembers();
+            ArrayList<Module> modules = new ArrayList<Module>();
+            modules.add(new CacheListModule());
+            injector = createInjector(modules);
+        }
+        return injector;
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

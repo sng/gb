@@ -20,6 +20,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import com.google.code.geobeagle.ErrorDisplayer;
+import com.google.code.geobeagle.GeoBeaglePackageModule;
 import com.google.code.geobeagle.LocationControlBuffered;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.Refresher;
@@ -108,22 +109,6 @@ public class GeoBeagleModule extends AbstractAndroidModule {
             FIELD, PARAMETER, METHOD
     })
     @Retention(RUNTIME)
-    public static @interface DefaultSharedPreferences {
-    }
-
-    @BindingAnnotation
-    @Target( {
-            FIELD, PARAMETER, METHOD
-    })
-    @Retention(RUNTIME)
-    public static @interface DialogOnClickListenerNOP {
-    }
-
-    @BindingAnnotation
-    @Target( {
-            FIELD, PARAMETER, METHOD
-    })
-    @Retention(RUNTIME)
     public static @interface GeoBeagleActivity {
     }
 
@@ -175,18 +160,9 @@ public class GeoBeagleModule extends AbstractAndroidModule {
     public static @interface ExternalStorageDirectory {
     }
 
-    @Provides
-    @DefaultSharedPreferences
-    public SharedPreferences providesDefaultSharedPreferences(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context);
-    }
 
     @Override
     protected void configure() {
-        bind(Refresher.class).to(NullRefresher.class);
-        bind(SensorManager.class).toProvider(
-                new SystemServiceProvider<SensorManager>(Context.SENSOR_SERVICE));
-        bindConstant().annotatedWith(Azimuth.class).to(-1440f);
         bind(Paint.class).toInstance(new Paint());
         bind(Rect.class).toInstance(new Rect());
     }
@@ -197,13 +173,8 @@ public class GeoBeagleModule extends AbstractAndroidModule {
     }
 
     @Provides
-    AlertDialog.Builder providesAlertDialogBuilder(Activity activity) {
-        return new AlertDialog.Builder(activity);
-    }
-
-    @Provides
     AppLifecycleManager providesAppLifecycleManager(
-            @DefaultSharedPreferences SharedPreferences sharedPreferences, RadarView radarView,
+            @GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences sharedPreferences, RadarView radarView,
             LocationControlBuffered locationControlBuffered, LocationManager locationManager) {
         return new AppLifecycleManager(sharedPreferences, new LifecycleManager[] {
                 new LocationLifecycleManager(locationControlBuffered, locationManager),
@@ -211,20 +182,6 @@ public class GeoBeagleModule extends AbstractAndroidModule {
         });
     }
 
-    @Provides
-    @DialogOnClickListenerNOP
-    android.content.DialogInterface.OnClickListener providesDialogOnClickListenerDoNothing() {
-        return new android.content.DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        };
-    }
-
-    @Provides
-    @Named("GeocacheIcon")
-    ImageView providesGCIcon(Activity activity) {
-        return (ImageView)activity.findViewById(R.id.gcicon);
-    }
 
     @Provides
     @Named("GeocacheName")
@@ -351,28 +308,15 @@ public class GeoBeagleModule extends AbstractAndroidModule {
         return getImagesOnDifficulty(ribbonDrawables, imageView, ratingsArray);
     }
     
-    private static final String FIELDNOTES_FILE = "GeoBeagleFieldNotes.txt";
-
-    @Provides
-    @FieldNotesFilename
-    String providesFieldNotesFilename(@ExternalStorageDirectory String externalStorageDirectory) {
-        return externalStorageDirectory + "/" + FIELDNOTES_FILE;
-    }
-    
-    @Provides
-    @ExternalStorageDirectory
-    String providesPicturesDirectory() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath();
-    }
-
     @Provides
     public GeocacheViewer providesGeocacheViewer(RadarView radarView, Activity activity,
-            NameViewer gcName, @Named("GeocacheIcon") ImageView cacheTypeImageView,
+            NameViewer gcName,
             @Named("GeocacheDifficulty") AttributeViewer gcDifficulty,
             @Named("GeocacheTerrain") AttributeViewer gcTerrain, ResourceImages gcContainer,
             IconOverlayFactory iconOverlayFactory, MapViewBitmapCopier mapViewBitmapCopier,
             @DifficultyAndTerrainPainterAnnotation IconRenderer iconRenderer) {
         Log.d("GeoBeagle", "GOING THROUG PROVIDER");
+        ImageView cacheTypeImageView = (ImageView)activity.findViewById(R.id.gcicon);
         return new GeocacheViewer(radarView, activity, gcName, cacheTypeImageView, gcDifficulty,
                 gcTerrain, gcContainer, iconOverlayFactory, mapViewBitmapCopier, iconRenderer);
     }

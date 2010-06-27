@@ -17,6 +17,8 @@ package com.google.code.geobeagle.activity.main.fieldnotes;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.Geocache.GeocacheId;
 import com.google.code.geobeagle.activity.main.GeoBeagle;
+import com.google.code.geobeagle.activity.main.GeoBeagleModule.ExternalStorageDirectory;
+import com.google.code.geobeagle.activity.main.GeoBeagleModule.FieldNotesFilename;
 import com.google.code.geobeagle.activity.main.fieldnotes.DialogHelperSms.DialogHelperSmsFactory;
 import com.google.code.geobeagle.activity.main.fieldnotes.FieldnoteLogger.FieldnoteLoggerFactory;
 import com.google.code.geobeagle.activity.main.fieldnotes.FieldnoteLogger.OnClickOk;
@@ -52,6 +54,14 @@ public class FieldnotesModule extends AbstractAndroidModule {
         return new Toaster(geoBeagle, R.string.error_writing_cache_log, Toast.LENGTH_LONG);
     }
 
+    private static final String FIELDNOTES_FILE = "GeoBeagleFieldNotes.txt";
+
+    
+    @Provides
+    @FieldNotesFilename
+    String providesFieldNotesFilename(@ExternalStorageDirectory String externalStorageDirectory) {
+        return externalStorageDirectory + "/" + FIELDNOTES_FILE;
+    }
     @Provides
     @GeocacheId
     CharSequence providesGeocacheId(GeoBeagle geoBeagle) {

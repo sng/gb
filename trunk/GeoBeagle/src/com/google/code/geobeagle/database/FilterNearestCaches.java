@@ -22,10 +22,10 @@ public class FilterNearestCaches {
     private final WhereFactory mWhereFactories[];
 
     @Inject
-    public FilterNearestCaches(WhereFactoryAllCaches whereFactoryAllCaches,
+    public FilterNearestCaches(
             WhereFactoryNearestCaches whereFactoryNearestCaches) {
         mWhereFactories = new WhereFactory[] {
-                whereFactoryAllCaches, whereFactoryNearestCaches
+                null, whereFactoryNearestCaches
         };
     }
 

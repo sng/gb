@@ -32,6 +32,7 @@ import com.google.inject.Key;
 import com.google.inject.PrivateModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
+import com.google.inject.internal.Stopwatch;
 
 import roboguice.config.AbstractAndroidModule;
 import roboguice.inject.ContextScoped;
@@ -41,6 +42,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.lang.annotation.Annotation;
@@ -62,15 +64,11 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
 
     static abstract class GpsStatusWidgetPrivateModule extends PrivateModule {
         @Provides
-        @LocationViewer
-        TextView providesLocationViewer(@GpsStatusWidgetView View gpsStatusWidget) {
-            return (TextView)gpsStatusWidget.findViewById(R.id.location_viewer);
-        }
-        
-        @Provides
         @ContextScoped
-        Meter providesMeter(MeterBars meterBars, @GpsStatusWidgetView View gpsStatusWidget) {
+        Meter providesMeter(@GpsStatusWidgetView View gpsStatusWidget, MeterFormatter meterFormatter) {
             Log.d("GeoBeagle", "PROVIDING METER: " + gpsStatusWidget);
+            TextView locationViewer = (TextView)gpsStatusWidget.findViewById(R.id.location_viewer);
+            MeterBars meterBars = new MeterBars(locationViewer, meterFormatter);
             return new Meter(meterBars, ((TextView)gpsStatusWidget.findViewById(R.id.accuracy)));
         }
 
@@ -78,8 +76,9 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
         @ContextScoped
         TextLagUpdater providesTextLagUpdater(LastLocationUnknown lastKnownLocation, Time time,
                 @GpsStatusWidgetView View gpsStatusWidget) {
-            return new TextLagUpdater(lastKnownLocation, (TextView)gpsStatusWidget
-                    .findViewById(R.id.lag), time);
+            final TextLagUpdater textLagUpdater = new TextLagUpdater(lastKnownLocation, (TextView)gpsStatusWidget
+                            .findViewById(R.id.lag), time);
+            return textLagUpdater;
         }
         
         @Provides
@@ -87,8 +86,9 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
                 CombinedLocationManager combinedLocationManager,
                 Provider<DistanceFormatter> distanceFormatterProvider, Meter meter,
                 Context context, TextLagUpdater textLagUpdater,
-                @GpsStatusWidgetView View gpsStatusWidget, MeterBars meterBars, Time time) {
-            MeterFader meterFader = new MeterFader(gpsStatusWidget, meterBars, time);
+                @GpsStatusWidgetView View gpsStatusWidget, Time time) {
+            TextView locationViewer = (TextView)gpsStatusWidget.findViewById(R.id.location_viewer);
+            MeterFader meterFader = new MeterFader(gpsStatusWidget, locationViewer, time);
             return new GpsStatusWidgetDelegate(combinedLocationManager, distanceFormatterProvider,
                     meter, meterFader, (TextView)gpsStatusWidget.findViewById(R.id.provider),
                     context, (TextView)gpsStatusWidget.findViewById(R.id.status), textLagUpdater);
@@ -122,7 +122,7 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
             bind(View.class).annotatedWith(GpsStatusWidgetView.class).to(GpsStatusWidget.class);
         }
     }
-
+/*
     static class GpsStatusWidgetSearchOnlineModule extends GpsStatusWidgetPrivateModule {
         @Override
         protected void configure() {
@@ -131,11 +131,11 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
                     Key.get(InflatedGpsStatusWidget.class, SearchOnline.class));
         }
     }
-
+*/
     @Override
     protected void configure() {
         bind(GpsStatusWidget.class).in(ContextScoped.class);
-        install(new GpsStatusWidgetSearchOnlineModule());
+//        install(new GpsStatusWidgetSearchOnlineModule());
         install(new GpsStatusWidgetCacheListModule());
     }
 
@@ -144,17 +144,22 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
     @CacheList
     InflatedGpsStatusWidget providesInflatedGpsStatusWidget(Context context,
             GpsStatusWidget gpsStatusWidget) {
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.reset();
+        new LinearLayout(context);
+        stopwatch.resetAndLog("BUILT LINEARLAYOTU");
+        
         InflatedGpsStatusWidget inflatedGpsStatusWidget = new InflatedGpsStatusWidget(context);
         gpsStatusWidget.addView(inflatedGpsStatusWidget, ViewGroup.LayoutParams.FILL_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         return inflatedGpsStatusWidget;
     }
-
+/*
     @Provides
     @ContextScoped
     @SearchOnline
     InflatedGpsStatusWidget providesInflatedGpsStatusWidget(Activity activity) {
         return (InflatedGpsStatusWidget)activity.findViewById(R.id.gps_widget_view);
     }
-    
+    */
 }

@@ -19,6 +19,7 @@ import com.google.code.geobeagle.actions.MenuActionBase;
 import com.google.code.geobeagle.bcaching.ImportBCachingWorker;
 import com.google.code.geobeagle.database.DbFrontend;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 import android.util.Log;
@@ -26,14 +27,11 @@ import android.util.Log;
 public class MenuActionSyncBCaching extends MenuActionBase {
 
     private final Provider<ImportBCachingWorker> importBCachingWorkerProvider;
-    private Abortable abortable;
 
     @Inject
-    public MenuActionSyncBCaching(Provider<ImportBCachingWorker> importBCachingWorkerProvider,
-            DbFrontend dbFrontend, Abortable abortable) {
+    public MenuActionSyncBCaching(Injector injector, DbFrontend dbFrontend) {
         super(R.string.menu_sync_bcaching);
-        this.importBCachingWorkerProvider = importBCachingWorkerProvider;
-        this.abortable = abortable;
+        this.importBCachingWorkerProvider = null;
         Log.d("GeoBeagleDb", "Sync: " + dbFrontend);
     }
 
@@ -41,11 +39,9 @@ public class MenuActionSyncBCaching extends MenuActionBase {
     public void act() {
         ImportBCachingWorker importBCachingWorker = importBCachingWorkerProvider.get();
         importBCachingWorker.start();
-        abortable = importBCachingWorker;
     }
 
     public void abort() {
         Log.d("GeoBeagle", "GpxImport aborting");
-        abortable.abort();
     }
 }

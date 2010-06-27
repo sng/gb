@@ -14,7 +14,8 @@
 
 package com.google.code.geobeagle.bcaching;
 
-import com.google.code.geobeagle.activity.main.GeoBeagleModule.DefaultSharedPreferences;
+import com.google.code.geobeagle.GeoBeaglePackageModule;
+import com.google.code.geobeagle.GeoBeaglePackageModule.DefaultSharedPreferences;
 import com.google.code.geobeagle.bcaching.BCachingAnnotations.BCachingUserName;
 import com.google.code.geobeagle.bcaching.BCachingAnnotations.CacheListAnnotation;
 import com.google.code.geobeagle.bcaching.BCachingAnnotations.DetailsReaderAnnotation;
@@ -88,7 +89,7 @@ public class BCachingModule extends AbstractAndroidModule {
 
     @Provides
     BCachingCommunication bcachingCommunicationProvider(
-            @DefaultSharedPreferences SharedPreferences sharedPreferences,
+            @GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences sharedPreferences,
             @BCachingUserName String bcachingUsername) {
         String bcachingPassword = sharedPreferences.getString("bcaching-password", "");
         return new BCachingCommunication(bcachingUsername, bcachingPassword);
@@ -96,7 +97,7 @@ public class BCachingModule extends AbstractAndroidModule {
 
     @Provides
     @BCachingUserName
-    String providesUserName(@DefaultSharedPreferences SharedPreferences sharedPreferences) {
+    String providesUserName(@GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences sharedPreferences) {
         return sharedPreferences.getString("bcaching-username", "");
     }
     

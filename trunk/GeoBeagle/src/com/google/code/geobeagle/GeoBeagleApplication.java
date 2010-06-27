@@ -14,7 +14,6 @@
 
 package com.google.code.geobeagle;
 
-import com.google.code.geobeagle.activity.cachelist.CacheListModule;
 import com.google.code.geobeagle.activity.cachelist.model.ModelModule;
 import com.google.code.geobeagle.activity.main.GeoBeagleModule;
 import com.google.code.geobeagle.activity.main.fieldnotes.FieldnotesModule;
@@ -38,20 +37,25 @@ import java.util.List;
 public class GeoBeagleApplication extends GuiceApplication {
     @Override
     protected void addApplicationModules(List<Module> modules) {
-        modules.add(new SearchOnlineModule());
-        modules.add(new FieldnotesModule());
-        modules.add(new GeoMapActivityModule());
-        modules.add(new GeoBeagleModule());
+//        modules.add(new SearchOnlineModule());
+//        modules.add(new FieldnotesModule());
+//        modules.add(new GeoMapActivityModule());
+//        modules.add(new GeoBeagleModule());
         modules.add(new GeoBeaglePackageModule());
-        modules.add(new ViewModule());
+//        modules.add(new ViewModule());
         modules.add(new DatabaseModule());
-        modules.add(new CacheListModule());
+        // modules.add(new CacheListModule());
         modules.add(new LocationModule());
         modules.add(new ModelModule());
         modules.add(new GpsStatusWidgetModule());
-        modules.add(new XmlimportModule());
-        modules.add(new BCachingModule());
-        modules.add(new BCachingCommModule());
-        Debug.startMethodTracing("dmtrace", 32 * 1024 * 1024);
+//        modules.add(new XmlimportModule());
+//        modules.add(new BCachingModule());
+//        modules.add(new BCachingCommModule());
+//        Debug.startMethodTracing("dmtrace", 32 * 1024 * 1024);
+    }
+
+    @Override
+    public void initInstanceMembers() {
+        super.initInstanceMembers();
     }
 }

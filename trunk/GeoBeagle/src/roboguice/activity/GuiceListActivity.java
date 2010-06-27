@@ -20,11 +20,14 @@ import roboguice.inject.ContextScope;
 import roboguice.inject.InjectorProvider;
 
 import com.google.inject.Injector;
+import com.google.inject.Module;
 
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+
+import java.util.ArrayList;
 
 /**
  * A {@link GuiceListActivity} extends from {@link ListActivity} to provide
@@ -99,5 +102,8 @@ public class GuiceListActivity extends ListActivity implements InjectorProvider 
     public Injector getInjector() {
         return ((GuiceApplication) getApplication()).getInjector();
     }
-
+    
+    public Injector createInjector(ArrayList<Module> modules) {
+        return ((GuiceApplication) getApplication()).createInjector(modules);
+    }
 }

@@ -43,6 +43,9 @@ import com.google.inject.spi.InjectionPoint;
 import com.google.inject.spi.ProviderBinding;
 import com.google.inject.spi.ProviderKeyBinding;
 import com.google.inject.util.Providers;
+
+import android.util.Log;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
@@ -692,6 +695,8 @@ class InjectorImpl implements Injector, Lookups {
     int i = 0;
     for (Dependency<?> parameter : parameters) {
       try {
+//          Log.d("Guice", "getparametersinjectors: " + parameter);
+          
         result[i++] = createParameterInjector(parameter, errors.withSource(parameter));
       } catch (ErrorsException rethrownBelow) {
         // rethrown below

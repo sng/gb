@@ -89,8 +89,7 @@ public class SearchOnlineActivity extends GuiceActivity {
         Log.d("GeoBeagle", "SearchOnlineActivity onCreate");
         
         Injector injector = this.getInjector();
-        mInflatedGpsStatusWidget = injector.getInstance(Key.get(InflatedGpsStatusWidget.class,
-                SearchOnline.class));
+        mInflatedGpsStatusWidget = injector.getInstance(InflatedGpsStatusWidget.class);
         
         GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector.getInstance(Key.get(
                 GpsStatusWidgetDelegate.class, SearchOnline.class));

@@ -126,7 +126,7 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
         protected void configure() {
             super.configure(SearchOnline.class);
             bind(View.class).annotatedWith(GpsStatusWidgetView.class).to(
-                    Key.get(InflatedGpsStatusWidget.class, SearchOnline.class));
+                    InflatedGpsStatusWidget.class);
         }
     }
 
@@ -139,20 +139,14 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
 
     @Provides
     @ContextScoped
-    @CacheList
-    InflatedGpsStatusWidget providesInflatedGpsStatusWidget(Context context,
+    InflatedGpsStatusWidget providesInflatedGpsStatusWidget(Activity activity, Context context,
             GpsStatusWidget gpsStatusWidget) {
-        InflatedGpsStatusWidget inflatedGpsStatusWidget = new InflatedGpsStatusWidget(context);
+        InflatedGpsStatusWidget inflatedGpsStatusWidget = (InflatedGpsStatusWidget)activity.findViewById(R.id.gps_widget_view);
+        if (inflatedGpsStatusWidget != null)
+            return inflatedGpsStatusWidget;
+        inflatedGpsStatusWidget = new InflatedGpsStatusWidget(context);
         gpsStatusWidget.addView(inflatedGpsStatusWidget, ViewGroup.LayoutParams.FILL_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         return inflatedGpsStatusWidget;
     }
-
-    @Provides
-    @ContextScoped
-    @SearchOnline
-    InflatedGpsStatusWidget providesInflatedGpsStatusWidget(Activity activity) {
-        return (InflatedGpsStatusWidget)activity.findViewById(R.id.gps_widget_view);
-    }
-    
 }

@@ -46,22 +46,11 @@ import java.lang.annotation.Target;
 
 public class GpsStatusWidgetModule extends AbstractAndroidModule {
     @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
-    public static @interface LocationViewer {}
-    
-    @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
     public static @interface GpsStatusWidgetView {}
     
     @Provides
-    @LocationViewer
-    TextView providesLocationViewer(@GpsStatusWidgetView View gpsStatusWidget) {
-        return (TextView)gpsStatusWidget.findViewById(R.id.location_viewer);
-    }
-
-    @Provides
     @ContextScoped
-    Meter providesMeter(@GpsStatusWidgetView View gpsStatusWidget,
-            MeterFormatter meterFormatter) {
-        Log.d("GeoBeagle", "PROVIDING METER: " + gpsStatusWidget);
+    Meter providesMeter(@GpsStatusWidgetView View gpsStatusWidget, MeterFormatter meterFormatter) {
         TextView locationViewer = (TextView)gpsStatusWidget.findViewById(R.id.location_viewer);
         MeterBars meterBars = new MeterBars(locationViewer, meterFormatter);
         return new Meter(meterBars, ((TextView)gpsStatusWidget.findViewById(R.id.accuracy)));
@@ -80,8 +69,7 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
     GpsStatusWidgetDelegate providesGpsStatusWidgetDelegate(
             CombinedLocationManager combinedLocationManager,
             Provider<DistanceFormatter> distanceFormatterProvider, Meter meter, Context context,
-            TextLagUpdater textLagUpdater, @GpsStatusWidgetView View gpsStatusWidget,
-            Time time) {
+            TextLagUpdater textLagUpdater, @GpsStatusWidgetView View gpsStatusWidget, Time time) {
         TextView locationViewer = (TextView)gpsStatusWidget.findViewById(R.id.location_viewer);
         MeterFader meterFader = new MeterFader(gpsStatusWidget, locationViewer, time);
         return new GpsStatusWidgetDelegate(combinedLocationManager, distanceFormatterProvider,

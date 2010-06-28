@@ -17,9 +17,6 @@ package com.google.code.geobeagle.gpsstatuswidget;
  * Displays the accuracy (graphically) and azimuth of the gps.
  */
 
-import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetModule.LocationViewer;
-import com.google.inject.Inject;
-
 import android.graphics.Color;
 import android.widget.TextView;
 

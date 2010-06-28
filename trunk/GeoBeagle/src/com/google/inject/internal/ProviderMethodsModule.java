@@ -49,6 +49,7 @@ import java.util.List;
 public final class ProviderMethodsModule implements Module {
   private final Object delegate;
   private final TypeLiteral<?> typeLiteral;
+private final Stopwatch stopwatch;
   private static HashMap<Class<?>, Integer> hasNoProviderMethods = initializeHasNoProviderMethods();
   private final static HashMap<Class<?>, Integer> initializeHasNoProviderMethods(){
       HashMap<Class<?>, Integer> hm = new HashMap<Class<?>, Integer>();
@@ -61,6 +62,7 @@ public final class ProviderMethodsModule implements Module {
   private ProviderMethodsModule(Object delegate) {
     this.delegate = checkNotNull(delegate, "delegate");
     this.typeLiteral = TypeLiteral.get(this.delegate.getClass());
+    this.stopwatch = new Stopwatch();
   }
 
   /**
@@ -96,12 +98,14 @@ public final class ProviderMethodsModule implements Module {
       if (hasNoProviderMethods.containsKey(c))
           continue;
       int annotationCount = 0;
+      stopwatch.reset();
       for (Method method : c.getDeclaredMethods()) {
-          Log.d("Guice", c.getCanonicalName() + ":" + method.getName());
+        Log.d("Guice", "ProviderMethods: " + c.getCanonicalName() + ":" + method.getName());
         if (method.isAnnotationPresent(Provides.class)) {
           result.add(createProviderMethod(binder, method));
           annotationCount++;
         }
+        stopwatch.resetAndLog(method.getName());
       }
       if (annotationCount == 0) {
         hasNoProviderMethods.put(c, 0);

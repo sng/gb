@@ -19,23 +19,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import com.google.code.geobeagle.GeoBeaglePackageModule;
-import com.google.code.geobeagle.R;
-import com.google.code.geobeagle.Timing;
 import com.google.code.geobeagle.LocationControlBuffered.GpsDisabledLocation;
-import com.google.code.geobeagle.actions.ContextActions;
-import com.google.code.geobeagle.actions.MenuActionMap;
-import com.google.code.geobeagle.actions.MenuActionSearchOnline;
-import com.google.code.geobeagle.actions.MenuActionSettings;
-import com.google.code.geobeagle.actions.MenuActions;
-import com.google.code.geobeagle.activity.cachelist.actions.context.ContextAction;
-import com.google.code.geobeagle.activity.cachelist.actions.context.ContextActionDelete;
-import com.google.code.geobeagle.activity.cachelist.actions.context.ContextActionEdit;
-import com.google.code.geobeagle.activity.cachelist.actions.context.ContextActionView;
-import com.google.code.geobeagle.activity.cachelist.actions.menu.Abortable;
-import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionDeleteAllCaches;
-import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionMyLocation;
-import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionSyncGpx;
 import com.google.code.geobeagle.activity.cachelist.model.CacheListData;
 import com.google.code.geobeagle.activity.cachelist.presenter.AbsoluteBearingFormatter;
 import com.google.code.geobeagle.activity.cachelist.presenter.ActionAndTolerance;
@@ -54,7 +38,7 @@ import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.U
 import com.google.code.geobeagle.formatting.DistanceFormatter;
 import com.google.code.geobeagle.formatting.DistanceFormatterImperial;
 import com.google.code.geobeagle.formatting.DistanceFormatterMetric;
-import com.google.code.geobeagle.xmlimport.GpxImporterDI.Toaster;
+import com.google.code.geobeagle.xmlimport.XmlimportModule.DefaultSharedPreferences;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -66,10 +50,7 @@ import roboguice.inject.ContextScoped;
 
 import android.app.Activity;
 import android.app.ListActivity;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.widget.Toast;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -99,7 +80,7 @@ public class CacheListModule extends AbstractAndroidModule {
         private final DistanceFormatterImperial distanceFormatterImperial;
 
         @Inject
-        DistanceFormatterProvider(@GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences preferenceManager) {
+        DistanceFormatterProvider(@DefaultSharedPreferences SharedPreferences preferenceManager) {
             this.preferenceManager = preferenceManager;
             this.distanceFormatterMetric = new DistanceFormatterMetric();
             this.distanceFormatterImperial = null;
@@ -118,7 +99,7 @@ public class CacheListModule extends AbstractAndroidModule {
         private final SharedPreferences preferenceManager;
 
         @Inject
-        BearingFormatterProvider(@GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences preferenceManager) {
+        BearingFormatterProvider(@DefaultSharedPreferences SharedPreferences preferenceManager) {
             this.preferenceManager = preferenceManager;
             this.absoluteBearingFormatter = null;
             this.relativeBearingFormatter = new RelativeBearingFormatter();

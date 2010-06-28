@@ -55,6 +55,7 @@ import com.google.code.geobeagle.activity.main.view.GeocacheViewer.UnlabelledAtt
 import com.google.code.geobeagle.activity.map.GeoMapActivity;
 import com.google.code.geobeagle.activity.searchonline.NullRefresher;
 import com.google.code.geobeagle.location.LocationLifecycleManager;
+import com.google.code.geobeagle.xmlimport.XmlimportModule.DefaultSharedPreferences;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
@@ -174,7 +175,7 @@ public class GeoBeagleModule extends AbstractAndroidModule {
 
     @Provides
     AppLifecycleManager providesAppLifecycleManager(
-            @GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences sharedPreferences, RadarView radarView,
+            @DefaultSharedPreferences SharedPreferences sharedPreferences, RadarView radarView,
             LocationControlBuffered locationControlBuffered, LocationManager locationManager) {
         return new AppLifecycleManager(sharedPreferences, new LifecycleManager[] {
                 new LocationLifecycleManager(locationControlBuffered, locationManager),

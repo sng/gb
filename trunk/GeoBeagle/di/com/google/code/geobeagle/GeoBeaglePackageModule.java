@@ -31,7 +31,6 @@ import com.google.code.geobeagle.activity.cachelist.presenter.NullSortStrategy;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeoBeaglePackageAnnotations.DifficultyAndTerrainPainterAnnotation;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeoBeaglePackageAnnotations.GeoBeagle;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeoBeaglePackageAnnotations.NullAttributesPainterAnnotation;
-import com.google.code.geobeagle.activity.main.GeoBeagleModule.ExternalStorageDirectory;
 import com.google.code.geobeagle.activity.searchonline.NullRefresher;
 import com.google.code.geobeagle.location.LocationControl;
 import com.google.inject.BindingAnnotation;
@@ -42,21 +41,17 @@ import roboguice.inject.ContextScoped;
 import roboguice.inject.SystemServiceProvider;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -73,19 +68,6 @@ public class GeoBeaglePackageModule extends AbstractAndroidModule {
     public static @interface DialogOnClickListenerNOP {
     }
 
-    @BindingAnnotation
-    @Target( {
-            FIELD, PARAMETER, METHOD
-    })
-    @Retention(RUNTIME)
-    public static @interface DefaultSharedPreferences {
-    }
-
-    @Provides
-    @GeoBeaglePackageModule.DefaultSharedPreferences
-    public SharedPreferences providesDefaultSharedPreferences(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context);
-    }
     /*
     @Provides
     @DialogOnClickListenerNOP
@@ -96,11 +78,6 @@ public class GeoBeaglePackageModule extends AbstractAndroidModule {
         };
     }
     */
-    @Provides
-    @ExternalStorageDirectory
-    String providesPicturesDirectory() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath();
-    }
     
     /*
     @Provides

@@ -14,8 +14,11 @@
 
 package com.google.code.geobeagle.xmlimport;
 
-import com.google.code.geobeagle.GeoBeaglePackageModule;
-import com.google.code.geobeagle.GeoBeaglePackageModule.DefaultSharedPreferences;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import com.google.code.geobeagle.activity.main.GeoBeagleModule.ExternalStorageDirectory;
 import com.google.code.geobeagle.cachedetails.CacheDetailsWriter;
 import com.google.code.geobeagle.cachedetails.Emotifier;
@@ -33,6 +36,7 @@ import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.LoadDetails;
 import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.OldDetailsDirectory;
 import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.VersionPath;
 import com.google.code.geobeagle.xmlimport.XmlimportAnnotations.WriteDetails;
+import com.google.inject.BindingAnnotation;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
@@ -44,8 +48,11 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -71,6 +78,27 @@ public class XmlimportModule extends AbstractAndroidModule {
 
         return new EventHelper(xmlPathBuilder, eventHandlerComposite, xmlPullParser);
     }
+    
+
+    @BindingAnnotation
+    @Target( {
+            FIELD, PARAMETER, METHOD
+    })
+    @Retention(RUNTIME)
+    public static @interface DefaultSharedPreferences {
+    }
+
+    @Provides
+    @DefaultSharedPreferences
+    public SharedPreferences providesDefaultSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context);
+    }
+    
+    @Provides
+    @ExternalStorageDirectory
+    String providesPicturesDirectory() {
+        return Environment.getExternalStorageDirectory().getAbsolutePath();
+    }
 
     @Provides
     WakeLock wakeLockProvider(PowerManager powerManager) {
@@ -79,7 +107,7 @@ public class XmlimportModule extends AbstractAndroidModule {
 
     @Provides
     @ImportDirectory
-    String importFolderProvider(@GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences sharedPreferences) {
+    String importFolderProvider(@DefaultSharedPreferences SharedPreferences sharedPreferences) {
         String string = sharedPreferences.getString("import-folder", Environment
                 .getExternalStorageDirectory()
                 + "/Download");

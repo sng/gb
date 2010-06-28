@@ -14,6 +14,7 @@
 
 package com.google.code.geobeagle.activity.cachelist;
 
+import com.google.code.geobeagle.GeoBeagleApplication;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
@@ -124,6 +125,7 @@ public class CacheListActivity extends GuiceListActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        GeoBeagleApplication.timing.lap("CacheListActivity::onResult");
         Log.d("GeoBeagle", "CacheListActivity onResume");
         mCacheListDelegate.onResume();
     }

@@ -86,7 +86,7 @@ public class GeoBeaglePackageModule extends AbstractAndroidModule {
     public SharedPreferences providesDefaultSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
-    
+    /*
     @Provides
     @DialogOnClickListenerNOP
     android.content.DialogInterface.OnClickListener providesDialogOnClickListenerDoNothing() {
@@ -95,7 +95,7 @@ public class GeoBeaglePackageModule extends AbstractAndroidModule {
             }
         };
     }
-
+    */
     @Provides
     @ExternalStorageDirectory
     String providesPicturesDirectory() {

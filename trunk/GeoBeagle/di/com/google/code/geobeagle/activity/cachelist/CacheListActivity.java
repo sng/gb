@@ -141,7 +141,7 @@ public class CacheListActivity extends GuiceListActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        GeoBeagleApplication.timing.lap("CacheListActivity::onResult");
+//        GeoBeagleApplication.timing.lap("CacheListActivity::onResult");
         Log.d("GeoBeagle", "CacheListActivity onResume");
         mCacheListDelegate.onResume();
     }

@@ -39,6 +39,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.lang.annotation.Retention;
@@ -114,15 +115,19 @@ public class GpsStatusWidgetModule extends AbstractAndroidModule {
 */
     @Override
     protected void configure() {
-        bind(GpsStatusWidget.class).in(ContextScoped.class);
 //        install(new GpsStatusWidgetSearchOnlineModule());
 //        install(new GpsStatusWidgetCacheListModule());
     }
 
     @Provides
     @ContextScoped
-    InflatedGpsStatusWidget providesInflatedGpsStatusWidget(Activity activity, Context context,
-            GpsStatusWidget gpsStatusWidget) {
+    LinearLayout providesGpsStatusWidget(Context context) {
+        return new LinearLayout(context);
+    }
+    @Provides
+    @ContextScoped
+    InflatedGpsStatusWidget providesInflatedGpsStatusWidget(Activity activity, Context context, LinearLayout gpsStatusWidget) {
+        
         InflatedGpsStatusWidget inflatedGpsStatusWidget = (InflatedGpsStatusWidget)activity.findViewById(R.id.gps_widget_view);
         if (inflatedGpsStatusWidget != null)
             return inflatedGpsStatusWidget;

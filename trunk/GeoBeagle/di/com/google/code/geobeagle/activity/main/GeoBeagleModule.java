@@ -25,6 +25,7 @@ import com.google.code.geobeagle.LocationControlBuffered;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.Refresher;
 import com.google.code.geobeagle.CompassListener.Azimuth;
+import com.google.code.geobeagle.GeoBeaglePackageModule.DefaultSharedPreferences;
 import com.google.code.geobeagle.GraphicsGenerator.IconOverlayFactory;
 import com.google.code.geobeagle.GraphicsGenerator.IconRenderer;
 import com.google.code.geobeagle.GraphicsGenerator.MapViewBitmapCopier;
@@ -55,7 +56,6 @@ import com.google.code.geobeagle.activity.main.view.GeocacheViewer.UnlabelledAtt
 import com.google.code.geobeagle.activity.map.GeoMapActivity;
 import com.google.code.geobeagle.activity.searchonline.NullRefresher;
 import com.google.code.geobeagle.location.LocationLifecycleManager;
-import com.google.code.geobeagle.xmlimport.XmlimportModule.DefaultSharedPreferences;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
@@ -175,7 +175,7 @@ public class GeoBeagleModule extends AbstractAndroidModule {
 
     @Provides
     AppLifecycleManager providesAppLifecycleManager(
-            @DefaultSharedPreferences SharedPreferences sharedPreferences, RadarView radarView,
+            @GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences sharedPreferences, RadarView radarView,
             LocationControlBuffered locationControlBuffered, LocationManager locationManager) {
         return new AppLifecycleManager(sharedPreferences, new LifecycleManager[] {
                 new LocationLifecycleManager(locationControlBuffered, locationManager),

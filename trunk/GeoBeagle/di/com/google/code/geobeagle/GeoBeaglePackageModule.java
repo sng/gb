@@ -79,6 +79,20 @@ public class GeoBeaglePackageModule extends AbstractAndroidModule {
     }
     */
     
+    @BindingAnnotation
+    @Target( {
+            FIELD, PARAMETER, METHOD
+    })
+    @Retention(RUNTIME)
+    public static @interface DefaultSharedPreferences {
+    }
+
+
+    @Provides
+    @GeoBeaglePackageModule.DefaultSharedPreferences
+    public SharedPreferences providesDefaultSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context);
+    }
     /*
     @Provides
     AlertDialog.Builder providesAlertDialogBuilder(Activity activity) {

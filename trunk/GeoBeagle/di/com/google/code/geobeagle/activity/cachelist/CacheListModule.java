@@ -19,6 +19,8 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import com.google.code.geobeagle.GeoBeaglePackageModule;
+import com.google.code.geobeagle.GeoBeaglePackageModule.DefaultSharedPreferences;
 import com.google.code.geobeagle.LocationControlBuffered.GpsDisabledLocation;
 import com.google.code.geobeagle.activity.cachelist.model.CacheListData;
 import com.google.code.geobeagle.activity.cachelist.presenter.AbsoluteBearingFormatter;
@@ -38,7 +40,6 @@ import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.U
 import com.google.code.geobeagle.formatting.DistanceFormatter;
 import com.google.code.geobeagle.formatting.DistanceFormatterImperial;
 import com.google.code.geobeagle.formatting.DistanceFormatterMetric;
-import com.google.code.geobeagle.xmlimport.XmlimportModule.DefaultSharedPreferences;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -80,7 +81,7 @@ public class CacheListModule extends AbstractAndroidModule {
         private final DistanceFormatterImperial distanceFormatterImperial;
 
         @Inject
-        DistanceFormatterProvider(@DefaultSharedPreferences SharedPreferences preferenceManager) {
+        DistanceFormatterProvider(@GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences preferenceManager) {
             this.preferenceManager = preferenceManager;
             this.distanceFormatterMetric = new DistanceFormatterMetric();
             this.distanceFormatterImperial = null;
@@ -99,7 +100,7 @@ public class CacheListModule extends AbstractAndroidModule {
         private final SharedPreferences preferenceManager;
 
         @Inject
-        BearingFormatterProvider(@DefaultSharedPreferences SharedPreferences preferenceManager) {
+        BearingFormatterProvider(@GeoBeaglePackageModule.DefaultSharedPreferences SharedPreferences preferenceManager) {
             this.preferenceManager = preferenceManager;
             this.absoluteBearingFormatter = null;
             this.relativeBearingFormatter = new RelativeBearingFormatter();

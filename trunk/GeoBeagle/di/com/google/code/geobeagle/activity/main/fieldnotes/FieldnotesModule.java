@@ -43,7 +43,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class FieldnotesModule extends AbstractAndroidModule {
-
     @BindingAnnotation
     @Target( {
             FIELD, PARAMETER, METHOD

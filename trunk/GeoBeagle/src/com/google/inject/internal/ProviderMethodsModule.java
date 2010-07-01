@@ -95,8 +95,8 @@ private final Stopwatch stopwatch;
     for (Class<?> c = delegate.getClass(); 
         c != Object.class; 
         c = c.getSuperclass()) {
-      if (hasNoProviderMethods.containsKey(c))
-          continue;
+//      if (hasNoProviderMethods.containsKey(c))
+//          continue;
       int annotationCount = 0;
       stopwatch.reset();
       for (Method method : c.getDeclaredMethods()) {

@@ -77,17 +77,6 @@ public class GeoBeaglePackageModule extends AbstractAndroidModule {
     public static @interface ExternalStorageDirectory {
     }
 
-    /*
-    @Provides
-    @DialogOnClickListenerNOP
-    android.content.DialogInterface.OnClickListener providesDialogOnClickListenerDoNothing() {
-        return new android.content.DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        };
-    }
-    */
-    
     @BindingAnnotation
     @Target( {
             FIELD, PARAMETER, METHOD

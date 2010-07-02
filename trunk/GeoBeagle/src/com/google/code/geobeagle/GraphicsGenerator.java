@@ -178,12 +178,6 @@ public class GraphicsGenerator {
         void paintAttributes(int difficulty, int terrain, Bitmap copy, Canvas canvas) ;
     }
     
-    public static class NullAttributesPainter implements AttributesPainter {
-        @Override
-        public void paintAttributes(int difficulty, int terrain, Bitmap copy, Canvas canvas) {
-        }
-    }
-    
     public static class DifficultyAndTerrainPainter implements AttributesPainter {
         private final AttributePainter mAttributePainter;
 

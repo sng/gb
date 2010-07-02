@@ -15,6 +15,9 @@
 package com.google.code.geobeagle.activity.map;
 
 import com.google.android.maps.Overlay;
+import com.google.code.geobeagle.R;
+import com.google.code.geobeagle.activity.map.GeoMapActivityModule.NullOverlay;
+import com.google.inject.Inject;
 
 import android.util.Log;
 
@@ -24,28 +27,35 @@ public class OverlayManager {
     static final int DENSITY_MAP_ZOOM_THRESHOLD = 13;
     private final CachePinsOverlayFactory mCachePinsOverlayFactory;
     private final DensityOverlay mDensityOverlay;
-    private final GeoMapView mGeoMapView;
-    private final List<Overlay> mMapOverlays;
     private boolean mUsesDensityMap;
+    private final GeoMapActivity mActivity;
 
-    public OverlayManager(GeoMapView geoMapView, List<Overlay> mapOverlays,
-            DensityOverlay densityOverlay, CachePinsOverlayFactory cachePinsOverlayFactory,
-            boolean usesDensityMap) {
-        mGeoMapView = geoMapView;
-        mMapOverlays = mapOverlays;
+    @Inject
+    public OverlayManager(GeoMapActivity activity, DensityOverlay densityOverlay,
+            CachePinsOverlayFactory cachePinsOverlayFactory) {
+        mActivity = activity;
         mDensityOverlay = densityOverlay;
         mCachePinsOverlayFactory = cachePinsOverlayFactory;
-        mUsesDensityMap = usesDensityMap;
+        mUsesDensityMap = false;
+        GeoMapView geoMapView = (GeoMapView)mActivity.findViewById(R.id.mapview);
+        Overlay myLocationOverlay = activity.getMyLocationOverlay();
+
+        final List<Overlay> mapOverlays = geoMapView.getOverlays();
+        final NullOverlay nullOverlay = new NullOverlay();
+        mapOverlays.add(nullOverlay);
+        mapOverlays.add(myLocationOverlay);
     }
 
     public void selectOverlay() {
-        final int zoomLevel = mGeoMapView.getZoomLevel();
+        GeoMapView geoMapView = (GeoMapView)mActivity.findViewById(R.id.mapview);
+        final List<Overlay> mapOverlays = geoMapView.getOverlays();
+        final int zoomLevel = geoMapView.getZoomLevel();
         Log.d("GeoBeagle", "Zoom: " + zoomLevel);
         boolean newZoomUsesDensityMap = zoomLevel < OverlayManager.DENSITY_MAP_ZOOM_THRESHOLD;
         if (newZoomUsesDensityMap && mUsesDensityMap)
             return;
         mUsesDensityMap = newZoomUsesDensityMap;
-        mMapOverlays.set(0, mUsesDensityMap ? mDensityOverlay : mCachePinsOverlayFactory
+        mapOverlays.set(0, mUsesDensityMap ? mDensityOverlay : mCachePinsOverlayFactory
                 .getCachePinsOverlay());
     }
 

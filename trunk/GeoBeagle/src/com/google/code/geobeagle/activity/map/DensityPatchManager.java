@@ -18,6 +18,8 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Projection;
 import com.google.code.geobeagle.Geocache;
+import com.google.code.geobeagle.activity.map.DensityMatrix.DensityPatch;
+import com.google.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +32,9 @@ class DensityPatchManager {
     public static final int RESOLUTION_LATITUDE_E6 = (int)(RESOLUTION_LATITUDE * 1E6);
     public static final int RESOLUTION_LONGITUDE_E6 = (int)(RESOLUTION_LONGITUDE * 1E6);
 
-    DensityPatchManager(List<DensityMatrix.DensityPatch> patches, QueryManager queryManager) {
-        mDensityPatches = patches;
+    @Inject
+    DensityPatchManager(QueryManager queryManager) {
+        mDensityPatches = new ArrayList<DensityPatch>();
         mQueryManager = queryManager;
     }
 

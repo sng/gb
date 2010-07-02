@@ -172,7 +172,6 @@ public class GraphicsGenerator {
         @Override
         public void draw(Canvas canvas) {
         }
-
     }
 
     public static interface AttributesPainter {
@@ -206,20 +205,19 @@ public class GraphicsGenerator {
 
     public static class IconRenderer {
         private final Resources mResources;
-        private final AttributesPainter mAttributesPainter;
 
         @Inject
-        public IconRenderer(Resources resources, AttributesPainter attributesPainter) {
+        public IconRenderer(Resources resources) {
             mResources = resources;
-            mAttributesPainter = attributesPainter;
         }
 
         public Drawable renderIcon(int difficulty, int terrain, int backdropId,
-                IconOverlay iconOverlay, BitmapCopier bitmapCopier) {
+                IconOverlay iconOverlay, BitmapCopier bitmapCopier,
+                AttributesPainter attributesPainter) {
             Bitmap bitmap = BitmapFactory.decodeResource(mResources, backdropId);
             Bitmap copy = bitmapCopier.copy(bitmap);
             Canvas canvas = new Canvas(copy);
-            mAttributesPainter.paintAttributes(difficulty, terrain, copy, canvas);
+            attributesPainter.paintAttributes(difficulty, terrain, copy, canvas);
             iconOverlay.draw(canvas);
 
             return bitmapCopier.getDrawable(copy);

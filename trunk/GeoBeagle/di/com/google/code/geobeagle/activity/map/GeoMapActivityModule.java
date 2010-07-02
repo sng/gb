@@ -21,10 +21,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import com.google.android.maps.Overlay;
 import com.google.code.geobeagle.Geocache;
-import com.google.code.geobeagle.GraphicsGenerator.IconOverlayFactory;
-import com.google.code.geobeagle.GraphicsGenerator.IconRenderer;
-import com.google.code.geobeagle.GraphicsGenerator.MapViewBitmapCopier;
-import com.google.code.geobeagle.activity.cachelist.presenter.GeoBeaglePackageAnnotations.DifficultyAndTerrainPainterAnnotation;
 import com.google.code.geobeagle.activity.map.CachePinsOverlayFactory.CachePinsQueryManager;
 import com.google.code.geobeagle.activity.map.QueryManager.CachedNeedsLoading;
 import com.google.code.geobeagle.activity.map.QueryManager.LoaderImpl;
@@ -51,14 +47,6 @@ public class GeoMapActivityModule extends AbstractAndroidModule {
 
     @Override
     protected void configure() {
-    }
-
-    @Provides
-    @DifficultyAndTerrainPainterAnnotation
-    CacheItemFactory providesCacheItemDifficultyAndTerrainFactory(
-            @DifficultyAndTerrainPainterAnnotation IconRenderer iconRenderer,
-            MapViewBitmapCopier mapViewBitmapCopier, IconOverlayFactory iconOverlayFactory) {
-        return new CacheItemFactory(iconRenderer, mapViewBitmapCopier, iconOverlayFactory);
     }
 
     @Provides

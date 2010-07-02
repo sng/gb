@@ -14,18 +14,8 @@
 
 package com.google.code.geobeagle.activity.map;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import com.google.android.maps.Overlay;
 import com.google.code.geobeagle.Geocache;
-import com.google.code.geobeagle.activity.map.CachePinsOverlayFactory.CachePinsQueryManager;
-import com.google.code.geobeagle.activity.map.QueryManager.CachedNeedsLoading;
-import com.google.code.geobeagle.activity.map.QueryManager.LoaderImpl;
-import com.google.code.geobeagle.activity.map.QueryManager.PeggedLoader;
-import com.google.inject.BindingAnnotation;
 import com.google.inject.Provides;
 
 import roboguice.config.AbstractAndroidModule;
@@ -33,14 +23,9 @@ import roboguice.config.AbstractAndroidModule;
 import android.content.Context;
 import android.content.res.Resources;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 
 public class GeoMapActivityModule extends AbstractAndroidModule {
-
-    @BindingAnnotation @Target({ FIELD, PARAMETER, METHOD }) @Retention(RUNTIME)
-    public static @interface DensityMapQueryManager {}
 
     static class NullOverlay extends Overlay {
     }
@@ -53,21 +38,5 @@ public class GeoMapActivityModule extends AbstractAndroidModule {
     CachePinsOverlay providesCachePinsOverlay(CacheItemFactory cacheItemFactory, Context context,
             Resources resources) {
         return new CachePinsOverlay(resources, cacheItemFactory, context, new ArrayList<Geocache>());
-    }
-
-    @Provides
-    @CachePinsQueryManager
-    QueryManager providesQueryManagerCachePins(LoaderImpl loaderImpl, CachedNeedsLoading cachedNeedsLoading) {
-        return new QueryManager(loaderImpl, cachedNeedsLoading, new int[] {
-                0, 0, 0, 0
-        });
-    }
-
-    @Provides
-    @DensityMapQueryManager
-    QueryManager providesQueryManagerDensityMap(PeggedLoader peggedLoader, CachedNeedsLoading cachedNeedsLoading) {
-        return new QueryManager(peggedLoader, cachedNeedsLoading, new int[] {
-                0, 0, 0, 0
-        });
     }
 }

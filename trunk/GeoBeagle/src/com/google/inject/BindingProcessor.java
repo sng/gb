@@ -43,6 +43,9 @@ import com.google.inject.spi.ProviderBinding;
 import com.google.inject.spi.ProviderInstanceBinding;
 import com.google.inject.spi.ProviderKeyBinding;
 import com.google.inject.spi.UntargettedBinding;
+
+import android.util.Log;
+
 import java.util.List;
 import java.util.Set;
 
@@ -146,6 +149,7 @@ class BindingProcessor extends AbstractProcessor {
         // Example: bind(Date.class).annotatedWith(Red.class);
         // We can't assume abstract types aren't injectable. They may have an
         // @ImplementedBy annotation or something.
+//        Log.d("Guices", "VISITING BINDING: " + untargetted);
         if (key.hasAnnotationType()) {
           errors.missingImplementation(key);
           putBinding(invalidBinding(injector, key, source));

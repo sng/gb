@@ -100,12 +100,11 @@ private final Stopwatch stopwatch;
       int annotationCount = 0;
       stopwatch.reset();
       for (Method method : c.getDeclaredMethods()) {
-        Log.d("Guice", "ProviderMethods: " + c.getCanonicalName() + ":" + method.getName());
         if (method.isAnnotationPresent(Provides.class)) {
           result.add(createProviderMethod(binder, method));
           annotationCount++;
         }
-        stopwatch.resetAndLog(method.getName());
+        stopwatch.resetAndLog("getProviderMethods: " + method.getName());
       }
       if (annotationCount == 0) {
         hasNoProviderMethods.put(c, 0);

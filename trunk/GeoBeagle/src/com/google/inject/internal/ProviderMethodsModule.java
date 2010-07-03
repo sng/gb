@@ -98,13 +98,12 @@ private final Stopwatch stopwatch;
       if (hasNoProviderMethods.containsKey(c))
           continue;
       int annotationCount = 0;
-      stopwatch.reset();
       for (Method method : c.getDeclaredMethods()) {
         if (method.isAnnotationPresent(Provides.class)) {
           result.add(createProviderMethod(binder, method));
           annotationCount++;
         }
-        stopwatch.resetAndLog("getProviderMethods: " + method.getName());
+//        stopwatch.resetAndLog("getProviderMethods: " + method.getName());
       }
       if (annotationCount == 0) {
         hasNoProviderMethods.put(c, 0);

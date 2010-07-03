@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 public class Stopwatch {
   private static final Logger logger = Logger.getLogger(Stopwatch.class.getName());
 
+  public static Stopwatch theStopwatch;
   private long start = System.currentTimeMillis();
 
   /**

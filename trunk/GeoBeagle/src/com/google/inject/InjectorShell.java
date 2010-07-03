@@ -117,6 +117,8 @@ class InjectorShell {
      */
     List<InjectorShell> build(Initializer initializer, BindingProcessor bindingProcessor,
         Stopwatch stopwatch, Errors errors) {
+        Stopwatch.theStopwatch = stopwatch;
+      stopwatch.resetAndLog("starting build");
       checkState(stage != null, "Stage not initialized");
       checkState(privateElements == null || parent != null, "PrivateElements with no parent");
       checkState(state != null, "no state. Did you remember to lock() ?");
@@ -125,15 +127,19 @@ class InjectorShell {
       if (privateElements != null) {
         privateElements.initInjector(injector);
       }
+      stopwatch.resetAndLog("init injector");
 
       // bind Stage and Singleton if this is a top-level injector
       if (parent == null) {
         modules.add(0, new RootModule(stage));
         new TypeConverterBindingProcessor(errors).prepareBuiltInConverters(injector);
       }
+      stopwatch.resetAndLog("bind stage and singleton");
 
-      elements.addAll(Elements.getElements(stage, modules));
+      final List<Element> elements2 = Elements.getElements(stage, modules);
       stopwatch.resetAndLog("Module execution");
+      elements.addAll(elements2);
+      stopwatch.resetAndLog("add all");
 
       new MessageProcessor(errors).process(injector, elements);
 

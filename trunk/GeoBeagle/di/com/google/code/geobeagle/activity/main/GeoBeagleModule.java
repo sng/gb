@@ -44,6 +44,7 @@ import java.util.Arrays;
 public class GeoBeagleModule extends AbstractAndroidModule {
     @Override
     protected void configure() {
+        bind(ChooseNavDialog.class).toProvider(ChooseNavDialogProvider.class);
         bind(Paint.class).toInstance(new Paint());
         bind(Rect.class).toInstance(new Rect());
     }

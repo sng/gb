@@ -37,6 +37,8 @@ import com.google.inject.internal.ConstantBindingBuilderImpl;
 import com.google.inject.internal.Errors;
 import com.google.inject.internal.ImmutableList;
 import com.google.inject.internal.Lists;
+import com.google.inject.internal.Stopwatch;
+
 import static com.google.inject.internal.Preconditions.checkArgument;
 import com.google.inject.internal.PrivateElementsImpl;
 import com.google.inject.internal.ProviderMethodsModule;
@@ -94,12 +96,18 @@ public final class Elements {
 
   /**
    * Records the elements executed by {@code modules}.
+ * @param stopwatch 
    */
   public static List<Element> getElements(Stage stage, Iterable<? extends Module> modules) {
+      Stopwatch.theStopwatch.resetAndLog("getElements 1");
+
     RecordingBinder binder = new RecordingBinder(stage);
+    Stopwatch.theStopwatch.resetAndLog("getElements 1");
     for (Module module : modules) {
       binder.install(module);
+      Stopwatch.theStopwatch.resetAndLog("installed: " + module);
     }
+    Stopwatch.theStopwatch.resetAndLog("getElements 2");
     return Collections.unmodifiableList(binder.elements);
   }
 

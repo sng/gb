@@ -60,7 +60,6 @@ class ConstructorInjectorStore {
   private <T> ConstructorInjector<T> createConstructor(TypeLiteral<T> type, Errors errors)
       throws ErrorsException {
 //      Log.d("Guice", "CREATECONSTRUCTOR: " + type.toString());
-      stopwatch.reset();
       
     int numErrorsBefore = errors.size();
 

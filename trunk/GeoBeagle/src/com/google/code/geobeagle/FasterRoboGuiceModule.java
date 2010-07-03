@@ -63,7 +63,6 @@ public class FasterRoboGuiceModule extends RoboGuiceModule {
     @Override
     protected void configure() {
         // Sundry Android Classes
-        bind(SharedPreferences.class).toProvider(SharedPreferencesProvider.class);
         bind(Resources.class).toProvider(ResourcesProvider.class);
         bind(ContentResolver.class).toProvider(ContentResolverProvider.class);
 

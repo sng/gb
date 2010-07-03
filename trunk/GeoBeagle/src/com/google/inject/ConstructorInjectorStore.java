@@ -62,8 +62,6 @@ class ConstructorInjectorStore {
 //      Log.d("Guice", "CREATECONSTRUCTOR: " + type.toString());
       stopwatch.reset();
       
-    if (type.toString().equals("com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget"))
-        stopwatch.resetAndLog("GSW: 1");
     int numErrorsBefore = errors.size();
 
     InjectionPoint injectionPoint;
@@ -73,18 +71,11 @@ class ConstructorInjectorStore {
       errors.merge(e.getErrorMessages());
       throw errors.toException();
     }
-    if (type.toString().equals("com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget"))
-        stopwatch.resetAndLog("GSW: 2");
 
     SingleParameterInjector<?>[] constructorParameterInjectors
         = injector.getParametersInjectors(injectionPoint.getDependencies(), errors);
-    if (type.toString().equals("com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget"))
-        stopwatch.resetAndLog("GSW: 2.5");
     MembersInjectorImpl<T> membersInjector = injector.membersInjectorStore.get(type, errors);
 
-    if (type.toString().equals("com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget"))
-        stopwatch.resetAndLog("GSW: 3");
-    
 
 
 
@@ -93,20 +84,14 @@ class ConstructorInjectorStore {
 
     
     ConstructionProxyFactory<T> factory = new DefaultConstructionProxyFactory<T>(injectionPoint);
-    if (type.toString().equals("com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget"))
-        stopwatch.resetAndLog("GSW: 4");
 
 
     errors.throwIfNewErrors(numErrorsBefore);
 
-    if (type.toString().equals("com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget"))
-        stopwatch.resetAndLog("GSW: 5");
     final ConstructorInjector<T> constructorInjector = new ConstructorInjector<T>(membersInjector.getInjectionPoints(), factory.create(),
         constructorParameterInjectors, membersInjector);
-    if (type.toString().equals("com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidget"))
-        stopwatch.resetAndLog("GSW: 6");
 
-    stopwatch.resetAndLog(type.toString());
+//    stopwatch.resetAndLog("CreateConstructor: " + type.toString());
     return constructorInjector;
   }
 }

@@ -19,12 +19,15 @@ import com.google.code.geobeagle.bcaching.communication.BCachingException;
 import com.google.code.geobeagle.bcaching.communication.BCachingListImportHelper.BufferedReaderFactory;
 import com.google.inject.Inject;
 
+import roboguice.inject.ContextScoped;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Hashtable;
 
+@ContextScoped
 class BufferedReaderFactoryImpl implements BufferedReaderFactory {
     private final BCachingCommunication bcachingCommunication;
 

@@ -24,7 +24,9 @@ import com.google.code.geobeagle.bcaching.progress.ProgressHandler;
 import com.google.code.geobeagle.bcaching.progress.ProgressManager;
 import com.google.code.geobeagle.bcaching.progress.ProgressMessage;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+import roboguice.inject.ContextScoped;
 import roboguice.util.RoboThread;
 
 import android.util.Log;
@@ -36,6 +38,7 @@ import android.widget.Toast;
  * 
  * @author sng
  */
+@ContextScoped
 public class ImportBCachingWorker extends RoboThread implements Abortable {
     private final CacheListCursor cursor;
     private final DetailsReaderImport detailsReaderImport;

@@ -14,6 +14,7 @@
 
 package com.google.code.geobeagle.bcaching.communication;
 
+import com.google.code.geobeagle.bcaching.BufferedReaderFactoryImpl;
 import com.google.inject.Inject;
 
 import android.util.Log;
@@ -31,7 +32,7 @@ public class BCachingListImportHelper {
     private final BufferedReaderFactory bufferedReaderFactory;
 
     @Inject
-    BCachingListImportHelper(BufferedReaderFactory readerFactory,
+    BCachingListImportHelper(BufferedReaderFactoryImpl readerFactory,
             BCachingListFactory bcachingListFactory) {
         this.bufferedReaderFactory = readerFactory;
         this.bcachingListFactory = bcachingListFactory;

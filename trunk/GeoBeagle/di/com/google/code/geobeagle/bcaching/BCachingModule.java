@@ -21,12 +21,9 @@ import com.google.code.geobeagle.bcaching.BCachingAnnotations.DetailsReaderAnnot
 import com.google.code.geobeagle.bcaching.communication.BCachingCommunication;
 import com.google.code.geobeagle.bcaching.communication.BCachingException;
 import com.google.code.geobeagle.bcaching.communication.BCachingListImportHelper.BufferedReaderFactory;
-import com.google.code.geobeagle.bcaching.progress.ProgressHandler;
 import com.google.code.geobeagle.database.ClearCachesFromSource;
 import com.google.code.geobeagle.database.ClearCachesFromSourceNull;
-import com.google.code.geobeagle.xmlimport.CachePersisterFacade;
 import com.google.code.geobeagle.xmlimport.MessageHandlerInterface;
-import com.google.code.geobeagle.xmlimport.GpxToCache.Aborter;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 
@@ -51,12 +48,8 @@ public class BCachingModule extends AbstractAndroidModule {
     @Override
     protected void configure() {
         bind(BufferedReaderFactory.class).to(BufferedReaderFactoryImpl.class);
-        bind(ProgressHandler.class).in(ContextScoped.class);
         bind(MessageHandlerInterface.class).to(MessageHandlerAdapter.class);
-        bind(CachePersisterFacade.class).in(ContextScoped.class);
-        bind(Aborter.class).in(ContextScoped.class);
         bind(ClearCachesFromSource.class).to(ClearCachesFromSourceNull.class);
-        bind(ImportBCachingWorker.class).in(ContextScoped.class);
         requestStaticInjection(RoboThread.class);
     }
 
@@ -71,6 +64,7 @@ public class BCachingModule extends AbstractAndroidModule {
         return progressDialog;
     }
 
+    @ContextScoped
     static class BufferedReaderFactoryImpl implements BufferedReaderFactory {
         private final BCachingCommunication bcachingCommunication;
 

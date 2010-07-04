@@ -17,6 +17,8 @@ package com.google.code.geobeagle.bcaching.communication;
 import com.google.code.geobeagle.bcaching.communication.BCachingList.BCachingListFactory;
 import com.google.inject.Inject;
 
+import roboguice.inject.ContextScoped;
+
 import android.util.Log;
 
 import java.io.BufferedReader;

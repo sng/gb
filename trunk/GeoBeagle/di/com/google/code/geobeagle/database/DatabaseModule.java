@@ -16,16 +16,12 @@ package com.google.code.geobeagle.database;
 
 import com.google.inject.Provider;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 
 import roboguice.config.AbstractAndroidModule;
-import roboguice.inject.ContextScoped;
 
 public class DatabaseModule extends AbstractAndroidModule {
     @Override
     protected void configure() {
-        bind(FilterNearestCaches.class).in(ContextScoped.class);
-        bind(DbFrontend.class).in(Singleton.class);
     }
 
     @Provides

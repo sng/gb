@@ -16,6 +16,8 @@
 
 package com.google.inject.internal;
 
+import android.util.Log;
+
 import java.util.logging.Logger;
 
 /**
@@ -44,6 +46,7 @@ public class Stopwatch {
    * Resets and logs elapsed time in milliseconds.
    */
   public void resetAndLog(String label) {
+      Log.d("Guice", label + ": " + reset() + "ms");
     logger.fine(label + ": " + reset() + "ms");
   }
 }

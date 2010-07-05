@@ -16,7 +16,18 @@ package com.google.code.geobeagle.activity.cachelist;
 
 import com.google.code.geobeagle.Timing;
 import com.google.code.geobeagle.GeoBeaglePackageModule.DefaultSharedPreferences;
+import com.google.code.geobeagle.actions.ContextActions;
+import com.google.code.geobeagle.actions.MenuActionMap;
+import com.google.code.geobeagle.actions.MenuActionSearchOnline;
+import com.google.code.geobeagle.actions.MenuActionSettings;
+import com.google.code.geobeagle.actions.MenuActions;
+import com.google.code.geobeagle.activity.cachelist.actions.context.ContextAction;
 import com.google.code.geobeagle.activity.cachelist.actions.context.ContextActionDelete;
+import com.google.code.geobeagle.activity.cachelist.actions.context.ContextActionEdit;
+import com.google.code.geobeagle.activity.cachelist.actions.context.ContextActionView;
+import com.google.code.geobeagle.activity.cachelist.actions.menu.Abortable;
+import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionDeleteAllCaches;
+import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionMyLocation;
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionSyncBCaching;
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionSyncGpx;
 import com.google.code.geobeagle.activity.cachelist.model.CacheListData;
@@ -25,6 +36,7 @@ import com.google.code.geobeagle.activity.cachelist.presenter.BearingFormatter;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListAdapter;
 import com.google.code.geobeagle.activity.cachelist.presenter.RelativeBearingFormatter;
+import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.ActionManager;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
 import com.google.code.geobeagle.formatting.DistanceFormatter;
 import com.google.code.geobeagle.formatting.DistanceFormatterImperial;
@@ -40,10 +52,12 @@ import roboguice.inject.ContextScoped;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 
 public class CacheListModule extends AbstractAndroidModule {
     @Override
     protected void configure() {
+        bind(ActionManager.class).toProvider(ActionManagerProvider.class);
         bind(GeocacheListAdapter.class).in(ContextScoped.class);
         bind(MenuActionSyncBCaching.class).in(ContextScoped.class);
         bind(MenuActionSyncGpx.class).in(ContextScoped.class);
@@ -101,4 +115,35 @@ public class CacheListModule extends AbstractAndroidModule {
     ListActivity providesListActivity(Activity activity) {
         return (ListActivity)activity;
     }
+
+    @Provides
+    Abortable providesAbortable() {
+        return new NullAbortable();
+    }
+    
+    @Provides
+    MenuActions providesMenuActions(MenuActionSyncGpx menuActionSyncGpx,
+            MenuActionDeleteAllCaches menuActionDeleteAllCaches,
+            MenuActionMyLocation menuActionMyLocation,
+            MenuActionSearchOnline menuActionSearchOnline, MenuActionMap menuActionMap,
+            MenuActionSettings menuActionSettings, Resources resources) {
+        final MenuActions menuActions = new MenuActions(resources);
+        menuActions.add(menuActionSyncGpx);
+        menuActions.add(menuActionDeleteAllCaches);
+        menuActions.add(menuActionMyLocation);
+        menuActions.add(menuActionSearchOnline);
+        menuActions.add(menuActionMap);
+        menuActions.add(menuActionSettings);
+        return menuActions;
+    }
+
+    @Provides
+    ContextActions provideContextActions(ContextActionDelete contextActionDelete,
+            ContextActionEdit contextActionEdit, ContextActionView contextActionView) {
+        return new ContextActions(new ContextAction[] {
+                contextActionDelete, contextActionView, contextActionEdit
+        });
+    }
+
+
 }

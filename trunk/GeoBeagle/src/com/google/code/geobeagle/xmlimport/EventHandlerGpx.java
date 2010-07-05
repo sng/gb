@@ -73,6 +73,7 @@ public class EventHandlerGpx implements EventHandler {
 
     @Override
     public void endTag(String name, String previousFullPath) throws IOException {
+        Log.d("GeoBeagle", "endTag: " + name);
         if (previousFullPath.equals(XPATH_WPT)) {
             mCachePersisterFacade.endCache(Source.GPX);
         }

@@ -16,9 +16,11 @@
 
 package com.google.inject.internal;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.Module;
+import com.google.inject.PrivateModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
@@ -26,9 +28,15 @@ import static com.google.inject.internal.Preconditions.checkNotNull;
 import com.google.inject.spi.Dependency;
 import com.google.inject.spi.Message;
 import com.google.inject.util.Modules;
+
+import roboguice.config.AbstractAndroidModule;
+
+import android.util.Log;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -41,7 +49,15 @@ import java.util.List;
 public final class ProviderMethodsModule implements Module {
   private final Object delegate;
   private final TypeLiteral<?> typeLiteral;
-
+  private static HashMap<Class<?>, Integer> hasNoProviderMethods = initializeHasNoProviderMethods();
+  private final static HashMap<Class<?>, Integer> initializeHasNoProviderMethods(){
+      HashMap<Class<?>, Integer> hm = new HashMap<Class<?>, Integer>();
+      hm.put(PrivateModule.class, 0);
+      hm.put(AbstractModule.class, 0);
+      hm.put(AbstractAndroidModule.class, 0);
+       
+    return hm;
+      }
   private ProviderMethodsModule(Object delegate) {
     this.delegate = checkNotNull(delegate, "delegate");
     this.typeLiteral = TypeLiteral.get(this.delegate.getClass());
@@ -74,11 +90,21 @@ public final class ProviderMethodsModule implements Module {
 
   public List<ProviderMethod<?>> getProviderMethods(Binder binder) {
     List<ProviderMethod<?>> result = Lists.newArrayList();
-    for (Class<?> c = delegate.getClass(); c != Object.class; c = c.getSuperclass()) {
+    for (Class<?> c = delegate.getClass(); 
+        c != Object.class; 
+        c = c.getSuperclass()) {
+      if (hasNoProviderMethods.containsKey(c))
+          continue;
+      int annotationCount = 0;
       for (Method method : c.getDeclaredMethods()) {
+          Log.d("Guice", c.getCanonicalName() + ":" + method.getName());
         if (method.isAnnotationPresent(Provides.class)) {
           result.add(createProviderMethod(binder, method));
+          annotationCount++;
         }
+      }
+      if (annotationCount == 0) {
+        hasNoProviderMethods.put(c, 0);
       }
     }
     return result;

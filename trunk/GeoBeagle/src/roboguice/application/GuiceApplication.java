@@ -136,6 +136,20 @@ public class GuiceApplication extends Application implements InjectorProvider {
         return Guice.createInjector(Stage.DEVELOPMENT, modules);
     }
 
+    public Injector createInjector(ArrayList<Module> activityModules) {
+        ArrayList<Module> modules = new ArrayList<Module>();
+        modules.addAll(activityModules);
+        Module roboguiceModule = new RoboGuiceModule(contextScope, throwingContextProvider, contextProvider, resourceListener, viewListener, extrasListener,
+                this);
+        modules.add(roboguiceModule);
+        addApplicationModules(modules);
+        for (Module m : modules) {
+            if (m instanceof AbstractAndroidModule) {
+                ((AbstractAndroidModule) m).setStaticTypeListeners(staticTypeListeners);
+            }
+        }
+        return Guice.createInjector(Stage.DEVELOPMENT, modules);
+    }
     /**
      * You should override this method to add your own custom bindings. <br />
      * To do so, you must create implementations of the {@link Module}

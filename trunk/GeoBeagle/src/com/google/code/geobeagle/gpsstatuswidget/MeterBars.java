@@ -18,7 +18,6 @@ package com.google.code.geobeagle.gpsstatuswidget;
  */
 
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetModule.LocationViewer;
-import com.google.inject.Inject;
 
 import android.graphics.Color;
 import android.widget.TextView;
@@ -27,7 +26,6 @@ class MeterBars {
     private final TextView mBarsAndAzimuth;
     private final MeterFormatter mMeterFormatter;
 
-    @Inject
     MeterBars(@LocationViewer TextView textView, MeterFormatter meterFormatter) {
         mBarsAndAzimuth = textView;
         mMeterFormatter = meterFormatter;

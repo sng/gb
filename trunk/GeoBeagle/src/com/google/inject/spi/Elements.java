@@ -99,15 +99,12 @@ public final class Elements {
  * @param stopwatch 
    */
   public static List<Element> getElements(Stage stage, Iterable<? extends Module> modules) {
-      Stopwatch.theStopwatch.resetAndLog("getElements 1");
-
     RecordingBinder binder = new RecordingBinder(stage);
-    Stopwatch.theStopwatch.resetAndLog("getElements 1");
+    Stopwatch.theStopwatch.resetAndLog("getElements");
     for (Module module : modules) {
       binder.install(module);
       Stopwatch.theStopwatch.resetAndLog("installed: " + module);
     }
-    Stopwatch.theStopwatch.resetAndLog("getElements 2");
     return Collections.unmodifiableList(binder.elements);
   }
 

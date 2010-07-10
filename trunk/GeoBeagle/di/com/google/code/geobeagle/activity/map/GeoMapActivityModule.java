@@ -124,12 +124,8 @@ public class GeoMapActivityModule extends AbstractAndroidModule {
     @Provides
     OverlayManager providesOverlayManager(Activity activity, DensityOverlay densityOverlay,
             CachePinsOverlayFactory cachePinsOverlayFactory, MyLocationOverlay myLocationOverlay) {
-        final GeoMapView geoMapView = (GeoMapView)activity.findViewById(R.id.mapview);
-        final List<Overlay> mapOverlays = geoMapView.getOverlays();
-        final NullOverlay nullOverlay = new NullOverlay();
-        mapOverlays.add(nullOverlay);
 
-        return new OverlayManager(geoMapView, mapOverlays, densityOverlay, cachePinsOverlayFactory,
+        return new OverlayManager(activity, densityOverlay, cachePinsOverlayFactory,
                 false, myLocationOverlay);
     }
 

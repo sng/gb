@@ -14,6 +14,7 @@
 
 package com.google.code.geobeagle.activity.map;
 
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
 import android.util.Log;
@@ -30,12 +31,13 @@ public class OverlayManager {
 
     public OverlayManager(GeoMapView geoMapView, List<Overlay> mapOverlays,
             DensityOverlay densityOverlay, CachePinsOverlayFactory cachePinsOverlayFactory,
-            boolean usesDensityMap) {
+            boolean usesDensityMap, MyLocationOverlay myLocationOverlay) {
         mGeoMapView = geoMapView;
         mMapOverlays = mapOverlays;
         mDensityOverlay = densityOverlay;
         mCachePinsOverlayFactory = cachePinsOverlayFactory;
         mUsesDensityMap = usesDensityMap;
+        mapOverlays.add(myLocationOverlay);
     }
 
     public void selectOverlay() {

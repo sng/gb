@@ -44,6 +44,7 @@ class ConstructorInjectorStore {
       return createConstructor(type, errors);
     }
   };
+private int depth;
 
   ConstructorInjectorStore(InjectorImpl injector) {
     this.injector = injector;
@@ -59,7 +60,8 @@ class ConstructorInjectorStore {
 
   private <T> ConstructorInjector<T> createConstructor(TypeLiteral<T> type, Errors errors)
       throws ErrorsException {
-//      Log.d("Guice", "CREATECONSTRUCTOR: " + type.toString());
+      depth++;
+      Log.d("Guice", "CREATECONSTRUCTOR: " + depth + " :" + type.toString());
       
     int numErrorsBefore = errors.size();
 
@@ -91,6 +93,7 @@ class ConstructorInjectorStore {
         constructorParameterInjectors, membersInjector);
 
 //    stopwatch.resetAndLog("CreateConstructor: " + type.toString());
+    depth--;
     return constructorInjector;
   }
 }

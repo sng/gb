@@ -45,8 +45,6 @@ public class BCachingModule extends AbstractAndroidModule {
     protected void configure() {
         bind(ProgressHandler.class).in(ContextScoped.class);
         bind(MessageHandlerInterface.class).to(MessageHandlerAdapter.class);
-        bind(CachePersisterFacade.class).in(ContextScoped.class);
-        bind(Aborter.class).in(ContextScoped.class);
         bind(ClearCachesFromSource.class).to(ClearCachesFromSourceNull.class);
         
         requestStaticInjection(RoboThread.class);

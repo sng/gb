@@ -40,7 +40,7 @@ public class BCachingModule extends AbstractAndroidModule {
     WakeLock wakeLockProvider(PowerManager powerManager) {
         return powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Importing");
     }
-    
+
     @Override
     protected void configure() {
         bind(ProgressHandler.class).in(ContextScoped.class);
@@ -49,7 +49,8 @@ public class BCachingModule extends AbstractAndroidModule {
         bind(Aborter.class).in(ContextScoped.class);
         bind(ClearCachesFromSource.class).to(ClearCachesFromSourceNull.class);
         bind(ImportBCachingWorker.class).in(ContextScoped.class);
-        bind(BCachingProgressDialog.class).in(ContextScoped.class);
+        
         requestStaticInjection(RoboThread.class);
+        
     }
 }

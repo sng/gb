@@ -65,7 +65,6 @@ public class CacheListModule extends AbstractAndroidModule {
         bind(BearingFormatter.class).toProvider(BearingFormatterProvider.class).in(
                 ContextScoped.class);
         bind(CacheListData.class).in(ContextScoped.class);
-        bind(Timing.class).in(Singleton.class);
         bind(UpdateFlag.class).in(Singleton.class);
         bind(CacheListRefresh.class).in(ContextScoped.class);
         bind(ContextActionDelete.class).in(ContextScoped.class);

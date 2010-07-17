@@ -60,7 +60,6 @@ public class CacheListModule extends AbstractAndroidModule {
         bind(GeocacheListAdapter.class).in(ContextScoped.class);
         bind(MenuActionSyncBCaching.class).in(ContextScoped.class);
         bind(MenuActionSyncGpx.class).in(ContextScoped.class);
-        bind(ActivityVisible.class).in(Singleton.class);
         bind(DistanceFormatter.class).toProvider(DistanceFormatterProvider.class).in(
                 ContextScoped.class);
         bind(BearingFormatter.class).toProvider(BearingFormatterProvider.class).in(

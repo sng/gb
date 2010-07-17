@@ -62,8 +62,6 @@ public class CacheListModule extends AbstractAndroidModule {
                 ContextScoped.class);
         bind(BearingFormatter.class).toProvider(BearingFormatterProvider.class).in(
                 ContextScoped.class);
-        bind(UpdateFlag.class).in(Singleton.class);
-        bind(CacheListRefresh.class).in(ContextScoped.class);
     }
 
     static class DistanceFormatterProvider implements Provider<DistanceFormatter> {

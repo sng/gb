@@ -24,12 +24,9 @@ public class EventHandlerGpx implements EventHandler {
    
     static final String XPATH_CACHE = "/gpx/wpt/groundspeak:cache";
     static final String XPATH_CACHE_CONTAINER = "/gpx/wpt/groundspeak:cache/groundspeak:container";
-    static final String XPATH_CACHE_DIFFICULTY = "/gpx/wpt/groundspeak:cache/groundspeak:difficulty";
     static final String XPATH_CACHE_TERRAIN = "/gpx/wpt/groundspeak:cache/groundspeak:terrain";
     static final String XPATH_GEOCACHE_CONTAINER = "/gpx/wpt/geocache/container";
-    static final String XPATH_GEOCACHE_DIFFICULTY = "/gpx/wpt/geocache/difficulty";
     static final String XPATH_GEOCACHE_TERRAIN = "/gpx/wpt/geocache/terrain";
-    static final String XPATH_GEOCACHE_EXT_DIFFICULTY = "/gpx/wpt/extensions/cache/difficulty";
     static final String XPATH_GEOCACHE_EXT_TERRAIN = "/gpx/wpt/extensions/cache/terrain";
     static final String XPATH_GEOCACHELOGDATE = "/gpx/wpt/geocache/logs/log/time";
     static final String XPATH_GPXNAME = "/gpx/name";
@@ -94,11 +91,7 @@ public class EventHandlerGpx implements EventHandler {
              gpxPath.text(trimmedText, cachePersisterFacade);
              return true;
         }
-        if (fullPath.equals(XPATH_CACHE_DIFFICULTY)
-                || fullPath.equals(XPATH_GEOCACHE_DIFFICULTY)
-                || fullPath.equals(XPATH_GEOCACHE_EXT_DIFFICULTY)) {
-            cachePersisterFacade.difficulty(trimmedText);
-        } else if (fullPath.equals(XPATH_CACHE_TERRAIN) || fullPath.equals(XPATH_GEOCACHE_TERRAIN)
+        if (fullPath.equals(XPATH_CACHE_TERRAIN) || fullPath.equals(XPATH_GEOCACHE_TERRAIN)
                 || fullPath.equals(XPATH_GEOCACHE_EXT_TERRAIN)) {
             cachePersisterFacade.terrain(trimmedText);
         } else if (fullPath.equals(XPATH_CACHE_CONTAINER)

@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum GpxPath {
+    XPATH_CACHE_DIFFICULTY("/gpx/wpt/groundspeak:cache/groundspeak:difficulty", PathType.DIFFICULTY),
+    XPATH_GEOCACHE_DIFFICULTY("/gpx/wpt/geocache/difficulty", PathType.DIFFICULTY),
+    XPATH_GEOCACHE_EXT_DIFFICULTY("/gpx/wpt/extensions/cache/difficulty", PathType.DIFFICULTY),
     XPATH_GEOCACHE_TYPE("/gpx/wpt/geocache/type", PathType.CACHE_TYPE),
     XPATH_GEOCACHEHINT("/gpx/wpt/geocache/hints", PathType.HINT),
     XPATH_GEOCACHELOGDATE("/gpx/wpt/geocache/logs/log/time", PathType.LOG_DATE),
@@ -33,7 +36,8 @@ public enum GpxPath {
     XPATH_WAYPOINT_TYPE("/gpx/wpt/type", PathType.CACHE_TYPE),
     XPATH_WPTDESC("/gpx/wpt/desc", PathType.DESC),
     XPATH_WPTNAME("/gpx/wpt/name", PathType.WPT_NAME);
-        private enum PathType {
+
+    private enum PathType {
         CACHE_TYPE {
             @Override
             boolean text(String text, ICachePersisterFacade cachePersisterFacade)
@@ -47,6 +51,14 @@ public enum GpxPath {
             public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
                     throws IOException {
                 cachePersisterFacade.wptDesc(text);
+                return true;
+            }
+        },
+        DIFFICULTY {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.difficulty(text);
                 return true;
             }
         },

@@ -26,12 +26,7 @@ public class EventHandlerGpx implements EventHandler {
     static final String XPATH_GEOCACHELOGDATE = "/gpx/wpt/geocache/logs/log/time";
     static final String XPATH_GPXNAME = "/gpx/name";
     static final String XPATH_WPTTIME = "/gpx/wpt/time";
-    static final String XPATH_PLACEDBY = "/gpx/wpt/groundspeak:cache/groundspeak:placed_by";
     static final String XPATH_LOGTEXT = "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:text";
-    static final String XPATH_SHORTDESC = "/gpx/wpt/groundspeak:cache/groundspeak:short_description";
-    static final String XPATH_EXT_SHORTDESC = "/gpx/wpt/extensions/cache/short_description";
-    static final String XPATH_LONGDESC = "/gpx/wpt/groundspeak:cache/groundspeak:long_description";
-    static final String XPATH_EXT_LONGDESC = "/gpx/wpt/extensions/cache/long_description";
     
     static final String[] XPATH_PLAINLINES = {
             "/gpx/wpt/cmt",
@@ -42,7 +37,6 @@ public class EventHandlerGpx implements EventHandler {
             "/gpx/wpt/geocache/logs/log/type", "/gpx/wpt/geocache/logs/log/text"
 
     };
-//    static final String XPATH_LAST_MODIFIED = "/gpx/wpt/bcaching:cache/bcaching:lastModified";
     static final String XPATH_SYM = "/gpx/wpt/sym";
     static final String XPATH_WPT = "/gpx/wpt";
     static final String XPATH_WPTDESC = "/gpx/wpt/desc";
@@ -90,13 +84,6 @@ public class EventHandlerGpx implements EventHandler {
         } else if (fullPath.equals(XPATH_WPTTIME)) {
             mGpxTime = trimmedText;
             cachePersisterFacade.wptTime(trimmedText);
-        } else if (fullPath.equals(XPATH_PLACEDBY)) {
-            Log.d("GeoBeagle", "PB: " + trimmedText + ", " + mGpxTime);
-            cachePersisterFacade.placedBy(trimmedText);
-        } else if (fullPath.equals(XPATH_SHORTDESC) || (fullPath.equals(XPATH_EXT_SHORTDESC))) {
-            cachePersisterFacade.shortDescription(trimmedText);
-        } else if (fullPath.equals(XPATH_LONGDESC) || (fullPath.equals(XPATH_EXT_LONGDESC))) {
-            cachePersisterFacade.longDescription(trimmedText);
         }
         
         for (String writeLineMatch : XPATH_PLAINLINES) {

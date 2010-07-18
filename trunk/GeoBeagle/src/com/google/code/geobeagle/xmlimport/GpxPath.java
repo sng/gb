@@ -22,6 +22,7 @@ public enum GpxPath {
     XPATH_CACHE_CONTAINER("/gpx/wpt/groundspeak:cache/groundspeak:container", PathType.CONTAINER),
     XPATH_CACHE_DIFFICULTY("/gpx/wpt/groundspeak:cache/groundspeak:difficulty", PathType.DIFFICULTY),
     XPATH_CACHE_TERRAIN("/gpx/wpt/groundspeak:cache/groundspeak:terrain", PathType.TERRAIN),
+    XPATH_EXT_SHORTDESC("/gpx/wpt/extensions/cache/short_description", PathType.SHORT_DESCRIPTION),
     XPATH_GEOCACHE_CONTAINER("/gpx/wpt/geocache/container", PathType.CONTAINER),
     XPATH_GEOCACHE_DIFFICULTY("/gpx/wpt/geocache/difficulty", PathType.DIFFICULTY),
     XPATH_GEOCACHE_EXT_DIFFICULTY("/gpx/wpt/extensions/cache/difficulty", PathType.DIFFICULTY),
@@ -39,13 +40,16 @@ public enum GpxPath {
             PathType.LOG_DATE),
     XPATH_LOGTYPE("/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:type",
             PathType.LOG_TYPE),
+    XPATH_LONGDESC("/gpx/wpt/groundspeak:cache/groundspeak:long_description",
+            PathType.LONG_DESCRIPTION),
+    XPATH_PLACEDBY("/gpx/wpt/groundspeak:cache/groundspeak:placed_by", PathType.PLACED_BY),
+    XPATH_SHORTDESC("/gpx/wpt/groundspeak:cache/groundspeak:short_description",
+            PathType.SHORT_DESCRIPTION),
     XPATH_SYM("/gpx/wpt/sym", PathType.SYMBOL),
     XPATH_TERRACACHINGGPXTIME("/gpx/metadata/time", PathType.GPX_TIME),
     XPATH_WAYPOINT_TYPE("/gpx/wpt/type", PathType.CACHE_TYPE),
     XPATH_WPTDESC("/gpx/wpt/desc", PathType.DESC),
     XPATH_WPTNAME("/gpx/wpt/name", PathType.WPT_NAME);
-    // static final String XPATH_LOGTYPE =
-    // "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:type";
 
     private enum PathType {
         CACHE_TYPE {
@@ -119,11 +123,35 @@ public enum GpxPath {
                 return true;
             }
         },
+        LONG_DESCRIPTION {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.longDescription(text);
+                return true;
+            }
+        },
         NAME {
             @Override
             boolean text(String text, ICachePersisterFacade cachePersisterFacade)
                     throws IOException {
                 cachePersisterFacade.groundspeakName(text);
+                return true;
+            }
+        },
+        PLACED_BY {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.placedBy(text);
+                return true;
+            }
+        },
+        SHORT_DESCRIPTION {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.shortDescription(text);
                 return true;
             }
         },

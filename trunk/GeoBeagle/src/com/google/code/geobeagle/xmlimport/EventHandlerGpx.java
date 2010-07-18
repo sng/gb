@@ -32,17 +32,17 @@ public class EventHandlerGpx implements EventHandler {
     static final String XPATH_GEOCACHE_EXT_DIFFICULTY = "/gpx/wpt/extensions/cache/difficulty";
     static final String XPATH_GEOCACHE_EXT_TERRAIN = "/gpx/wpt/extensions/cache/terrain";
     static final String XPATH_GEOCACHE_TYPE = "/gpx/wpt/geocache/type";
-    static final String XPATH_GEOCACHEHINT = "/gpx/wpt/geocache/hints";
+//    static final String XPATH_GEOCACHEHINT = "/gpx/wpt/geocache/hints";
     static final String XPATH_GEOCACHELOGDATE = "/gpx/wpt/geocache/logs/log/time";
-    static final String XPATH_GEOCACHENAME = "/gpx/wpt/geocache/name";
+//    static final String XPATH_GEOCACHENAME = "/gpx/wpt/geocache/name";
     static final String XPATH_GPXNAME = "/gpx/name";
-    static final String XPATH_GPXTIME = "/gpx/time";
+//    static final String XPATH_GPXTIME = "/gpx/time";
     static final String XPATH_WPTTIME = "/gpx/wpt/time";
-    static final String XPATH_TERRACACHINGGPXTIME = "/gpx/metadata/time";
-    static final String XPATH_GROUNDSPEAKNAME = "/gpx/wpt/groundspeak:cache/groundspeak:name";
+//    static final String XPATH_TERRACACHINGGPXTIME = "/gpx/metadata/time";
+//    static final String XPATH_GROUNDSPEAKNAME = "/gpx/wpt/groundspeak:cache/groundspeak:name";
     static final String XPATH_PLACEDBY = "/gpx/wpt/groundspeak:cache/groundspeak:placed_by";
-    static final String XPATH_HINT = "/gpx/wpt/groundspeak:cache/groundspeak:encoded_hints";
-    static final String XPATH_LOGDATE = "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:date";
+//    static final String XPATH_HINT = "/gpx/wpt/groundspeak:cache/groundspeak:encoded_hints";
+//    static final String XPATH_LOGDATE = "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:date";
     static final String XPATH_LOGTEXT = "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:text";
     static final String XPATH_LOGTYPE = "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:type";
     static final String XPATH_SHORTDESC = "/gpx/wpt/groundspeak:cache/groundspeak:short_description";
@@ -103,19 +103,7 @@ public class EventHandlerGpx implements EventHandler {
              gpxPath.text(trimmedText, cachePersisterFacade);
              return true;
         }
-        if (fullPath.equals(XPATH_GPXTIME) || fullPath.equals(XPATH_TERRACACHINGGPXTIME)) {
-            return cachePersisterFacade.gpxTime(trimmedText);
-        } else if (fullPath.equals(XPATH_GROUNDSPEAKNAME) || fullPath.equals(XPATH_GEOCACHENAME)) {
-            cachePersisterFacade.groundspeakName(trimmedText);
-        } else if (fullPath.equals(XPATH_LOGDATE) || fullPath.equals(XPATH_GEOCACHELOGDATE)) {
-            cachePersisterFacade.logDate(trimmedText);
-        } else if (fullPath.equals(XPATH_SYM)) {
-            cachePersisterFacade.symbol(trimmedText);
-        } else if (fullPath.equals(XPATH_HINT) || fullPath.equals(XPATH_GEOCACHEHINT)) {
-            if (!trimmedText.equals("")) {
-                cachePersisterFacade.hint(trimmedText);
-            }
-        } else if (fullPath.equals(XPATH_GEOCACHE_TYPE) || fullPath.equals(XPATH_WAYPOINT_TYPE)) {
+        if (fullPath.equals(XPATH_GEOCACHE_TYPE) || fullPath.equals(XPATH_WAYPOINT_TYPE)) {
             cachePersisterFacade.cacheType(trimmedText);
         } else if (fullPath.equals(XPATH_CACHE_DIFFICULTY)
                 || fullPath.equals(XPATH_GEOCACHE_DIFFICULTY)

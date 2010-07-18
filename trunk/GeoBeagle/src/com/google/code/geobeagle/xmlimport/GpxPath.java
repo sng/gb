@@ -19,17 +19,82 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum GpxPath {
-    XPATH_WPTNAME("/gpx/wpt/name", PathType.WPT), XPATH_WPTDESC("/gpx/wpt/desc", PathType.DESC);
+    XPATH_GEOCACHEHINT("/gpx/wpt/geocache/hints", PathType.HINT),
+    XPATH_GEOCACHELOGDATE("/gpx/wpt/geocache/logs/log/time", PathType.LOG_DATE),
+    XPATH_GEOCACHENAME("/gpx/wpt/geocache/name", PathType.NAME),
+    XPATH_GPXTIME("/gpx/time", PathType.TIME),
+    XPATH_GROUNDSPEAKNAME("/gpx/wpt/groundspeak:cache/groundspeak:name", PathType.NAME),
+    XPATH_HINT("/gpx/wpt/groundspeak:cache/groundspeak:encoded_hints", PathType.HINT),
+    XPATH_LOGDATE("/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:date",
+            PathType.LOG_DATE),
+    XPATH_SYM("/gpx/wpt/sym", PathType.SYM),
+    XPATH_TERRACACHINGGPXTIME("/gpx/metadata/time", PathType.TIME),
+    XPATH_WPTDESC("/gpx/wpt/desc", PathType.DESC),
+    XPATH_WPTNAME("/gpx/wpt/name", PathType.WPT);
 
-    private final String path;
-    private final PathType pathType;
-
-    GpxPath(String path, PathType pathType) {
-        this.path = path;
-        this.pathType = pathType;
+    private enum PathType {
+        DESC {
+            @Override
+            public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.wptDesc(text);
+                return true;
+            }
+        },
+        HINT {
+            @Override
+            public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                if (!text.equals(""))
+                    cachePersisterFacade.hint(text);
+                return true;
+            }
+        },
+        LOG_DATE {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.logDate(text);
+                return true;
+            }
+        },
+        NAME {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.groundspeakName(text);
+                return true;
+            }
+        },
+        SYM {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.symbol(text);
+                return true;
+            }
+        },
+        TIME {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                return cachePersisterFacade.gpxTime(text);
+            }
+        },
+        WPT {
+            @Override
+            public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.wptName(text);
+                return true;
+            }
+        };
+        abstract boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                throws IOException;
     }
 
     private static final Map<String, GpxPath> stringToEnum = new HashMap<String, GpxPath>();
+
     static {
         for (GpxPath gpxPath : values())
             stringToEnum.put(gpxPath.getPath(), gpxPath);
@@ -40,30 +105,20 @@ public enum GpxPath {
         return stringToEnum.get(symbol);
     }
 
-    public void text(String text, ICachePersisterFacade cachePersisterFacade) throws IOException {
-        pathType.text(text, cachePersisterFacade);
+    private final String path;
+
+    private final PathType pathType;
+
+    GpxPath(String path, PathType pathType) {
+        this.path = path;
+        this.pathType = pathType;
     }
 
     public String getPath() {
         return path;
     }
 
-    private enum PathType {
-        WPT {
-            @Override
-            public void text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.wptName(text);
-            }
-        },
-        DESC {
-            @Override
-            public void text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.wptDesc(text);
-            }
-        };
-        abstract void text(String text, ICachePersisterFacade cachePersisterFacade)
-                throws IOException;
+    public void text(String text, ICachePersisterFacade cachePersisterFacade) throws IOException {
+        pathType.text(text, cachePersisterFacade);
     }
 }

@@ -28,7 +28,6 @@ public class EventHandlerGpx implements EventHandler {
     static final String XPATH_WPTTIME = "/gpx/wpt/time";
     static final String XPATH_PLACEDBY = "/gpx/wpt/groundspeak:cache/groundspeak:placed_by";
     static final String XPATH_LOGTEXT = "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:text";
-    static final String XPATH_LOGTYPE = "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:type";
     static final String XPATH_SHORTDESC = "/gpx/wpt/groundspeak:cache/groundspeak:short_description";
     static final String XPATH_EXT_SHORTDESC = "/gpx/wpt/extensions/cache/short_description";
     static final String XPATH_LONGDESC = "/gpx/wpt/groundspeak:cache/groundspeak:long_description";
@@ -43,7 +42,7 @@ public class EventHandlerGpx implements EventHandler {
             "/gpx/wpt/geocache/logs/log/type", "/gpx/wpt/geocache/logs/log/text"
 
     };
-    static final String XPATH_LAST_MODIFIED = "/gpx/wpt/bcaching:cache/bcaching:lastModified";
+//    static final String XPATH_LAST_MODIFIED = "/gpx/wpt/bcaching:cache/bcaching:lastModified";
     static final String XPATH_SYM = "/gpx/wpt/sym";
     static final String XPATH_WPT = "/gpx/wpt";
     static final String XPATH_WPTDESC = "/gpx/wpt/desc";
@@ -86,12 +85,8 @@ public class EventHandlerGpx implements EventHandler {
              gpxPath.text(trimmedText, cachePersisterFacade);
              return true;
         }
-        if (fullPath.equals(XPATH_LAST_MODIFIED)) {
-            cachePersisterFacade.lastModified(trimmedText);
-        } else if (fullPath.equals(XPATH_LOGTEXT)) {
+        if (fullPath.equals(XPATH_LOGTEXT)) {
             cachePersisterFacade.logText(trimmedText, mLogEncrypted);
-        } else if (fullPath.equals(XPATH_LOGTYPE)) {
-            cachePersisterFacade.logType(trimmedText);
         } else if (fullPath.equals(XPATH_WPTTIME)) {
             mGpxTime = trimmedText;
             cachePersisterFacade.wptTime(trimmedText);

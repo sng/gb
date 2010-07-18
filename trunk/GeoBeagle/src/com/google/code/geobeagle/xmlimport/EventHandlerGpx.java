@@ -103,9 +103,7 @@ public class EventHandlerGpx implements EventHandler {
              gpxPath.text(trimmedText, cachePersisterFacade);
              return true;
         }
-        if (fullPath.equals(XPATH_WPTDESC)) {
-            cachePersisterFacade.wptDesc(trimmedText);
-        } else if (fullPath.equals(XPATH_GPXTIME) || fullPath.equals(XPATH_TERRACACHINGGPXTIME)) {
+        if (fullPath.equals(XPATH_GPXTIME) || fullPath.equals(XPATH_TERRACACHINGGPXTIME)) {
             return cachePersisterFacade.gpxTime(trimmedText);
         } else if (fullPath.equals(XPATH_GROUNDSPEAKNAME) || fullPath.equals(XPATH_GEOCACHENAME)) {
             cachePersisterFacade.groundspeakName(trimmedText);

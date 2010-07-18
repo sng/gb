@@ -21,6 +21,7 @@ import android.util.Log;
 import java.io.IOException;
 
 public class EventHandlerGpx implements EventHandler {
+   
     static final String XPATH_CACHE = "/gpx/wpt/groundspeak:cache";
     static final String XPATH_CACHE_CONTAINER = "/gpx/wpt/groundspeak:cache/groundspeak:container";
     static final String XPATH_CACHE_DIFFICULTY = "/gpx/wpt/groundspeak:cache/groundspeak:difficulty";
@@ -96,10 +97,13 @@ public class EventHandlerGpx implements EventHandler {
     public boolean text(String fullPath, String text, XmlPullParserWrapper xmlPullParser,
             ICachePersisterFacade cachePersisterFacade) throws IOException {
         String trimmedText = text.trim();
-         Log.d("GeoBeagle", "fullPath " + fullPath + ", text " + text);
-        if (fullPath.equals(XPATH_WPTNAME)) {
-            cachePersisterFacade.wptName(trimmedText);
-        } else if (fullPath.equals(XPATH_WPTDESC)) {
+        Log.d("GeoBeagle", "fullPath " + fullPath + ", text " + text);
+        GpxPath gpxPath = GpxPath.fromString(fullPath);
+        if (gpxPath != null) {
+             gpxPath.text(trimmedText, cachePersisterFacade);
+             return true;
+        }
+        if (fullPath.equals(XPATH_WPTDESC)) {
             cachePersisterFacade.wptDesc(trimmedText);
         } else if (fullPath.equals(XPATH_GPXTIME) || fullPath.equals(XPATH_TERRACACHINGGPXTIME)) {
             return cachePersisterFacade.gpxTime(trimmedText);

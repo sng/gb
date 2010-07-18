@@ -18,6 +18,7 @@ import com.google.android.maps.Overlay;
 import com.google.code.geobeagle.R;
 import com.google.inject.Inject;
 
+import android.app.Activity;
 import android.util.Log;
 
 import java.util.List;
@@ -30,14 +31,14 @@ public class OverlayManager {
     private final GeoMapActivity mActivity;
 
     @Inject
-    public OverlayManager(GeoMapActivity activity, DensityOverlay densityOverlay,
+    public OverlayManager(Activity activity, DensityOverlay densityOverlay,
             CachePinsOverlayFactory cachePinsOverlayFactory) {
-        mActivity = activity;
+        mActivity = (GeoMapActivity)activity;
         mDensityOverlay = densityOverlay;
         mCachePinsOverlayFactory = cachePinsOverlayFactory;
         mUsesDensityMap = false;
         GeoMapView geoMapView = (GeoMapView)mActivity.findViewById(R.id.mapview);
-        Overlay myLocationOverlay = activity.getMyLocationOverlay();
+        Overlay myLocationOverlay = mActivity.getMyLocationOverlay();
 
         final List<Overlay> mapOverlays = geoMapView.getOverlays();
         final NullOverlay nullOverlay = new NullOverlay();

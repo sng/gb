@@ -81,7 +81,7 @@ public class GeoMapActivityDelegate {
     private final MenuActions mMenuActions;
 
     @Inject
-    public GeoMapActivityDelegate(GeoMapView mapView, Resources resources, Activity activity) {
+    public GeoMapActivityDelegate(Resources resources, Activity activity) {
         final MenuActions menuActions = new MenuActions(resources);
         final GeoMapView geoMapView = (GeoMapView)activity.findViewById(R.id.mapview);
         menuActions.add(new MenuActionToggleSatellite(geoMapView));
@@ -90,7 +90,7 @@ public class GeoMapActivityDelegate {
                 .getMyLocationOverlay();
         menuActions.add(new MenuActionCenterLocation(geoMapView.getController(),
                 fixedMyLocationOverlay));
-        mMapView = mapView;
+        mMapView = (GeoMapView)activity.findViewById(R.id.mapview);
         mMenuActions = menuActions;
     }
 

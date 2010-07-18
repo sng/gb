@@ -122,8 +122,11 @@ class QueryManager {
     private int[] mLatLonMinMax; // i.e. latmin, lonmin, latmax, lonmax
     private ArrayList<Geocache> mList;
 
-    QueryManager(CachedNeedsLoading cachedNeedsLoading, int[] latLonMinMax) {
-        mLatLonMinMax = latLonMinMax;
+    @Inject
+    QueryManager(CachedNeedsLoading cachedNeedsLoading) {
+        mLatLonMinMax = new int[] {
+                0, 0, 0, 0
+        };
         mCachedNeedsLoading = cachedNeedsLoading;
     }
 

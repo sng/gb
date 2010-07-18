@@ -20,8 +20,11 @@ import java.util.Map;
 
 public enum GpxPath {
     XPATH_CACHE_DIFFICULTY("/gpx/wpt/groundspeak:cache/groundspeak:difficulty", PathType.DIFFICULTY),
+    XPATH_CACHE_TERRAIN("/gpx/wpt/groundspeak:cache/groundspeak:terrain", PathType.TERRAIN),
     XPATH_GEOCACHE_DIFFICULTY("/gpx/wpt/geocache/difficulty", PathType.DIFFICULTY),
     XPATH_GEOCACHE_EXT_DIFFICULTY("/gpx/wpt/extensions/cache/difficulty", PathType.DIFFICULTY),
+    XPATH_GEOCACHE_EXT_TERRAIN("/gpx/wpt/extensions/cache/terrain", PathType.TERRAIN),
+    XPATH_GEOCACHE_TERRAIN("/gpx/wpt/geocache/terrain", PathType.TERRAIN),
     XPATH_GEOCACHE_TYPE("/gpx/wpt/geocache/type", PathType.CACHE_TYPE),
     XPATH_GEOCACHEHINT("/gpx/wpt/geocache/hints", PathType.HINT),
     XPATH_GEOCACHELOGDATE("/gpx/wpt/geocache/logs/log/time", PathType.LOG_DATE),
@@ -99,6 +102,14 @@ public enum GpxPath {
             boolean text(String text, ICachePersisterFacade cachePersisterFacade)
                     throws IOException {
                 cachePersisterFacade.symbol(text);
+                return true;
+            }
+        },
+        TERRAIN {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.terrain(text);
                 return true;
             }
         },

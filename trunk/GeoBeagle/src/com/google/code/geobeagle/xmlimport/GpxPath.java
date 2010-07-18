@@ -22,6 +22,7 @@ public enum GpxPath {
     XPATH_CACHE_CONTAINER("/gpx/wpt/groundspeak:cache/groundspeak:container", PathType.CONTAINER),
     XPATH_CACHE_DIFFICULTY("/gpx/wpt/groundspeak:cache/groundspeak:difficulty", PathType.DIFFICULTY),
     XPATH_CACHE_TERRAIN("/gpx/wpt/groundspeak:cache/groundspeak:terrain", PathType.TERRAIN),
+    XPATH_EXT_LONGDESC("/gpx/wpt/extensions/cache/long_description", PathType.LONG_DESCRIPTION),
     XPATH_EXT_SHORTDESC("/gpx/wpt/extensions/cache/short_description", PathType.SHORT_DESCRIPTION),
     XPATH_GEOCACHE_CONTAINER("/gpx/wpt/geocache/container", PathType.CONTAINER),
     XPATH_GEOCACHE_DIFFICULTY("/gpx/wpt/geocache/difficulty", PathType.DIFFICULTY),
@@ -190,13 +191,11 @@ public enum GpxPath {
             stringToEnum.put(gpxPath.getPath(), gpxPath);
     }
 
-    // Returns Operation for string, or null if string is invalid
     public static GpxPath fromString(String symbol) {
         return stringToEnum.get(symbol);
     }
 
     private final String path;
-
     private final PathType pathType;
 
     GpxPath(String path, PathType pathType) {

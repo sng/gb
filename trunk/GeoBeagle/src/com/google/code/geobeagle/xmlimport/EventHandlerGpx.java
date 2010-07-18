@@ -43,7 +43,6 @@ public class EventHandlerGpx implements EventHandler {
     static final String XPATH_WPTNAME = "/gpx/wpt/name";
     
     private boolean mLogEncrypted;
-    private String mGpxTime;
 
     @Override
     public void endTag(String name, String previousFullPath,
@@ -82,7 +81,6 @@ public class EventHandlerGpx implements EventHandler {
         if (fullPath.equals(XPATH_LOGTEXT)) {
             cachePersisterFacade.logText(trimmedText, mLogEncrypted);
         } else if (fullPath.equals(XPATH_WPTTIME)) {
-            mGpxTime = trimmedText;
             cachePersisterFacade.wptTime(trimmedText);
         }
         

@@ -19,8 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum GpxPath {
+    XPATH_CACHE_CONTAINER("/gpx/wpt/groundspeak:cache/groundspeak:container", PathType.CONTAINER),
     XPATH_CACHE_DIFFICULTY("/gpx/wpt/groundspeak:cache/groundspeak:difficulty", PathType.DIFFICULTY),
     XPATH_CACHE_TERRAIN("/gpx/wpt/groundspeak:cache/groundspeak:terrain", PathType.TERRAIN),
+    XPATH_GEOCACHE_CONTAINER("/gpx/wpt/geocache/container", PathType.CONTAINER),
     XPATH_GEOCACHE_DIFFICULTY("/gpx/wpt/geocache/difficulty", PathType.DIFFICULTY),
     XPATH_GEOCACHE_EXT_DIFFICULTY("/gpx/wpt/extensions/cache/difficulty", PathType.DIFFICULTY),
     XPATH_GEOCACHE_EXT_TERRAIN("/gpx/wpt/extensions/cache/terrain", PathType.TERRAIN),
@@ -47,6 +49,14 @@ public enum GpxPath {
                     throws IOException {
                 cachePersisterFacade.cacheType(text);
                 return false;
+            }
+        },
+        CONTAINER {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.container(text);
+                return true;
             }
         },
         DESC {

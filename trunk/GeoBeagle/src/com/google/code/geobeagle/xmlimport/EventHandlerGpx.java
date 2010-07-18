@@ -23,8 +23,6 @@ import java.io.IOException;
 public class EventHandlerGpx implements EventHandler {
    
     static final String XPATH_CACHE = "/gpx/wpt/groundspeak:cache";
-    static final String XPATH_CACHE_CONTAINER = "/gpx/wpt/groundspeak:cache/groundspeak:container";
-    static final String XPATH_GEOCACHE_CONTAINER = "/gpx/wpt/geocache/container";
     static final String XPATH_GEOCACHELOGDATE = "/gpx/wpt/geocache/logs/log/time";
     static final String XPATH_GPXNAME = "/gpx/name";
     static final String XPATH_WPTTIME = "/gpx/wpt/time";
@@ -88,10 +86,7 @@ public class EventHandlerGpx implements EventHandler {
              gpxPath.text(trimmedText, cachePersisterFacade);
              return true;
         }
-        if (fullPath.equals(XPATH_CACHE_CONTAINER)
-                || fullPath.equals(XPATH_GEOCACHE_CONTAINER)) {
-            cachePersisterFacade.container(trimmedText);
-        } else if (fullPath.equals(XPATH_LAST_MODIFIED)) {
+        if (fullPath.equals(XPATH_LAST_MODIFIED)) {
             cachePersisterFacade.lastModified(trimmedText);
         } else if (fullPath.equals(XPATH_LOGTEXT)) {
             cachePersisterFacade.logText(trimmedText, mLogEncrypted);

@@ -16,8 +16,6 @@ package com.google.code.geobeagle.xmlimport;
 
 import com.google.code.geobeagle.GeocacheFactory.Source;
 
-import android.util.Log;
-
 import java.io.IOException;
 
 public class EventHandlerGpx implements EventHandler {
@@ -72,7 +70,6 @@ public class EventHandlerGpx implements EventHandler {
     public boolean text(String fullPath, String text, XmlPullParserWrapper xmlPullParser,
             ICachePersisterFacade cachePersisterFacade) throws IOException {
         String trimmedText = text.trim();
-        Log.d("GeoBeagle", "fullPath " + fullPath + ", text " + text);
         GpxPath gpxPath = GpxPath.fromString(fullPath);
         if (gpxPath != null) {
              gpxPath.text(trimmedText, cachePersisterFacade);

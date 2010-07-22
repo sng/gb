@@ -33,10 +33,11 @@ public class AdapterCachesSorter implements RefreshAction {
         mLocationControlBuffered = locationControlBuffered;
     }
 
+    @Override
     public void refresh() {
         mLocationControlBuffered.getSortStrategy().sort(mCacheListData.get());
         mTiming.lap("sort time");
-        GeoBeagleApplication.timing.lap("START TIMTE TO FIRST REFRESH");
+        GeoBeagleApplication.timing.lap("START TIME TO FIRST REFRESH");
 //        Debug.stopMethodTracing();
     }
 }

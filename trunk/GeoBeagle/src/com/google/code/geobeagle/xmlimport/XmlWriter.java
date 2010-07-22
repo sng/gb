@@ -28,9 +28,9 @@ public class XmlWriter implements EventHandler {
     private String time;
 
     @Inject
-    public XmlWriter(FilePathStrategy filePathStrategy) {
+    public XmlWriter(FilePathStrategy filePathStrategy, TagWriter tagWriter) {
         this.filePathStrategy = filePathStrategy;
-        this.tagWriter = new TagWriter();
+        this.tagWriter = tagWriter;
     }
 
     @Override

@@ -34,9 +34,9 @@ public class GraphicsGenerator {
         private final Rect mTempRect;
 
         @Inject
-        public AttributePainter() {
-            mTempPaint = new Paint();
-            mTempRect = new Rect();
+        public AttributePainter(Paint tempPaint, Rect tempRect) {
+            mTempPaint = tempPaint;
+            mTempRect = tempRect;
         }
 
         void paintAttribute(int position, int bottom, int imageHeight, int imageWidth,

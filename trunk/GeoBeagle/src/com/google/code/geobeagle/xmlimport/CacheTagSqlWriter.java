@@ -51,6 +51,7 @@ public class CacheTagSqlWriter {
     private boolean mArchived;
     private boolean mAvailable;
 
+    @Inject
     public CacheTagSqlWriter(CacheWriter cacheWriter, GpxWriter gpxWriter,
             CacheTypeFactory cacheTypeFactory, TagWriterImpl tagWriterImpl,
             TagWriterNull tagWriterNull, ClearCachesFromSource clearCachesFromSource) {

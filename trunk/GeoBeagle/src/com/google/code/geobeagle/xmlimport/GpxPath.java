@@ -19,54 +19,197 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum GpxPath {
-    NO_MATCH(null, PathType.NOP),
-    GPX_AU_DESCRIPTION("/gpx/wpt/geocache/description", PathType.LINE),
-    GPX_AU_GEOCACHER("/gpx/wpt/geocache/logs/log/geocacher", PathType.LINE),
-    GPX_AU_LOGTEXT("/gpx/wpt/geocache/logs/log/text", PathType.LINE),
-    GPX_AU_LOGTYPE("/gpx/wpt/geocache/logs/log/type", PathType.LINE),
-    GPX_AU_OWNER("/gpx/wpt/geocache/owner", PathType.LINE),
-    GPX_AU_SUMMARY("/gpx/wpt/geocache/summary", PathType.LINE),
-    GPX_CACHE("/gpx/wpt/groundspeak:cache", PathType.CACHE),
-    GPX_CACHE_CONTAINER("/gpx/wpt/groundspeak:cache/groundspeak:container", PathType.CONTAINER),
-    GPX_CACHE_DIFFICULTY("/gpx/wpt/groundspeak:cache/groundspeak:difficulty", PathType.DIFFICULTY),
-    GPX_CACHE_TERRAIN("/gpx/wpt/groundspeak:cache/groundspeak:terrain", PathType.TERRAIN),
-    GPX_EXT_LONGDESC("/gpx/wpt/extensions/cache/long_description", PathType.LONG_DESCRIPTION),
-    GPX_EXT_SHORTDESC("/gpx/wpt/extensions/cache/short_description", PathType.SHORT_DESCRIPTION),
-    GPX_GEOCACHE_CONTAINER("/gpx/wpt/geocache/container", PathType.CONTAINER),
-    GPX_GEOCACHE_DIFFICULTY("/gpx/wpt/geocache/difficulty", PathType.DIFFICULTY),
-    GPX_GEOCACHE_EXT_DIFFICULTY("/gpx/wpt/extensions/cache/difficulty", PathType.DIFFICULTY),
-    GPX_GEOCACHE_EXT_TERRAIN("/gpx/wpt/extensions/cache/terrain", PathType.TERRAIN),
-    GPX_GEOCACHE_TERRAIN("/gpx/wpt/geocache/terrain", PathType.TERRAIN),
-    GPX_GEOCACHE_TYPE("/gpx/wpt/geocache/type", PathType.CACHE_TYPE),
-    GPX_GEOCACHEHINT("/gpx/wpt/geocache/hints", PathType.HINT),
-    GPX_GEOCACHELOGDATE("/gpx/wpt/geocache/logs/log/time", PathType.LOG_DATE),
-    GPX_GEOCACHENAME("/gpx/wpt/geocache/name", PathType.NAME),
-    GPX_GPXTIME("/gpx/time", PathType.GPX_TIME),
-    GPX_GROUNDSPEAKFINDER(
+    XPATH_AU_DESCRIPTION("/gpx/wpt/geocache/description", PathType.LINE),
+    XPATH_AU_GEOCACHER("/gpx/wpt/geocache/logs/log/geocacher", PathType.LINE),
+    XPATH_AU_LOGTEXT("/gpx/wpt/geocache/logs/log/text", PathType.LINE),
+    XPATH_AU_LOGTYPE("/gpx/wpt/geocache/logs/log/type", PathType.LINE),
+    XPATH_AU_OWNER("/gpx/wpt/geocache/owner", PathType.LINE),
+    XPATH_AU_SUMMARY("/gpx/wpt/geocache/summary", PathType.LINE),
+    XPATH_CACHE_CONTAINER("/gpx/wpt/groundspeak:cache/groundspeak:container", PathType.CONTAINER),
+    XPATH_CACHE_DIFFICULTY("/gpx/wpt/groundspeak:cache/groundspeak:difficulty", PathType.DIFFICULTY),
+    XPATH_CACHE_TERRAIN("/gpx/wpt/groundspeak:cache/groundspeak:terrain", PathType.TERRAIN),
+    XPATH_EXT_LONGDESC("/gpx/wpt/extensions/cache/long_description", PathType.LONG_DESCRIPTION),
+    XPATH_EXT_SHORTDESC("/gpx/wpt/extensions/cache/short_description", PathType.SHORT_DESCRIPTION),
+    XPATH_GEOCACHE_CONTAINER("/gpx/wpt/geocache/container", PathType.CONTAINER),
+    XPATH_GEOCACHE_DIFFICULTY("/gpx/wpt/geocache/difficulty", PathType.DIFFICULTY),
+    XPATH_GEOCACHE_EXT_DIFFICULTY("/gpx/wpt/extensions/cache/difficulty", PathType.DIFFICULTY),
+    XPATH_GEOCACHE_EXT_TERRAIN("/gpx/wpt/extensions/cache/terrain", PathType.TERRAIN),
+    XPATH_GEOCACHE_TERRAIN("/gpx/wpt/geocache/terrain", PathType.TERRAIN),
+    XPATH_GEOCACHE_TYPE("/gpx/wpt/geocache/type", PathType.CACHE_TYPE),
+    XPATH_GEOCACHEHINT("/gpx/wpt/geocache/hints", PathType.HINT),
+    XPATH_GEOCACHELOGDATE("/gpx/wpt/geocache/logs/log/time", PathType.LOG_DATE),
+    XPATH_GEOCACHENAME("/gpx/wpt/geocache/name", PathType.NAME),
+    XPATH_GPXTIME("/gpx/time", PathType.GPX_TIME),
+    XPATH_GROUNDSPEAKFINDER(
             "/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:finder",
             PathType.LINE),
-    GPX_GROUNDSPEAKNAME("/gpx/wpt/groundspeak:cache/groundspeak:name", PathType.NAME),
-    GPX_HINT("/gpx/wpt/groundspeak:cache/groundspeak:encoded_hints", PathType.HINT),
-    GPX_LAST_MODIFIED("/gpx/wpt/bcaching:cache/bcaching:lastModified", PathType.LAST_MODIFIED),
-    GPX_LOGDATE("/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:date",
+    XPATH_GROUNDSPEAKNAME("/gpx/wpt/groundspeak:cache/groundspeak:name", PathType.NAME),
+    XPATH_HINT("/gpx/wpt/groundspeak:cache/groundspeak:encoded_hints", PathType.HINT),
+    XPATH_LAST_MODIFIED("/gpx/wpt/bcaching:cache/bcaching:lastModified", PathType.LAST_MODIFIED),
+    XPATH_LOGDATE("/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:date",
             PathType.LOG_DATE),
-    GPX_LOGTEXT("/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:text",
-            PathType.LOG_TEXT),
-    GPX_LOGTYPE("/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:type",
+    XPATH_LOGTYPE("/gpx/wpt/groundspeak:cache/groundspeak:logs/groundspeak:log/groundspeak:type",
             PathType.LOG_TYPE),
-    GPX_LONGDESC("/gpx/wpt/groundspeak:cache/groundspeak:long_description",
+    XPATH_LONGDESC("/gpx/wpt/groundspeak:cache/groundspeak:long_description",
             PathType.LONG_DESCRIPTION),
-    GPX_PLACEDBY("/gpx/wpt/groundspeak:cache/groundspeak:placed_by", PathType.PLACED_BY),
-    GPX_SHORTDESC("/gpx/wpt/groundspeak:cache/groundspeak:short_description",
+    XPATH_PLACEDBY("/gpx/wpt/groundspeak:cache/groundspeak:placed_by", PathType.PLACED_BY),
+    XPATH_SHORTDESC("/gpx/wpt/groundspeak:cache/groundspeak:short_description",
             PathType.SHORT_DESCRIPTION),
-    GPX_SYM("/gpx/wpt/sym", PathType.SYMBOL),
-    GPX_TERRACACHINGGPXTIME("/gpx/metadata/time", PathType.GPX_TIME),
-    GPX_WAYPOINT_TYPE("/gpx/wpt/type", PathType.CACHE_TYPE),
-    GPX_WPT("/gpx/wpt", PathType.WPT),
-    GPX_WPT_COMMENT("/gpx/wpt/cmt", PathType.LINE),
-    GPX_WPTDESC("/gpx/wpt/desc", PathType.DESC),
-    GPX_WPTNAME("/gpx/wpt/name", PathType.WPT_NAME),
-    GPX_WPTTIME("/gpx/wpt/time", PathType.WPT_TIME);
+    XPATH_SYM("/gpx/wpt/sym", PathType.SYMBOL),
+    XPATH_TERRACACHINGGPXTIME("/gpx/metadata/time", PathType.GPX_TIME),
+    XPATH_WAYPOINT_TYPE("/gpx/wpt/type", PathType.CACHE_TYPE),
+    XPATH_WPT_COMMENT("/gpx/wpt/cmt", PathType.LINE),
+    XPATH_WPTDESC("/gpx/wpt/desc", PathType.DESC),
+    XPATH_WPTNAME("/gpx/wpt/name", PathType.WPT_NAME),
+    XPATH_WPTTIME("/gpx/wpt/time", PathType.WPT_TIME);
+
+    private enum PathType {
+        CACHE_TYPE {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.cacheType(text);
+                return false;
+            }
+        },
+        CONTAINER {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.container(text);
+                return true;
+            }
+        },
+        DESC {
+            @Override
+            public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.wptDesc(text);
+                return true;
+            }
+        },
+        DIFFICULTY {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.difficulty(text);
+                return true;
+            }
+        },
+        GPX_TIME {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                return cachePersisterFacade.gpxTime(text);
+            }
+        },
+        HINT {
+            @Override
+            public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                if (!text.equals(""))
+                    cachePersisterFacade.hint(text);
+                return true;
+            }
+        },
+        LAST_MODIFIED {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                return true;
+            }
+        },
+        LINE {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.line(text);
+                return true;
+            }
+        },
+        LOG_DATE {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.logDate(text);
+                return true;
+            }
+        },
+        LOG_TYPE {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.logType(text);
+                return true;
+            }
+        },
+        LONG_DESCRIPTION {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.longDescription(text);
+                return true;
+            }
+        },
+        NAME {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.groundspeakName(text);
+                return true;
+            }
+        },
+        PLACED_BY {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.placedBy(text);
+                return true;
+            }
+        },
+        SHORT_DESCRIPTION {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.shortDescription(text);
+                return true;
+            }
+        },
+        SYMBOL {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.symbol(text);
+                return true;
+            }
+        },
+        TERRAIN {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.terrain(text);
+                return true;
+            }
+        },
+        WPT_NAME {
+            @Override
+            public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.wptName(text);
+                return true;
+            }
+        },
+        WPT_TIME {
+            @Override
+            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                    throws IOException {
+                cachePersisterFacade.wptTime(text);
+                return true;
+            }
+        };
+        abstract boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                throws IOException;
+    }
 
     private static final Map<String, GpxPath> stringToEnum = new HashMap<String, GpxPath>();
 
@@ -76,11 +219,7 @@ public enum GpxPath {
     }
 
     public static GpxPath fromString(String symbol) {
-        final GpxPath gpxPath = stringToEnum.get(symbol);
-        if (gpxPath == null) {
-            return GpxPath.NO_MATCH;
-        }
-        return gpxPath;
+        return stringToEnum.get(symbol);
     }
 
     private final String path;
@@ -91,23 +230,11 @@ public enum GpxPath {
         this.pathType = pathType;
     }
 
-    public void endTag(ICachePersisterFacade cachePersisterFacade) throws IOException {
-        pathType.endTag(cachePersisterFacade);
-    }
-
     public String getPath() {
         return path;
     }
 
-    public void startTag(XmlPullParserWrapper xmlPullParser,
-            ICachePersisterFacade cachePersisterFacade) {
-        pathType.startTag(xmlPullParser, cachePersisterFacade);
-    }
-
     public boolean text(String text, ICachePersisterFacade cachePersisterFacade) throws IOException {
-        String trimmedText = text.trim();
-        if (trimmedText.length() <= 0)
-            return true;
-        return pathType.text(trimmedText, cachePersisterFacade);
+        return pathType.text(text, cachePersisterFacade);
     }
 }

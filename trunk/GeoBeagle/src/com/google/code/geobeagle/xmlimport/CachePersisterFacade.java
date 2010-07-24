@@ -14,23 +14,14 @@
 
 package com.google.code.geobeagle.xmlimport;
 
-import com.google.code.geobeagle.CacheTypeFactory;
 import com.google.code.geobeagle.GeocacheFactory.Source;
-import com.google.code.geobeagle.database.CacheWriter;
-import com.google.code.geobeagle.database.ClearCachesFromSource;
-import com.google.code.geobeagle.database.DbToGeocacheAdapter;
-import com.google.code.geobeagle.database.GpxWriter;
-import com.google.code.geobeagle.database.ISQLiteDatabase;
-import com.google.code.geobeagle.database.TagWriterImpl;
-import com.google.code.geobeagle.database.TagWriterNull;
 import com.google.code.geobeagle.xmlimport.CachePersisterFacadeDI.FileFactory;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 import roboguice.inject.ContextScoped;
 
-import android.content.SharedPreferences;
 import android.os.PowerManager.WakeLock;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -45,11 +36,9 @@ public class CachePersisterFacade implements ICachePersisterFacade {
     private final GeoBeagleEnvironment mGeoBeagleEnvironment;
 
     @Inject
-    CachePersisterFacade(CacheTagSqlWriter cacheTagSqlWriter,
-            FileFactory fileFactory,
+    CachePersisterFacade(CacheTagSqlWriter cacheTagSqlWriter, FileFactory fileFactory,
             MessageHandlerInterface messageHandler,
-            WakeLock wakeLock,
-            GeoBeagleEnvironment geoBeagleEnvironment) {
+            WakeLock wakeLock, GeoBeagleEnvironment geoBeagleEnvironment) {
         mCacheTagWriter = cacheTagSqlWriter;
         mFileFactory = fileFactory;
         mMessageHandler = messageHandler;
@@ -179,7 +168,7 @@ public class CachePersisterFacade implements ICachePersisterFacade {
     }
 
     @Override
-    public void logText(String trimmedText) throws IOException {
+    public void logText(String trimmedText, boolean attributeValue) throws IOException {
     }
 
     @Override
@@ -200,10 +189,6 @@ public class CachePersisterFacade implements ICachePersisterFacade {
 
     @Override
     public void longDescription(String trimmedText) throws IOException {
-    }
-
-    @Override
-    public void setEncrypted(boolean mLogEncrypted) {
     }
 
 }

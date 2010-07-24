@@ -14,83 +14,119 @@
 
 package com.google.code.geobeagle.activity.main.view;
 
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
-
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.GeocacheFactory.Provider;
 import com.google.code.geobeagle.GeocacheFactory.Source;
-import com.google.code.geobeagle.R;
+import com.google.code.geobeagle.activity.main.GeoBeagle;
+import com.google.code.geobeagle.activity.main.view.WebPageAndDetailsButtonEnabler;
+import com.google.code.geobeagle.activity.main.view.WebPageAndDetailsButtonEnabler.CheckButton;
+import com.google.code.geobeagle.activity.main.view.WebPageAndDetailsButtonEnabler.CheckButtons;
+import com.google.code.geobeagle.activity.main.view.WebPageAndDetailsButtonEnabler.CheckDetailsButton;
+import com.google.code.geobeagle.activity.main.view.WebPageAndDetailsButtonEnabler.CheckWebPageButton;
 
-import org.junit.Before;
+import org.easymock.classextension.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import android.app.Activity;
 import android.view.View;
 
 @RunWith(PowerMockRunner.class)
 public class WebPageAndDetailsButtonEnablerTest {
+    @Test
+    public void testCheck() {
+        GeoBeagle geoBeagle = PowerMock.createMock(GeoBeagle.class);
+        CheckButtons checkButtons = PowerMock.createMock(CheckButtons.class);
+        Geocache geocache = PowerMock.createMock(Geocache.class);
 
-    private Activity activity;
-    private Geocache geocache;
-    private View detailsButton;
+        EasyMock.expect(geoBeagle.getGeocache()).andReturn(geocache);
+        checkButtons.check(geocache);
 
-    @Before
-    public void setUp() {
-        activity = createMock(Activity.class);
-        geocache = createMock(Geocache.class);
-        detailsButton = createMock(View.class);
+        PowerMock.replayAll();
+        WebPageAndDetailsButtonEnabler enabler = new WebPageAndDetailsButtonEnabler(geoBeagle,
+                checkButtons);
+        enabler.check();
+        PowerMock.verifyAll();
+    }
+
+    @Test
+    public void testCheckButtons() {
+        CheckButton checkButton = PowerMock.createMock(CheckButton.class);
+        Geocache geocache = PowerMock.createMock(Geocache.class);
+
+        checkButton.check(geocache);
+
+        PowerMock.replayAll();
+        CheckButtons checkButtons = new CheckButtons(new CheckButton[] {
+            checkButton
+        });
+        checkButtons.check(geocache);
+        PowerMock.verifyAll();
     }
 
     @Test
     public void testCheckDetailsButtonGPX() {
-        expect(activity.findViewById(R.id.cache_details)).andReturn(detailsButton);
-        expect(geocache.getSourceType()).andReturn(Source.GPX);
+        Geocache geocache = PowerMock.createMock(Geocache.class);
+        View detailsButton = PowerMock.createMock(View.class);
+
+        EasyMock.expect(geocache.getSourceType()).andReturn(Source.GPX);
         detailsButton.setEnabled(true);
 
-        replayAll();
-        new CheckDetailsButton(activity).check(geocache);
-        verifyAll();
+        PowerMock.replayAll();
+        new CheckDetailsButton(detailsButton).check(geocache);
+        PowerMock.verifyAll();
     }
 
     @Test
     public void testCheckDetailsButtonLOC() {
-        expect(activity.findViewById(R.id.cache_details)).andReturn(detailsButton);
-        expect(geocache.getSourceType()).andReturn(Source.LOC);
+        Geocache geocache = PowerMock.createMock(Geocache.class);
+        View detailsButton = PowerMock.createMock(View.class);
+
+        EasyMock.expect(geocache.getSourceType()).andReturn(Source.LOC);
         detailsButton.setEnabled(false);
 
-        replayAll();
-        new CheckDetailsButton(activity).check(geocache);
-        verifyAll();
+        PowerMock.replayAll();
+        new CheckDetailsButton(detailsButton).check(geocache);
+        PowerMock.verifyAll();
     }
 
     @Test
     public void testCheckWebPageButtonAtlasQuest() {
-        expect(geocache.getContentProvider()).andReturn(Provider.ATLAS_QUEST);
+        Geocache geocache = PowerMock.createMock(Geocache.class);
+        View webPageButton = PowerMock.createMock(View.class);
 
-        replayAll();
-        assertTrue(new WebPageMenuEnabler().shouldEnable(geocache));
+        EasyMock.expect(geocache.getContentProvider()).andReturn(Provider.ATLAS_QUEST);
+        webPageButton.setEnabled(true);
+
+        PowerMock.replayAll();
+        new CheckWebPageButton(webPageButton).check(geocache);
+        PowerMock.verifyAll();
     }
 
     @Test
     public void testCheckWebPageButtonGroundspeak() {
-        expect(geocache.getContentProvider()).andReturn(Provider.GROUNDSPEAK);
+        Geocache geocache = PowerMock.createMock(Geocache.class);
+        View webPageButton = PowerMock.createMock(View.class);
 
-        replayAll();
-        assertTrue(new WebPageMenuEnabler().shouldEnable(geocache));
+        EasyMock.expect(geocache.getContentProvider()).andReturn(Provider.GROUNDSPEAK);
+        webPageButton.setEnabled(true);
+
+        PowerMock.replayAll();
+        new CheckWebPageButton(webPageButton).check(geocache);
+        PowerMock.verifyAll();
     }
 
     @Test
     public void testCheckWebPageButtonMyLocation() {
-        expect(geocache.getContentProvider()).andReturn(Provider.MY_LOCATION);
+        Geocache geocache = PowerMock.createMock(Geocache.class);
+        View webPageButton = PowerMock.createMock(View.class);
 
-        replayAll();
-        assertFalse(new WebPageMenuEnabler().shouldEnable(geocache));
+        EasyMock.expect(geocache.getContentProvider()).andReturn(Provider.MY_LOCATION);
+        webPageButton.setEnabled(false);
+
+        PowerMock.replayAll();
+        new CheckWebPageButton(webPageButton).check(geocache);
+        PowerMock.verifyAll();
     }
 }

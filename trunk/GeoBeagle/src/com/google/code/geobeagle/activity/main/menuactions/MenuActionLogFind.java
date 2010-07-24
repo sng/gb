@@ -15,16 +15,15 @@
 package com.google.code.geobeagle.activity.main.menuactions;
 
 import com.google.code.geobeagle.R;
-import com.google.code.geobeagle.actions.Action;
 import com.google.code.geobeagle.actions.MenuActionBase;
 
 import android.app.Activity;
 
-public class MenuActionLogFind implements Action {
+public class MenuActionLogFind extends MenuActionBase {
     private final Activity mActivity;
 
     public MenuActionLogFind(Activity activity) {
-//        super(R.string.menu_log_find);
+        super(R.string.menu_log_find);
         mActivity = activity;
     }
 

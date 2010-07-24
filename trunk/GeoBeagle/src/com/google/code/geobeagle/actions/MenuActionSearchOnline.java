@@ -14,17 +14,19 @@
 
 package com.google.code.geobeagle.actions;
 
+import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.searchonline.SearchOnlineActivity;
 import com.google.inject.Inject;
 
 import android.app.Activity;
 import android.content.Intent;
 
-public class MenuActionSearchOnline implements Action {
+public class MenuActionSearchOnline extends MenuActionBase {
     private final Activity mActivity;
 
     @Inject
     public MenuActionSearchOnline(Activity activity) {
+        super(R.string.menu_search_online);
         mActivity = activity;
     }
 

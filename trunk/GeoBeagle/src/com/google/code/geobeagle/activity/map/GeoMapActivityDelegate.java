@@ -32,7 +32,6 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.code.geobeagle.R;
-import com.google.code.geobeagle.actions.Action;
 import com.google.code.geobeagle.actions.MenuActionBase;
 import com.google.code.geobeagle.actions.MenuActionCacheList;
 import com.google.code.geobeagle.actions.MenuActions;
@@ -44,12 +43,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class GeoMapActivityDelegate {
-    public static class MenuActionCenterLocation implements Action {
+    public static class MenuActionCenterLocation extends MenuActionBase {
         private final MyLocationOverlay mMyLocationOverlay;
         private final MapController mMapController;
 
         public MenuActionCenterLocation(MapController mapController,
                 MyLocationOverlay myLocationOverlay) {
+            super(R.string.menu_center_location);
             mMyLocationOverlay = myLocationOverlay;
             mMapController = mapController;
         }
@@ -63,10 +63,11 @@ public class GeoMapActivityDelegate {
         }
     }
 
-    public static class MenuActionToggleSatellite implements Action {
+    public static class MenuActionToggleSatellite extends MenuActionBase {
         private final MapView mMapView;
 
         public MenuActionToggleSatellite(MapView mapView) {
+            super(R.string.menu_toggle_satellite);
             mMapView = mapView;
         }
 
@@ -83,14 +84,12 @@ public class GeoMapActivityDelegate {
     public GeoMapActivityDelegate(Resources resources, Activity activity) {
         final MenuActions menuActions = new MenuActions(resources);
         final GeoMapView geoMapView = (GeoMapView)activity.findViewById(R.id.mapview);
-        menuActions.add(new MenuActionBase(R.string.menu_toggle_satellite,
-                new MenuActionToggleSatellite(geoMapView)));
-        menuActions.add(new MenuActionBase(R.string.menu_cache_list, new MenuActionCacheList(
-                activity)));
+        menuActions.add(new MenuActionToggleSatellite(geoMapView));
+        menuActions.add(new MenuActionCacheList(activity));
         final MyLocationOverlay fixedMyLocationOverlay = ((GeoMapActivity)activity)
                 .getMyLocationOverlay();
-        menuActions.add(new MenuActionBase(R.string.menu_center_location,
-                new MenuActionCenterLocation(geoMapView.getController(), fixedMyLocationOverlay)));
+        menuActions.add(new MenuActionCenterLocation(geoMapView.getController(),
+                fixedMyLocationOverlay));
         mMapView = (GeoMapView)activity.findViewById(R.id.mapview);
         mMenuActions = menuActions;
     }

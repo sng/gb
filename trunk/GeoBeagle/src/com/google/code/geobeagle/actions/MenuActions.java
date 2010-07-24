@@ -38,7 +38,7 @@ public class MenuActions {
     public boolean act(int itemId) {
         for (MenuAction action : mMenuActions) {
             if (action.getId() == itemId) {
-                action.getAction().act();
+                action.act();
                 return true;
             }
         }

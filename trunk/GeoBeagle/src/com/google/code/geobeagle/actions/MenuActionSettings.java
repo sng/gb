@@ -14,17 +14,19 @@
 
 package com.google.code.geobeagle.actions;
 
+import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.inject.Inject;
 
 import android.app.Activity;
 import android.content.Intent;
 
-public class MenuActionSettings implements Action {
+public class MenuActionSettings extends MenuActionBase {
     private final Activity mActivity;
 
     @Inject
     public MenuActionSettings(Activity activity) {
+        super(R.string.menu_settings);
         mActivity = activity;
     }
 

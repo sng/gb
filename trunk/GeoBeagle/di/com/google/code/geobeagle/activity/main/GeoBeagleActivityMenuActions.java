@@ -14,8 +14,7 @@
 
 package com.google.code.geobeagle.activity.main;
 
-import com.google.code.geobeagle.R;
-import com.google.code.geobeagle.actions.MenuActionBase;
+import com.google.code.geobeagle.actions.MenuAction;
 import com.google.code.geobeagle.actions.MenuActionCacheList;
 import com.google.code.geobeagle.actions.MenuActionEditGeocache;
 import com.google.code.geobeagle.actions.MenuActionSettings;
@@ -23,20 +22,21 @@ import com.google.code.geobeagle.actions.MenuActions;
 import com.google.code.geobeagle.activity.main.menuactions.MenuActionWebPage;
 import com.google.inject.Inject;
 
+import android.app.Activity;
 import android.content.res.Resources;
 
 class GeoBeagleActivityMenuActions extends MenuActions {
     @Inject
-    public GeoBeagleActivityMenuActions(Resources resources,
-            MenuActionCacheList menuActionCacheList,
-            MenuActionEditGeocache menuActionEditGeocache,
-            MenuActionSettings menuActionSettings,
+    public GeoBeagleActivityMenuActions(Resources resources, Activity geoBeagle,
             MenuActionWebPage menuActionWebPage) {
         super(resources);
-        add(new MenuActionBase(R.string.menu_cache_list, menuActionCacheList));
-        add(new MenuActionBase(R.string.menu_edit_geocache, menuActionEditGeocache));
-        add(new MenuActionBase(R.string.menu_settings, menuActionSettings));
-        add(new MenuActionBase(R.string.web_page, menuActionWebPage));
+        final MenuAction[] menuActionArray = {
+                new MenuActionCacheList(geoBeagle), new MenuActionEditGeocache(geoBeagle),
+                new MenuActionSettings(geoBeagle), menuActionWebPage
+        };
+        for (int ix = 0; ix < menuActionArray.length; ix++) {
+            add(menuActionArray[ix]);
+        }
     }
 
 }

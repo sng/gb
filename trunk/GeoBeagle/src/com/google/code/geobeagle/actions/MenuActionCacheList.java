@@ -14,17 +14,17 @@
 
 package com.google.code.geobeagle.actions;
 
+import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.cachelist.CacheListActivity;
-import com.google.inject.Inject;
 
 import android.app.Activity;
 import android.content.Intent;
 
-public class MenuActionCacheList implements Action {
+public class MenuActionCacheList extends MenuActionBase {
     private Activity mActivity;
 
-    @Inject
     public MenuActionCacheList(Activity activity) {
+        super(R.string.menu_cache_list);
         mActivity = activity;
     }
 

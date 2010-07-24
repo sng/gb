@@ -7,9 +7,8 @@ import com.google.code.geobeagle.activity.main.intents.GeocacheToGoogleGeo;
 import com.google.code.geobeagle.activity.main.intents.IntentStarter;
 import com.google.code.geobeagle.activity.main.intents.IntentStarterGeo;
 import com.google.code.geobeagle.activity.main.intents.IntentStarterViewUri;
-import com.google.code.geobeagle.activity.main.menuactions.NavigateOnClickListener;
+import com.google.code.geobeagle.activity.main.menuactions.MenuActionNavigate;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 import android.app.Activity;
@@ -26,11 +25,12 @@ public class ChooseNavDialogProvider implements Provider<ChooseNavDialog> {
     private final Provider<Context> contextProvider;
 
     @Inject
-    public ChooseNavDialogProvider(Injector injector) {
-        errorDisplayer = injector.getInstance(ErrorDisplayer.class);
-        geoBeagle = (GeoBeagle)injector.getInstance(Activity.class);
-        resourcesProvider = injector.getProvider(Resources.class);
-        contextProvider = injector.getProvider(Context.class);
+    public ChooseNavDialogProvider(ErrorDisplayer errorDisplayer, Activity geoBeagle,
+            Provider<Resources> resourcesProvider, Provider<Context> contextProvider) {
+        this.errorDisplayer = errorDisplayer;
+        this.geoBeagle = (GeoBeagle)geoBeagle;
+        this.resourcesProvider = resourcesProvider;
+        this.contextProvider = contextProvider;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ChooseNavDialogProvider implements Provider<ChooseNavDialog> {
         final IntentStarter[] intentStarters = {
                 intentStarterRadar, intentStarterGoogleMaps, intentStarterNavigate
         };
-        final OnClickListener onClickListener = new NavigateOnClickListener(
+        final OnClickListener onClickListener = new MenuActionNavigate.OnClickListener(
                 intentStarters);
         return new ChooseNavDialog(new AlertDialog.Builder(contextProvider.get()).setItems(
                 R.array.select_nav_choices, onClickListener).setTitle(

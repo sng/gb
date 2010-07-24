@@ -25,7 +25,7 @@ import android.os.PowerManager.WakeLock;
 import java.io.IOException;
 
 @ContextScoped
-public class CachePersisterFacade implements ICachePersisterFacade {
+public class ImportCacheActions implements ICachePersisterFacade {
     private String mCacheName = "";
     private final CacheTagSqlWriter mCacheTagWriter;
     private final FileFactory mFileFactory;
@@ -35,7 +35,7 @@ public class CachePersisterFacade implements ICachePersisterFacade {
     private final GeoBeagleEnvironment mGeoBeagleEnvironment;
 
     @Inject
-    CachePersisterFacade(CacheTagSqlWriter cacheTagSqlWriter,
+    ImportCacheActions(CacheTagSqlWriter cacheTagSqlWriter,
             FileFactory fileFactory,
             MessageHandlerInterface messageHandler,
             WakeLock wakeLock,

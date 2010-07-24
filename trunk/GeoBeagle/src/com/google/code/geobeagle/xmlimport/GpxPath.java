@@ -55,161 +55,16 @@ public enum GpxPath {
     XPATH_PLACEDBY("/gpx/wpt/groundspeak:cache/groundspeak:placed_by", PathType.PLACED_BY),
     XPATH_SHORTDESC("/gpx/wpt/groundspeak:cache/groundspeak:short_description",
             PathType.SHORT_DESCRIPTION),
-    XPATH_SYM("/gpx/wpt/sym", PathType.SYMBOL),
-    XPATH_TERRACACHINGGPXTIME("/gpx/metadata/time", PathType.GPX_TIME),
-    XPATH_WAYPOINT_TYPE("/gpx/wpt/type", PathType.CACHE_TYPE),
-    XPATH_WPT_COMMENT("/gpx/wpt/cmt", PathType.LINE),
-    XPATH_WPTDESC("/gpx/wpt/desc", PathType.DESC),
-    XPATH_WPTNAME("/gpx/wpt/name", PathType.WPT_NAME),
-    XPATH_WPTTIME("/gpx/wpt/time", PathType.WPT_TIME);
-
-    private enum PathType {
-        CACHE_TYPE {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.cacheType(text);
-                return true;
-            }
-        },
-        CONTAINER {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.container(text);
-                return true;
-            }
-        },
-        DESC {
-            @Override
-            public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.wptDesc(text);
-                return true;
-            }
-        },
-        DIFFICULTY {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.difficulty(text);
-                return true;
-            }
-        },
-        GPX_TIME {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                return cachePersisterFacade.gpxTime(text);
-            }
-        },
-        HINT {
-            @Override
-            public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                if (!text.equals(""))
-                    cachePersisterFacade.hint(text);
-                return true;
-            }
-        },
-        LAST_MODIFIED {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                return true;
-            }
-        },
-        LINE {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.line(text);
-                return true;
-            }
-        },
-        LOG_DATE {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.logDate(text);
-                return true;
-            }
-        },
-        LOG_TYPE {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.logType(text);
-                return true;
-            }
-        },
-        LONG_DESCRIPTION {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.longDescription(text);
-                return true;
-            }
-        },
-        NAME {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.groundspeakName(text);
-                return true;
-            }
-        },
-        PLACED_BY {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.placedBy(text);
-                return true;
-            }
-        },
-        SHORT_DESCRIPTION {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.shortDescription(text);
-                return true;
-            }
-        },
-        SYMBOL {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.symbol(text);
-                return true;
-            }
-        },
-        TERRAIN {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.terrain(text);
-                return true;
-            }
-        },
-        WPT_NAME {
-            @Override
-            public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.wptName(text);
-                return true;
-            }
-        },
-        WPT_TIME {
-            @Override
-            boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                    throws IOException {
-                cachePersisterFacade.wptTime(text);
-                return true;
-            }
-        };
-        abstract boolean text(String text, ICachePersisterFacade cachePersisterFacade)
-                throws IOException;
-    }
+    GPX_SYM("/gpx/wpt/sym", PathType.SYMBOL),
+    GPX_TERRACACHINGGPXTIME("/gpx/metadata/time", PathType.GPX_TIME),
+    GPX_WAYPOINT_TYPE("/gpx/wpt/type", PathType.CACHE_TYPE),
+    GPX_WPT("/gpx/wpt", PathType.WPT),
+    GPX_WPT_COMMENT("/gpx/wpt/cmt", PathType.LINE),
+    GPX_WPTDESC("/gpx/wpt/desc", PathType.DESC),
+    GPX_WPTNAME("/gpx/wpt/name", PathType.WPT_NAME),
+    GPX_WPTTIME("/gpx/wpt/time", PathType.WPT_TIME),
+    LOC_COORD("/loc/waypoint/coord", PathType.LOC_COORD),
+    LOC_WPTNAME("/loc/waypoint/name", PathType.LOC_WPTNAME);
 
     private static final Map<String, GpxPath> stringToEnum = new HashMap<String, GpxPath>();
 
@@ -232,6 +87,11 @@ public enum GpxPath {
 
     public String getPath() {
         return path;
+    }
+
+    public void startTag(XmlPullParserWrapper xmlPullParser,
+            ICachePersisterFacade cachePersisterFacade) throws IOException {
+        pathType.startTag(xmlPullParser, cachePersisterFacade);
     }
 
     public boolean text(String text, ICachePersisterFacade cachePersisterFacade) throws IOException {

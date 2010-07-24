@@ -184,6 +184,7 @@ public class GpxImporterDI {
             mSharedPreferences = sharedPreferences;
         }
 
+        @Override
         public void abortLoad() {
             mLoadAborted = true;
             mProgressDialogWrapper.dismiss();
@@ -227,10 +228,12 @@ public class GpxImporterDI {
             }
         }
 
+        @Override
         public void loadComplete() {
             sendEmptyMessage(MessageHandler.MSG_DONE);
         }
 
+        @Override
         public void start(CacheListRefresh cacheListRefresh) {
             mCacheCount = 0;
             mLoadAborted = false;
@@ -239,12 +242,14 @@ public class GpxImporterDI {
             mProgressDialogWrapper.show("Sync from sdcard", "Please wait...");
         }
 
+        @Override
         public void updateName(String name) {
             mStatus = mCacheCount++ + ": " + mSource + " - " + mWaypointId + " - " + name;
             if (!hasMessages(MessageHandler.MSG_PROGRESS))
                 sendEmptyMessage(MessageHandler.MSG_PROGRESS);
         }
 
+        @Override
         public void updateSource(String text) {
             mSource = text;
             mStatus = "Opening: " + mSource + "...";
@@ -252,16 +257,19 @@ public class GpxImporterDI {
                 sendEmptyMessage(MessageHandler.MSG_PROGRESS);
         }
 
+        @Override
         public void updateWaypointId(String wpt) {
             mWaypointId = wpt;
         }
 
+        @Override
         public void updateStatus(String status) {
             mStatus = status;
             if (!hasMessages(MessageHandler.MSG_PROGRESS))
                 sendEmptyMessage(MessageHandler.MSG_PROGRESS);
         }
 
+        @Override
         public void deletingCacheFiles() {
             mStatus = "Deleting old cache files....";
             if (!hasMessages(MessageHandler.MSG_PROGRESS))
@@ -342,14 +350,13 @@ public class GpxImporterDI {
         final ImportThreadWrapper importThreadWrapper = new ImportThreadWrapper(messageHandler,
                 xmlPullParserWrapper, aborter);
         final EventHandlerGpx eventHandlerGpx = new EventHandlerGpx();
-        final EventHandlerLoc eventHandlerLoc = new EventHandlerLoc();
         final XmlWriter xmlWriter = injector.getInstance(XmlWriter.class);
         
         final EventHandlerComposite eventHandlerComposite = new EventHandlerComposite(Arrays
                 .asList(xmlWriter, eventHandlerGpx));
         final EventHandlers eventHandlers = new EventHandlers();
         eventHandlers.add("gpx", eventHandlerComposite);
-        eventHandlers.add("loc", eventHandlerLoc);
+        eventHandlers.add("loc", eventHandlerComposite);
 
         return new GpxImporter(geocacheListPresenter, gpxLoader, context, importThreadWrapper,
                 messageHandler, toastFactory, eventHandlers, errorDisplayer, injector);

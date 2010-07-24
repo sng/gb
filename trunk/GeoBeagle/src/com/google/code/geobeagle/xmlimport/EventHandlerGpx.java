@@ -38,19 +38,11 @@ public class EventHandlerGpx implements EventHandler {
     }
 
     @Override
-    public void startTag(String name, String fullPath, XmlPullParserWrapper xmlPullParser,
-            ICachePersisterFacade cachePersisterFacade) {
-        if (fullPath.equals(XPATH_WPT)) {
-            cachePersisterFacade.startCache();
-            cachePersisterFacade.wpt(xmlPullParser.getAttributeValue(null, "lat"), xmlPullParser
-                    .getAttributeValue(null, "lon"));
-        } else if (fullPath.equals(XPATH_CACHE)) {
-            cachePersisterFacade.available(xmlPullParser.getAttributeValue(null, "available"));
-            cachePersisterFacade.archived(xmlPullParser.getAttributeValue(null, "archived"));
-        } else if (fullPath.equals(XPATH_LOGTEXT)) {
-            cachePersisterFacade.setEncrypted("true".equalsIgnoreCase(xmlPullParser
-                    .getAttributeValue(null, "encoded")));
-        }
+    public void startTag(String name,
+            String fullPath,
+            XmlPullParserWrapper xmlPullParser,
+            ICachePersisterFacade cachePersisterFacade) throws IOException {
+        GpxPath.fromString(fullPath).startTag(xmlPullParser, cachePersisterFacade);
     }
 
     @Override

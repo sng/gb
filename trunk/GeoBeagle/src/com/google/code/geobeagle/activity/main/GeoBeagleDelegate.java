@@ -19,7 +19,6 @@ import com.google.code.geobeagle.CompassListener;
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.GeocacheFactory;
 import com.google.code.geobeagle.GeocacheFactory.Source;
-import com.google.code.geobeagle.actions.MenuActions;
 import com.google.code.geobeagle.activity.ActivitySaver;
 import com.google.code.geobeagle.activity.ActivityType;
 import com.google.code.geobeagle.activity.main.view.GeocacheViewer;
@@ -29,6 +28,7 @@ import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.database.LocationSaver;
 import com.google.code.geobeagle.xmlimport.GeoBeagleEnvironment;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 import android.app.Activity;
@@ -59,6 +59,7 @@ public class GeoBeagleDelegate {
             mIdDialog = idDialog;
         }
 
+        @Override
         public void onClick(View v) {
             mGeoBeagle.showDialog(mIdDialog);
         }
@@ -74,7 +75,7 @@ public class GeoBeagleDelegate {
     private final GeocacheFromParcelFactory mGeocacheFromParcelFactory;
     private final GeocacheViewer mGeocacheViewer;
     private final IncomingIntentHandler mIncomingIntentHandler;
-    private final MenuActions mMenuActions;
+    private final GeoBeagleActivityMenuActions mMenuActions;
     private final GeoBeagle mParent;
     private final RadarView mRadarView;
     private final SensorManager mSensorManager;
@@ -83,10 +84,13 @@ public class GeoBeagleDelegate {
     private final Provider<CacheWriter> mCacheWriterProvider;
     private final GeoBeagleEnvironment mGeoBeagleEnvironment;
 
-    @Inject
-    public GeoBeagleDelegate(ActivitySaver activitySaver, AppLifecycleManager appLifecycleManager,
-            CompassListener compassListener, Activity parent, GeocacheFactory geocacheFactory,
-            GeocacheViewer geocacheViewer, IncomingIntentHandler incomingIntentHandler,
+    public GeoBeagleDelegate(ActivitySaver activitySaver,
+            AppLifecycleManager appLifecycleManager,
+            CompassListener compassListener,
+            Activity parent,
+            GeocacheFactory geocacheFactory,
+            GeocacheViewer geocacheViewer,
+            IncomingIntentHandler incomingIntentHandler,
             GeoBeagleActivityMenuActions menuActions,
             GeocacheFromParcelFactory geocacheFromParcelFactory,
             Provider<DbFrontend> dbFrontendProvider, RadarView radarView,
@@ -110,6 +114,26 @@ public class GeoBeagleDelegate {
         mGeocacheFromParcelFactory = geocacheFromParcelFactory;
         mCacheWriterProvider = cacheWriterProvider;
         mGeoBeagleEnvironment = geoBeagleEnvironment;
+    }
+
+    @Inject
+    public GeoBeagleDelegate(Injector injector) {
+        mParent = (GeoBeagle)injector.getInstance(Activity.class);
+        mActivitySaver = injector.getInstance(ActivitySaver.class);
+        mAppLifecycleManager = injector.getInstance(AppLifecycleManager.class);
+        mMenuActions = injector.getInstance(GeoBeagleActivityMenuActions.class);
+        mSharedPreferences = injector.getInstance(SharedPreferences.class);
+        mRadarView = injector.getInstance(RadarView.class);
+        mCompassListener = injector.getInstance(CompassListener.class);
+        mSensorManager = injector.getInstance(SensorManager.class);
+        mGeocacheViewer = injector.getInstance(GeocacheViewer.class);
+        mGeocacheFactory = injector.getInstance(GeocacheFactory.class);
+        mIncomingIntentHandler = injector.getInstance(IncomingIntentHandler.class);
+        mDbFrontendProvider = injector.getProvider(DbFrontend.class);
+        mGeocacheFromParcelFactory = injector.getInstance(GeocacheFromParcelFactory.class);
+        mCacheWriterProvider = injector.getProvider(CacheWriter.class);
+        mGeoBeagleEnvironment = injector.getInstance(GeoBeagleEnvironment.class);
+        mWebPageButtonEnabler = injector.getInstance(WebPageAndDetailsButtonEnabler.class);
     }
 
     public Geocache getGeocache() {

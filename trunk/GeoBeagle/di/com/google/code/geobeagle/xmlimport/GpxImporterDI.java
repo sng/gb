@@ -59,7 +59,7 @@ public class GpxImporterDI {
     // Can't test this due to final methods in base.
     public static class ImportThread extends RoboThread {
         static ImportThread create(MessageHandlerInterface messageHandler, GpxLoader gpxLoader,
-                EventHandlers eventHandlers, XmlPullParserWrapper xmlPullParserWrapper,
+                EventHandler eventHandler, XmlPullParserWrapper xmlPullParserWrapper,
                 ErrorDisplayer errorDisplayer, Aborter aborter, Injector injector) {
             final GpxFilenameFilter gpxFilenameFilter = new GpxFilenameFilter();
             final FilenameFilter filenameFilter = new GpxAndZipFilenameFilter(gpxFilenameFilter);
@@ -78,7 +78,7 @@ public class GpxImporterDI {
                     .getInstance(SharedPreferences.class);
             
             final ImportThreadHelper importThreadHelper = new ImportThreadHelper(gpxLoader,
-                    messageHandler, eventHelperFactory, eventHandlers, oldCacheFilesCleaner,
+                    messageHandler, eventHelperFactory, eventHandler, oldCacheFilesCleaner,
                     sharedPreferences, geoBeagleEnvironment);
             final FileDataVersionWriter fileDataVersionWriter = injector
                     .getInstance(FileDataVersionWriter.class);
@@ -145,9 +145,9 @@ public class GpxImporterDI {
         }
 
         public void open(CacheListRefresh cacheListRefresh, GpxLoader gpxLoader,
-                EventHandlers eventHandlers, ErrorDisplayer mErrorDisplayer, Injector injector) {
+                EventHandler eventHandler, ErrorDisplayer mErrorDisplayer, Injector injector) {
             mMessageHandler.start(cacheListRefresh);
-            mImportThread = ImportThread.create(mMessageHandler, gpxLoader, eventHandlers,
+            mImportThread = ImportThread.create(mMessageHandler, gpxLoader, eventHandler,
                     mXmlPullParserWrapper, mErrorDisplayer, mAborter, injector);
         }
 
@@ -354,12 +354,9 @@ public class GpxImporterDI {
         
         final EventHandlerComposite eventHandlerComposite = new EventHandlerComposite(Arrays
                 .asList(xmlWriter, eventHandlerGpx));
-        final EventHandlers eventHandlers = new EventHandlers();
-        eventHandlers.add("gpx", eventHandlerComposite);
-        eventHandlers.add("loc", eventHandlerComposite);
 
         return new GpxImporter(geocacheListPresenter, gpxLoader, context, importThreadWrapper,
-                messageHandler, toastFactory, eventHandlers, errorDisplayer, injector);
+                messageHandler, toastFactory, eventHandlerComposite, errorDisplayer, injector);
     }
 
 }

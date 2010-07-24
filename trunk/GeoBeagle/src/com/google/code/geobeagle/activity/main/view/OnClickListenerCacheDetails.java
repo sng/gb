@@ -42,6 +42,7 @@ public class OnClickListenerCacheDetails implements View.OnClickListener {
         mGeoBeagle = (GeoBeagle)geoBeagle;
     }
 
+    @Override
     public void onClick(View v) {
         View detailsView = mEnv.inflate(R.layout.cache_details, null);
 

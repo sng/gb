@@ -21,7 +21,6 @@ import com.google.inject.Inject;
 import roboguice.inject.ContextScoped;
 
 import android.os.PowerManager.WakeLock;
-import android.util.Log;
 
 import java.io.IOException;
 
@@ -36,9 +35,11 @@ public class CachePersisterFacade implements ICachePersisterFacade {
     private final GeoBeagleEnvironment mGeoBeagleEnvironment;
 
     @Inject
-    CachePersisterFacade(CacheTagSqlWriter cacheTagSqlWriter, FileFactory fileFactory,
+    CachePersisterFacade(CacheTagSqlWriter cacheTagSqlWriter,
+            FileFactory fileFactory,
             MessageHandlerInterface messageHandler,
-            WakeLock wakeLock, GeoBeagleEnvironment geoBeagleEnvironment) {
+            WakeLock wakeLock,
+            GeoBeagleEnvironment geoBeagleEnvironment) {
         mCacheTagWriter = cacheTagSqlWriter;
         mFileFactory = fileFactory;
         mMessageHandler = messageHandler;
@@ -168,7 +169,7 @@ public class CachePersisterFacade implements ICachePersisterFacade {
     }
 
     @Override
-    public void logText(String trimmedText, boolean attributeValue) throws IOException {
+    public void logText(String trimmedText) throws IOException {
     }
 
     @Override
@@ -189,6 +190,10 @@ public class CachePersisterFacade implements ICachePersisterFacade {
 
     @Override
     public void longDescription(String trimmedText) throws IOException {
+    }
+
+    @Override
+    public void setEncrypted(boolean mLogEncrypted) {
     }
 
 }

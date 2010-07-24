@@ -341,10 +341,10 @@ public class GpxImporterDI {
 
         final GeoBeagleEnvironment geoBeagleEnvironment = injector
                 .getInstance(GeoBeagleEnvironment.class);
-        final CachePersisterFacade cachePersisterFacade = cachePersisterFacadeFactory.create(
+        final ImportCacheActions importCacheActions = cachePersisterFacadeFactory.create(
                 cacheWriter, gpxWriter, wakeLock, geoBeagleEnvironment);
 
-        final GpxLoader gpxLoader = GpxLoaderDI.create(cachePersisterFacade, xmlPullParserWrapper,
+        final GpxLoader gpxLoader = GpxLoaderDI.create(importCacheActions, xmlPullParserWrapper,
                 aborter, errorDisplayer, wakeLock, gpxWriter);
         final ToastFactory toastFactory = new ToastFactory();
         final ImportThreadWrapper importThreadWrapper = new ImportThreadWrapper(messageHandler,

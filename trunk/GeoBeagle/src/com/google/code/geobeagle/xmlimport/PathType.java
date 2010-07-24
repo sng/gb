@@ -96,6 +96,34 @@ enum PathType {
             return true;
         }
     },
+    LOC_COORD {
+        @Override
+        public void startTag(XmlPullParserWrapper xmlPullParser,
+                ICachePersisterFacade cachePersisterFacade) {
+            cachePersisterFacade.wpt(xmlPullParser.getAttributeValue(null, "lat"),
+                    xmlPullParser.getAttributeValue(null, "lon"));
+        }
+    },
+    LOC_WPTNAME {
+        @Override
+        public void endTag(ICachePersisterFacade cachePersisterFacade) throws IOException {
+            cachePersisterFacade.endCache(Source.LOC);
+        }
+
+        @Override
+        public void startTag(XmlPullParserWrapper xmlPullParser,
+                ICachePersisterFacade cachePersisterFacade) throws IOException {
+            cachePersisterFacade.startCache();
+            cachePersisterFacade.wptName(xmlPullParser.getAttributeValue(null, "id"));
+        }
+
+        @Override
+        public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
+                throws IOException {
+            cachePersisterFacade.groundspeakName(text.trim());
+            return true;
+        }
+    },
     LOG_DATE {
         @Override
         public boolean text(String text, ICachePersisterFacade cachePersisterFacade)
@@ -222,8 +250,9 @@ enum PathType {
     public void endTag(ICachePersisterFacade cachePersisterFacade) throws IOException {
     }
 
-    public void startTag(@SuppressWarnings("unused") XmlPullParserWrapper xmlPullParser,
-            @SuppressWarnings("unused") ICachePersisterFacade cachePersisterFacade) {
+    @SuppressWarnings("unused")
+    public void startTag(XmlPullParserWrapper xmlPullParser,
+            ICachePersisterFacade cachePersisterFacade) throws IOException {
     }
 
     @SuppressWarnings("unused")

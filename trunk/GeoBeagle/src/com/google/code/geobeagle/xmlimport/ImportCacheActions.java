@@ -35,7 +35,7 @@ import android.os.PowerManager.WakeLock;
 import java.io.IOException;
 
 @ContextScoped
-public class CachePersisterFacade implements ICachePersisterFacade {
+public class ImportCacheActions implements ICachePersisterFacade {
     private String mCacheName = "";
     private final CacheTagSqlWriter mCacheTagWriter;
     private final FileFactory mFileFactory;
@@ -45,7 +45,7 @@ public class CachePersisterFacade implements ICachePersisterFacade {
     private final GeoBeagleEnvironment mGeoBeagleEnvironment;
 
     @Inject
-    CachePersisterFacade(MessageHandlerInterface messageHandler,
+    ImportCacheActions(MessageHandlerInterface messageHandler,
             WakeLock wakeLock,
             TagWriterImpl tagWriterImpl,
             ClearCachesFromSource clearCachesFromSource,
@@ -63,18 +63,6 @@ public class CachePersisterFacade implements ICachePersisterFacade {
         mMessageHandler = messageHandler;
         mWakeLock = wakeLock;
         mGeoBeagleEnvironment = new GeoBeagleEnvironment(sharedPreferences);
-    }
-
-    CachePersisterFacade(CacheTagSqlWriter cacheTagSqlWriter,
-            FileFactory fileFactory,
-            MessageHandlerInterface messageHandler,
-            WakeLock wakeLock,
-            GeoBeagleEnvironment geoBeagleEnvironment) {
-        mCacheTagWriter = cacheTagSqlWriter;
-        mFileFactory = fileFactory;
-        mMessageHandler = messageHandler;
-        mWakeLock = wakeLock;
-        mGeoBeagleEnvironment = geoBeagleEnvironment;
     }
 
     @Override
@@ -199,7 +187,7 @@ public class CachePersisterFacade implements ICachePersisterFacade {
     }
 
     @Override
-    public void logText(String trimmedText, boolean attributeValue) throws IOException {
+    public void logText(String trimmedText) throws IOException {
     }
 
     @Override
@@ -220,6 +208,10 @@ public class CachePersisterFacade implements ICachePersisterFacade {
 
     @Override
     public void longDescription(String trimmedText) throws IOException {
+    }
+
+    @Override
+    public void setEncrypted(boolean mLogEncrypted) {
     }
 
 }

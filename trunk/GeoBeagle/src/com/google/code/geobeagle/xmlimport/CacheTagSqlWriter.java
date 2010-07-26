@@ -78,6 +78,7 @@ public class CacheTagSqlWriter {
         mCacheType = CacheType.NULL;
         mDifficulty = 0;
         mTerrain = 0;
+        mContainer = 0;
         mArchived = false;
         mAvailable = true;
         mTagWriter = mTagWriterNull;

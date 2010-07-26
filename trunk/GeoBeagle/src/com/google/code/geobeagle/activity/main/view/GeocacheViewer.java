@@ -128,11 +128,10 @@ public class GeocacheViewer {
     private final Activity mActivity;
     private final DifficultyAndTerrainPainter mDifficultyAndTerrainPainter;
 
-    @Inject
     public GeocacheViewer(RadarView radarView, Activity activity, NameViewer gcName,
-            @Named("GeocacheIcon") ImageView cacheTypeImageView,
-            @Named("GeocacheDifficulty") AttributeViewer gcDifficulty,
-            @Named("GeocacheTerrain") AttributeViewer gcTerrain, ResourceImages gcContainer,
+            ImageView cacheTypeImageView,
+            AttributeViewer gcDifficulty,
+            AttributeViewer gcTerrain, ResourceImages gcContainer,
             IconOverlayFactory iconOverlayFactory, MapViewBitmapCopier mapViewBitmapCopier,
             IconRenderer iconRenderer, DifficultyAndTerrainPainter difficultyAndTerrainPainter) {
         mRadarView = radarView;

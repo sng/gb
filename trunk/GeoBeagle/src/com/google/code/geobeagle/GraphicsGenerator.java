@@ -108,6 +108,7 @@ public class GraphicsGenerator {
     }
 
     public static class ListViewBitmapCopier implements BitmapCopier {
+        @Override
         public Bitmap copy(Bitmap source) {
             int imageHeight = source.getHeight();
             int imageWidth = source.getWidth();
@@ -119,10 +120,12 @@ public class GraphicsGenerator {
             return copy;
         }
 
+        @Override
         public int getBottom() {
             return 0;
         }
 
+        @Override
         public Drawable getDrawable(Bitmap icon) {
             return new BitmapDrawable(icon);
         }
@@ -130,14 +133,17 @@ public class GraphicsGenerator {
     }
 
     public static class MapViewBitmapCopier implements BitmapCopier {
+        @Override
         public Bitmap copy(Bitmap source) {
             return source.copy(Bitmap.Config.ARGB_8888, true);
         }
 
+        @Override
         public int getBottom() {
             return 3;
         }
 
+        @Override
         public Drawable getDrawable(Bitmap icon) {
             Drawable iconMap = new BitmapDrawable(icon);
             int width = iconMap.getIntrinsicWidth();

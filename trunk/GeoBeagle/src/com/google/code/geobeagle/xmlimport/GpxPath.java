@@ -74,6 +74,7 @@ public enum GpxPath {
     GPX_WPTNAME("/gpx/wpt/name", PathType.WPT_NAME),
     GPX_WPTTIME("/gpx/wpt/time", PathType.WPT_TIME),
     LOC_COORD("/loc/waypoint/coord", PathType.LOC_COORD),
+    LOC_WPT("/loc/waypoint", PathType.LOC_WPT),
     LOC_WPTNAME("/loc/waypoint/name", PathType.LOC_WPTNAME);
 
     private static final Map<String, GpxPath> stringToEnum = new HashMap<String, GpxPath>();

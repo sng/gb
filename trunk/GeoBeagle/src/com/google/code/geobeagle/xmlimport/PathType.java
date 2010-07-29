@@ -104,12 +104,13 @@ enum PathType {
                     xmlPullParser.getAttributeValue(null, "lon"));
         }
     },
-    LOC_WPTNAME {
+    LOC_WPT {
         @Override
         public void endTag(ICachePersisterFacade cachePersisterFacade) throws IOException {
             cachePersisterFacade.endCache(Source.LOC);
         }
-
+    },
+    LOC_WPTNAME {
         @Override
         public void startTag(XmlPullParserWrapper xmlPullParser,
                 ICachePersisterFacade cachePersisterFacade) throws IOException {

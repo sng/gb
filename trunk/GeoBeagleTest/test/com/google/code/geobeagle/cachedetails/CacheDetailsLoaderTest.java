@@ -58,28 +58,49 @@ import java.io.Reader;
 @RunWith(PowerMockRunner.class)
 public class CacheDetailsLoaderTest {
 
-    private FileDataVersionChecker fileDataVersionChecker;
-    private EventHandlerGpx eventHandler;
+    private Activity activity;
+    private BufferedReader bufferedReader;
     private CacheTagsToDetails cacheTagsToDetails;
+    private DetailsOpener detailsOpener;
+    private DetailsReader detailsReader;
+    private DetailsReaderError detailsReaderError;
+    private DetailsReaderImpl detailsReaderImpl;
+    private EventHandlerGpx eventHandler;
+    private EventHelper eventHelper;
+    private File file;
+    private FileDataVersionChecker fileDataVersionChecker;
+    private FilePathStrategy filePathStrategy;
+    private FileReader fileReader;
+    private Reader reader;
+    private StringWriterWrapper stringWriterWrapper;
+    private XmlPullParserWrapper xmlPullParser;
+    private XmlPullParserException xmlPullParserException;
+    private XmlPullParserWrapper xmlPullParserWrapper;
 
     @Before
     public void setUp() {
         fileDataVersionChecker = createMock(FileDataVersionChecker.class);
+        file = createMock(File.class);
         eventHandler = createMock(EventHandlerGpx.class);
         cacheTagsToDetails = createMock(CacheTagsToDetails.class);
+        detailsReaderImpl = createMock(DetailsReaderImpl.class);
+        activity = createMock(Activity.class);
+        fileReader = createMock(FileReader.class);
+        eventHelper = createMock(EventHelper.class);
+        xmlPullParser = createMock(XmlPullParserWrapper.class);
+        stringWriterWrapper = createMock(StringWriterWrapper.class);
+        bufferedReader = createMock(BufferedReader.class);
+        detailsReaderError = createMock(DetailsReaderError.class);
+        xmlPullParserWrapper = createMock(XmlPullParserWrapper.class);
+        reader = createMock(Reader.class);
+        xmlPullParserException = createMock(XmlPullParserException.class);
+        detailsOpener = createMock(DetailsOpener.class);
+        detailsReader = createMock(DetailsReader.class);
+        filePathStrategy = createMock(FilePathStrategy.class);
     }
 
     @Test
     public void testDetailsOpener() throws Exception {
-        File file = createMock(File.class);
-        DetailsReaderImpl detailsReaderImpl = createMock(DetailsReaderImpl.class);
-        Activity activity = createMock(Activity.class);
-        FileReader fileReader = createMock(FileReader.class);
-        EventHelper eventHelper = createMock(EventHelper.class);
-        XmlPullParserWrapper xmlPullParser = createMock(XmlPullParserWrapper.class);
-        StringWriterWrapper stringWriterWrapper = createMock(StringWriterWrapper.class);
-        BufferedReader bufferedReader = createMock(BufferedReader.class);
-
         PowerMock.mockStatic(Environment.class);
         expect(Environment.getExternalStorageState()).andReturn(Environment.MEDIA_MOUNTED);
         expect(file.getAbsolutePath()).andReturn("/sdcard/foo.gpx");
@@ -97,10 +118,6 @@ public class CacheDetailsLoaderTest {
 
     @Test
     public void testDetailsOpenerFileNotFound() throws Exception {
-        File file = createMock(File.class);
-        DetailsReaderError detailsReaderError = createMock(DetailsReaderError.class);
-        Activity activity = createMock(Activity.class);
-
         PowerMock.mockStatic(Environment.class);
         expect(Environment.getExternalStorageState()).andReturn(Environment.MEDIA_MOUNTED);
         expect(fileDataVersionChecker.needsUpdating()).andReturn(false);
@@ -118,11 +135,6 @@ public class CacheDetailsLoaderTest {
 
     @Test
     public void testDetailsReader() throws Exception {
-        Activity activity = createMock(Activity.class);
-        XmlPullParserWrapper xmlPullParserWrapper = createMock(XmlPullParserWrapper.class);
-        Reader reader = createMock(Reader.class);
-        EventHelper eventHelper = createMock(EventHelper.class);
-
         eventHelper.open("/sdcard/foo.gpx", eventHandler);
         StringWriterWrapper stringWriterWrapper = new StringWriterWrapper();
         stringWriterWrapper.write("DETAILS");
@@ -142,7 +154,6 @@ public class CacheDetailsLoaderTest {
 
     @Test
     public void testDetailsReaderFileNotFound() throws Exception {
-        Activity activity = createMock(Activity.class);
         expect(activity.getString(R.string.error_opening_details_file, "/sdcard/foo.html"))
                 .andReturn("Can't open file /sdcard/foo.html");
 
@@ -154,13 +165,6 @@ public class CacheDetailsLoaderTest {
 
     @Test
     public void testDetailsReaderXmlPullParserException() throws Exception {
-        Activity activity = createMock(Activity.class);
-        XmlPullParserWrapper xmlPullParser = createMock(XmlPullParserWrapper.class);
-        Reader reader = createMock(Reader.class);
-        XmlPullParserException xmlPullParserException = createMock(XmlPullParserException.class);
-        StringWriterWrapper stringWriterWrapper = createMock(StringWriterWrapper.class);
-        EventHelper eventHelper = createMock(EventHelper.class);
-
         expect(activity.getString(R.string.error_reading_details_file, "/sdcard/foo.gpx"))
                 .andReturn("Can't open file /sdcard/foo.gpx");
         eventHelper.open("/sdcard/foo.gpx", eventHandler);
@@ -177,11 +181,6 @@ public class CacheDetailsLoaderTest {
 
     @Test
     public void testLoad() throws Exception {
-        DetailsOpener detailsOpener = createMock(DetailsOpener.class);
-        File file = createMock(File.class);
-        DetailsReader detailsReader = createMock(DetailsReader.class);
-        FilePathStrategy filePathStrategy = createMock(FilePathStrategy.class);
-
         expect(filePathStrategy.getPath("foo.gpx", "GC123", "gpx")).andReturn(
                 "/sdcard/details/foo.gpx/GC123.html");
         expectNew(File.class, "/sdcard/details/foo.gpx/GC123.html").andReturn(file);

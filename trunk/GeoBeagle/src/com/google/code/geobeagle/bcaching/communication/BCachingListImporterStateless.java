@@ -22,17 +22,21 @@ public class BCachingListImporterStateless {
     static final String MAX_COUNT = "50";
 
     private final BCachingListImportHelper bCachingListImportHelper;
-    private static Hashtable<String, String> params;
-    static {
+    private final Hashtable<String, String> params;
+
+    @Inject
+    BCachingListImporterStateless(BCachingListImportHelper bCachingListImportHelper) {
+        this.bCachingListImportHelper = bCachingListImportHelper;
         params = new Hashtable<String, String>();
         params.put("a", "list");
         params.put("found", "0");
         commonParams(params);
     }
 
-    @Inject
-    public BCachingListImporterStateless(BCachingListImportHelper bCachingListImportHelper) {
+    BCachingListImporterStateless(Hashtable<String, String> params,
+            BCachingListImportHelper bCachingListImportHelper) {
         this.bCachingListImportHelper = bCachingListImportHelper;
+        this.params = params;
     }
 
     private BCachingList importList(String maxCount, String startTime) throws BCachingException {

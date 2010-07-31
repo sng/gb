@@ -15,17 +15,13 @@
 package com.google.code.geobeagle.bcaching.communication;
 
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.powermock.api.easymock.PowerMock.createMock;
 import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import com.google.code.geobeagle.activity.cachelist.GeoBeagleTest;
-import com.google.code.geobeagle.bcaching.communication.BCachingException;
-import com.google.code.geobeagle.bcaching.communication.BCachingList;
-import com.google.code.geobeagle.bcaching.communication.BCachingListImportHelper;
-import com.google.code.geobeagle.bcaching.communication.BCachingList.BCachingListFactory;
-import com.google.code.geobeagle.bcaching.communication.BCachingListImportHelper.BufferedReaderFactory;
+import com.google.code.geobeagle.bcaching.BufferedReaderFactoryImpl;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +35,7 @@ import java.util.Hashtable;
 public class BCachingListImportHelperTest extends GeoBeagleTest {
     @Test
     public void testImportList() throws BCachingException, IOException {
-        BufferedReaderFactory bufferedReaderFactory = createMock(BufferedReaderFactory.class);
+        BufferedReaderFactoryImpl bufferedReaderFactory = createMock(BufferedReaderFactoryImpl.class);
         BCachingListFactory bcachingListFactory = createMock(BCachingListFactory.class);
         BufferedReader bufferedReader = createMock(BufferedReader.class);
         BCachingList bcachingList = createMock(BCachingList.class);
@@ -58,7 +54,7 @@ public class BCachingListImportHelperTest extends GeoBeagleTest {
 
     @Test(expected = BCachingException.class)
     public void testRaiseIOException() throws BCachingException, IOException {
-        BufferedReaderFactory bufferedReaderFactory = createMock(BufferedReaderFactory.class);
+        BufferedReaderFactoryImpl bufferedReaderFactory = createMock(BufferedReaderFactoryImpl.class);
         BCachingListFactory bcachingListFactory = createMock(BCachingListFactory.class);
         BufferedReader bufferedReader = createMock(BufferedReader.class);
         Hashtable<String, String> params = new Hashtable<String, String>();

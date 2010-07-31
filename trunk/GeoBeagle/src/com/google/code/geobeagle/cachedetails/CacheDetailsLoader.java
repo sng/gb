@@ -37,7 +37,6 @@ import java.io.Reader;
 
 public class CacheDetailsLoader {
 
-
     public static class DetailsOpener {
         private final Activity mActivity;
         private final FileDataVersionChecker mFileDataVersionChecker;

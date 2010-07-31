@@ -26,7 +26,7 @@ public class AppLifecycleManager {
     private final SharedPreferences sharedPreferences;
 
     @Inject
-    public AppLifecycleManager(SharedPreferences preferences,
+    AppLifecycleManager(SharedPreferences preferences,
             LocationControlBuffered locationControlBuffered,
             LocationManager locationManager,
             RadarView radarView) {
@@ -36,6 +36,11 @@ public class AppLifecycleManager {
         };
 
         sharedPreferences = preferences;
+    }
+
+    AppLifecycleManager(SharedPreferences sharedPreferences, LifecycleManager[] lifecycleManagers) {
+        this.sharedPreferences = sharedPreferences;
+        this.lifecycleManagers = lifecycleManagers;
     }
 
     public void onPause() {

@@ -21,7 +21,7 @@ import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import com.google.code.geobeagle.activity.cachelist.GeoBeagleTest;
-import com.google.code.geobeagle.bcaching.BufferedReaderFactoryImpl;
+import com.google.code.geobeagle.bcaching.BufferedReaderFactory;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +35,7 @@ import java.util.Hashtable;
 public class BCachingListImportHelperTest extends GeoBeagleTest {
     @Test
     public void testImportList() throws BCachingException, IOException {
-        BufferedReaderFactoryImpl bufferedReaderFactory = createMock(BufferedReaderFactoryImpl.class);
+        BufferedReaderFactory bufferedReaderFactory = createMock(BufferedReaderFactory.class);
         BCachingListFactory bcachingListFactory = createMock(BCachingListFactory.class);
         BufferedReader bufferedReader = createMock(BufferedReader.class);
         BCachingList bcachingList = createMock(BCachingList.class);
@@ -54,7 +54,7 @@ public class BCachingListImportHelperTest extends GeoBeagleTest {
 
     @Test(expected = BCachingException.class)
     public void testRaiseIOException() throws BCachingException, IOException {
-        BufferedReaderFactoryImpl bufferedReaderFactory = createMock(BufferedReaderFactoryImpl.class);
+        BufferedReaderFactory bufferedReaderFactory = createMock(BufferedReaderFactory.class);
         BCachingListFactory bcachingListFactory = createMock(BCachingListFactory.class);
         BufferedReader bufferedReader = createMock(BufferedReader.class);
         Hashtable<String, String> params = new Hashtable<String, String>();

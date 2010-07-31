@@ -52,6 +52,7 @@ public class CacheDetailsLoader {
             mPath = path;
         }
 
+        @Override
         public String getString() {
             return mActivity.getString(mResourceId, mPath);
         }
@@ -64,6 +65,7 @@ public class CacheDetailsLoader {
             mString = string;
         }
 
+        @Override
         public String getString() {
             return new String(mString);
         }
@@ -78,9 +80,12 @@ public class CacheDetailsLoader {
         private final EventHandlerGpx mEventHandlerGpx;
 
         @Inject
-        public DetailsOpener(Activity activity, FileDataVersionChecker fileDataVersionChecker,
-                EventHelper eventHelper, EventHandlerGpx eventHandlerGpx,
-                XmlPullParserWrapper xmlPullParser, StringWriterWrapper stringWriterWrapper) {
+        public DetailsOpener(Activity activity,
+                FileDataVersionChecker fileDataVersionChecker,
+                EventHelper eventHelper,
+                EventHandlerGpx eventHandlerGpx,
+                XmlPullParserWrapper xmlPullParser,
+                StringWriterWrapper stringWriterWrapper) {
             mActivity = activity;
             mFileDataVersionChecker = fileDataVersionChecker;
             mEventHelper = eventHelper;

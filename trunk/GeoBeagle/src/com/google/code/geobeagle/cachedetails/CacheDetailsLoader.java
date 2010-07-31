@@ -37,39 +37,6 @@ import java.io.Reader;
 
 public class CacheDetailsLoader {
 
-    static interface Details {
-        String getString();
-    }
-
-    static class DetailsError implements Details {
-        private final Activity mActivity;
-        private final String mPath;
-        private final int mResourceId;
-
-        DetailsError(Activity activity, int resourceId, String path) {
-            mActivity = activity;
-            mResourceId = resourceId;
-            mPath = path;
-        }
-
-        @Override
-        public String getString() {
-            return mActivity.getString(mResourceId, mPath);
-        }
-    }
-
-    static class DetailsImpl implements Details {
-        private final String mString;
-
-        DetailsImpl(String string) {
-            mString = string;
-        }
-
-        @Override
-        public String getString() {
-            return new String(mString);
-        }
-    }
 
     public static class DetailsOpener {
         private final Activity mActivity;
@@ -114,7 +81,7 @@ public class CacheDetailsLoader {
     }
 
     interface DetailsReader {
-        Details read(ICachePersisterFacade cpf);
+        String read(ICachePersisterFacade cpf);
     }
 
     static class DetailsReaderError implements DetailsReader {
@@ -129,8 +96,8 @@ public class CacheDetailsLoader {
         }
 
         @Override
-        public Details read(ICachePersisterFacade cpf) {
-            return new DetailsError(mActivity, mError, mPath);
+        public String read(ICachePersisterFacade cpf) {
+            return mActivity.getString(mError, mPath);
         }
     }
 
@@ -143,9 +110,13 @@ public class CacheDetailsLoader {
         private final StringWriterWrapper mStringWriterWrapper;
         private final EventHandlerGpx mEventHandlerGpx;
 
-        DetailsReaderImpl(Activity activity, Reader fileReader, String path,
-                EventHelper eventHelper, EventHandlerGpx eventHandlerGpx,
-                XmlPullParserWrapper xmlPullParserWrapper, StringWriterWrapper stringWriterWrapper) {
+        DetailsReaderImpl(Activity activity,
+                Reader fileReader,
+                String path,
+                EventHelper eventHelper,
+                EventHandlerGpx eventHandlerGpx,
+                XmlPullParserWrapper xmlPullParserWrapper,
+                StringWriterWrapper stringWriterWrapper) {
             mActivity = activity;
             mPath = path;
             mEventHelper = eventHelper;
@@ -156,7 +127,7 @@ public class CacheDetailsLoader {
         }
 
         @Override
-        public Details read(ICachePersisterFacade cachePersisterFacade) {
+        public String read(ICachePersisterFacade cachePersisterFacade) {
             try {
                 mEventHelper.open(mPath, mEventHandlerGpx);
                 mXmlPullParserWrapper.open(mPath, mReader);
@@ -169,11 +140,11 @@ public class CacheDetailsLoader {
                 // Pick up END_DOCUMENT event as well.
                 mEventHelper.handleEvent(eventType, mEventHandlerGpx, cachePersisterFacade);
 
-                return new DetailsImpl(mStringWriterWrapper.getString());
+                return mStringWriterWrapper.getString();
             } catch (XmlPullParserException e) {
-                return new DetailsError(mActivity, R.string.error_reading_details_file, mPath);
+                return mActivity.getString(R.string.error_reading_details_file, mPath);
             } catch (IOException e) {
-                return new DetailsError(mActivity, R.string.error_reading_details_file, mPath);
+                return mActivity.getString(R.string.error_reading_details_file, mPath);
             }
         }
     }
@@ -183,7 +154,8 @@ public class CacheDetailsLoader {
     private final CacheTagsToDetails mCacheTagsToDetails;
 
     @Inject
-    public CacheDetailsLoader(DetailsOpener detailsOpener, FilePathStrategy filePathStrategy,
+    public CacheDetailsLoader(DetailsOpener detailsOpener,
+            FilePathStrategy filePathStrategy,
             CacheTagsToDetails cacheTagsToDetails) {
         mDetailsOpener = detailsOpener;
         mFilePathStrategy = filePathStrategy;
@@ -194,7 +166,6 @@ public class CacheDetailsLoader {
         String path = mFilePathStrategy.getPath(sourceName, cacheId.toString(), "gpx");
         File file = new File(path);
         DetailsReader detailsReader = mDetailsOpener.open(file);
-        Details details = detailsReader.read(mCacheTagsToDetails);
-        return details.getString();
+        return detailsReader.read(mCacheTagsToDetails);
     }
 }

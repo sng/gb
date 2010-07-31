@@ -38,12 +38,12 @@ import java.io.Reader;
 public class CacheDetailsLoader {
 
     public static class DetailsOpener {
-        private final Activity mActivity;
-        private final FileDataVersionChecker mFileDataVersionChecker;
-        private final EventHelper mEventHelper;
-        private final XmlPullParserWrapper mXmlPullParser;
-        private final StringWriterWrapper mStringWriterWrapper;
-        private final EventHandlerGpx mEventHandlerGpx;
+        private final Activity activity;
+        private final EventHandlerGpx eventHandlerGpx;
+        private final EventHelper eventHelper;
+        private final FileDataVersionChecker fileDataVersionChecker;
+        private final StringWriterWrapper stringWriterWrapper;
+        private final XmlPullParserWrapper xmlPullParser;
 
         @Inject
         public DetailsOpener(Activity activity,
@@ -52,30 +52,30 @@ public class CacheDetailsLoader {
                 EventHandlerGpx eventHandlerGpx,
                 XmlPullParserWrapper xmlPullParser,
                 StringWriterWrapper stringWriterWrapper) {
-            mActivity = activity;
-            mFileDataVersionChecker = fileDataVersionChecker;
-            mEventHelper = eventHelper;
-            mEventHandlerGpx = eventHandlerGpx;
-            mXmlPullParser = xmlPullParser;
-            mStringWriterWrapper = stringWriterWrapper;
+            this.activity = activity;
+            this.fileDataVersionChecker = fileDataVersionChecker;
+            this.eventHelper = eventHelper;
+            this.eventHandlerGpx = eventHandlerGpx;
+            this.xmlPullParser = xmlPullParser;
+            this.stringWriterWrapper = stringWriterWrapper;
         }
 
         DetailsReader open(File file) {
             String state = Environment.getExternalStorageState();
             if (!Environment.MEDIA_MOUNTED.equals(state)) {
-                return new DetailsReaderError(mActivity, R.string.error_cant_read_sdroot, state);
+                return new DetailsReaderError(activity, R.string.error_cant_read_sdroot, state);
             }
             final Reader fileReader;
             String absolutePath = file.getAbsolutePath();
             try {
                 fileReader = new BufferedReader(new FileReader(absolutePath));
             } catch (FileNotFoundException e) {
-                int error = mFileDataVersionChecker.needsUpdating() ? R.string.error_details_file_version
+                int error = fileDataVersionChecker.needsUpdating() ? R.string.error_details_file_version
                         : R.string.error_opening_details_file;
-                return new DetailsReaderError(mActivity, error, e.getMessage());
+                return new DetailsReaderError(activity, error, e.getMessage());
             }
-            return new DetailsReaderImpl(mActivity, fileReader, absolutePath, mEventHelper,
-                    mEventHandlerGpx, mXmlPullParser, mStringWriterWrapper);
+            return new DetailsReaderImpl(activity, fileReader, absolutePath, eventHelper,
+                    eventHandlerGpx, xmlPullParser, stringWriterWrapper);
         }
     }
 
@@ -85,8 +85,8 @@ public class CacheDetailsLoader {
 
     static class DetailsReaderError implements DetailsReader {
         private final Activity mActivity;
-        private final String mPath;
         private final int mError;
+        private final String mPath;
 
         DetailsReaderError(Activity activity, int error, String path) {
             mActivity = activity;
@@ -102,12 +102,12 @@ public class CacheDetailsLoader {
 
     static class DetailsReaderImpl implements DetailsReader {
         private final Activity mActivity;
-        private final String mPath;
+        private final EventHandlerGpx mEventHandlerGpx;
         private final EventHelper mEventHelper;
-        private final XmlPullParserWrapper mXmlPullParserWrapper;
+        private final String mPath;
         private final Reader mReader;
         private final StringWriterWrapper mStringWriterWrapper;
-        private final EventHandlerGpx mEventHandlerGpx;
+        private final XmlPullParserWrapper mXmlPullParserWrapper;
 
         DetailsReaderImpl(Activity activity,
                 Reader fileReader,
@@ -148,9 +148,9 @@ public class CacheDetailsLoader {
         }
     }
 
+    private final CacheTagsToDetails mCacheTagsToDetails;
     private final DetailsOpener mDetailsOpener;
     private final FilePathStrategy mFilePathStrategy;
-    private final CacheTagsToDetails mCacheTagsToDetails;
 
     @Inject
     public CacheDetailsLoader(DetailsOpener detailsOpener,

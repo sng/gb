@@ -46,7 +46,7 @@ public class CacheDetailsLoader {
         private final XmlPullParserWrapper xmlPullParser;
 
         @Inject
-        public DetailsOpener(Activity activity,
+        DetailsOpener(Activity activity,
                 FileDataVersionChecker fileDataVersionChecker,
                 EventHelper eventHelper,
                 EventHandlerGpx eventHandlerGpx,
@@ -153,7 +153,7 @@ public class CacheDetailsLoader {
     private final FilePathStrategy mFilePathStrategy;
 
     @Inject
-    public CacheDetailsLoader(DetailsOpener detailsOpener,
+    CacheDetailsLoader(DetailsOpener detailsOpener,
             FilePathStrategy filePathStrategy,
             CacheTagsToDetails cacheTagsToDetails) {
         mDetailsOpener = detailsOpener;

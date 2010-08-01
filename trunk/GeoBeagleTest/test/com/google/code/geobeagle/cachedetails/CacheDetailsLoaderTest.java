@@ -24,10 +24,9 @@ import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import com.google.code.geobeagle.R;
-import com.google.code.geobeagle.cachedetails.CacheDetailsLoader.DetailsOpener;
-import com.google.code.geobeagle.cachedetails.CacheDetailsLoader.DetailsReader;
-import com.google.code.geobeagle.cachedetails.CacheDetailsLoader.DetailsReaderError;
-import com.google.code.geobeagle.cachedetails.CacheDetailsLoader.DetailsReaderImpl;
+import com.google.code.geobeagle.cachedetails.reader.DetailsReader;
+import com.google.code.geobeagle.cachedetails.reader.DetailsReaderError;
+import com.google.code.geobeagle.cachedetails.reader.DetailsReaderImpl;
 import com.google.code.geobeagle.xmlimport.CacheTagsToDetails;
 import com.google.code.geobeagle.xmlimport.EventHandlerGpx;
 import com.google.code.geobeagle.xmlimport.EventHelper;

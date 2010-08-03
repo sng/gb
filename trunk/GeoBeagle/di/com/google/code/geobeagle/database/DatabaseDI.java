@@ -71,10 +71,12 @@ public class DatabaseDI {
             mSQLiteDatabase = writableDatabase;
         }
 
+        @Override
         public void beginTransaction() {
             mSQLiteDatabase.beginTransaction();
         }
 
+        @Override
         public int countResults(String table, String selection, String... selectionArgs) {
 
             Cursor cursor = mSQLiteDatabase.query(table, null, selection, selectionArgs, null,
@@ -86,6 +88,7 @@ public class DatabaseDI {
             return count;
         }
 
+        @Override
         public void endTransaction() {
             mSQLiteDatabase.endTransaction();
         }
@@ -95,11 +98,13 @@ public class DatabaseDI {
             mSQLiteDatabase.execSQL(sql);
         }
 
+        @Override
         public void execSQL(String sql, Object... bindArgs) {
             Log.d("GeoBeagle", this + " :SQL: " + sql + ", " + Arrays.toString(bindArgs));
             mSQLiteDatabase.execSQL(sql, bindArgs);
         }
 
+        @Override
         public Cursor query(String table, String[] columns, String selection, String groupBy,
                 String having, String orderBy, String limit, String... selectionArgs) {
             final Cursor query = mSQLiteDatabase.query(table, columns, selection, selectionArgs,
@@ -111,19 +116,23 @@ public class DatabaseDI {
             return query;
         }
 
+        @Override
         public Cursor rawQuery(String sql, String[] selectionArgs) {
             return mSQLiteDatabase.rawQuery(sql, selectionArgs);
         }
 
+        @Override
         public void setTransactionSuccessful() {
             mSQLiteDatabase.setTransactionSuccessful();
         }
 
+        @Override
         public void close() {
             Log.d("GeoBeagle", "----------closing sqlite------");
             mSQLiteDatabase.close();
         }
 
+        @Override
         public boolean isOpen() {
             return mSQLiteDatabase.isOpen();
         }

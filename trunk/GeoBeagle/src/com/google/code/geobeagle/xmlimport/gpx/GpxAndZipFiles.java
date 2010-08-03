@@ -30,6 +30,7 @@ public class GpxAndZipFiles {
             mGpxFilenameFilter = gpxFilenameFilter;
         }
 
+        @Override
         public boolean accept(File dir, String name) {
             String lowerCaseName = name.toLowerCase();
             if (!lowerCaseName.startsWith(".") && lowerCaseName.endsWith(".zip"))

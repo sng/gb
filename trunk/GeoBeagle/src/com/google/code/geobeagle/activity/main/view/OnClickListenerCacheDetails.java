@@ -15,47 +15,39 @@
 package com.google.code.geobeagle.activity.main.view;
 
 import com.google.code.geobeagle.Geocache;
-import com.google.code.geobeagle.R;
+import com.google.code.geobeagle.activity.details.DetailsActivity;
 import com.google.code.geobeagle.activity.main.GeoBeagle;
-import com.google.code.geobeagle.cachedetails.CacheDetailsLoader;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
-import android.view.LayoutInflater;
+import android.content.Intent;
 import android.view.View;
-import android.webkit.WebView;
 
 public class OnClickListenerCacheDetails implements View.OnClickListener {
 
-    private final Builder mAlertDialogBuilder;
-    private final CacheDetailsLoader mCacheDetailsLoader;
-    private final LayoutInflater mEnv;
-    private final GeoBeagle mGeoBeagle;
+    private final GeoBeagle geoBeagle;
+
+    // For testing.
+    public OnClickListenerCacheDetails(Activity geoBeagle) {
+        this.geoBeagle = (GeoBeagle)geoBeagle;
+    }
 
     @Inject
-    public OnClickListenerCacheDetails(Activity geoBeagle, Builder alertDialogBuilder,
-            LayoutInflater env, CacheDetailsLoader cacheDetailsLoader) {
-        mAlertDialogBuilder = alertDialogBuilder;
-        mEnv = env;
-        mCacheDetailsLoader = cacheDetailsLoader;
-        mGeoBeagle = (GeoBeagle)geoBeagle;
+    public OnClickListenerCacheDetails(Injector injector) {
+        geoBeagle = (GeoBeagle)injector.getInstance(Activity.class);
     }
 
     @Override
     public void onClick(View v) {
-        View detailsView = mEnv.inflate(R.layout.cache_details, null);
+        Intent intent = new Intent(geoBeagle, DetailsActivity.class);
+        Geocache geocache = geoBeagle.getGeocache();
+        intent.putExtra(DetailsActivity.INTENT_EXTRA_GEOCACHE_SOURCE, geocache
+                .getSourceName());
+        intent.putExtra(DetailsActivity.INTENT_EXTRA_GEOCACHE_ID, geocache.getId());
+        intent.putExtra(DetailsActivity.INTENT_EXTRA_GEOCACHE_NAME, geocache
+                .getName());
 
-        Geocache geocache = mGeoBeagle.getGeocache();
-        CharSequence id = geocache.getId();
-        mAlertDialogBuilder.setTitle(id);
-        mAlertDialogBuilder.setView(detailsView);
-
-        WebView webView = (WebView)detailsView.findViewById(R.id.webview);
-        webView.getSettings().setJavaScriptEnabled(true);
-
-        String details = mCacheDetailsLoader.load(geocache.getSourceName(), id);
-        webView.loadDataWithBaseURL(null, details, "text/html", "utf-8", "about:blank");
-        mAlertDialogBuilder.create().show();
+        geoBeagle.startActivity(intent);
     }
 }

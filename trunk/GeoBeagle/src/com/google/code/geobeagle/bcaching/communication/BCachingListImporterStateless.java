@@ -16,6 +16,8 @@ package com.google.code.geobeagle.bcaching.communication;
 
 import com.google.inject.Inject;
 
+import android.content.SharedPreferences;
+
 import java.util.Hashtable;
 
 public class BCachingListImporterStateless {
@@ -25,14 +27,17 @@ public class BCachingListImporterStateless {
     private final Hashtable<String, String> params;
 
     @Inject
-    BCachingListImporterStateless(BCachingListImportHelper bCachingListImportHelper) {
+    BCachingListImporterStateless(BCachingListImportHelper bCachingListImportHelper,
+            SharedPreferences sharedPreferences) {
         this.bCachingListImportHelper = bCachingListImportHelper;
         params = new Hashtable<String, String>();
         params.put("a", "list");
-        params.put("found", "0");
+        boolean syncFinds = sharedPreferences.getBoolean("bcaching-sync-finds", false);
+        params.put("found", syncFinds ? "2" : "0"); // 0-no, 1-yes, 2-both
         commonParams(params);
     }
 
+    // For testing.
     BCachingListImporterStateless(Hashtable<String, String> params,
             BCachingListImportHelper bCachingListImportHelper) {
         this.bCachingListImportHelper = bCachingListImportHelper;

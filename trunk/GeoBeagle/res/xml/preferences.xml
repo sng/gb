@@ -29,5 +29,8 @@
 		<EditTextPreference android:key="bcaching-password"
 			android:dependency="bcaching-enabled" android:layout="?android:attr/preferenceLayoutChild"
 			android:password="true" android:title="Password" android:summary="Password for BCaching.com" />
+		<CheckBoxPreference android:key="bcaching-sync-finds"
+			android:dependency="bcaching-enabled" android:layout="?android:attr/preferenceLayoutChild"
+			android:title="Sync Found Caches" android:summary="Include found caches in BCaching.com sync" />
 	</PreferenceCategory>
 </PreferenceScreen>

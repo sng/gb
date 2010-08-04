@@ -20,6 +20,7 @@ import com.google.code.geobeagle.database.WhereFactoryNearestCaches.Search;
 import com.google.code.geobeagle.database.WhereFactoryNearestCaches.SearchDown;
 import com.google.code.geobeagle.database.WhereFactoryNearestCaches.SearchUp;
 import com.google.code.geobeagle.database.WhereFactoryNearestCaches.WhereStringFactory;
+import com.google.code.geobeagle.preferences.PreferencesUpgrader;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -41,10 +42,12 @@ public class DatabaseDI {
 
     static class GeoBeagleSqliteOpenHelper extends SQLiteOpenHelper {
         private final OpenHelperDelegate mOpenHelperDelegate;
+        private final PreferencesUpgrader mPreferencesUpgrader;
 
-         GeoBeagleSqliteOpenHelper(Context context) {
+        GeoBeagleSqliteOpenHelper(Context context, PreferencesUpgrader preferencesUpgrader) {
             super(context, Database.DATABASE_NAME, null, Database.DATABASE_VERSION);
             mOpenHelperDelegate = new OpenHelperDelegate();
+            mPreferencesUpgrader = preferencesUpgrader;
         }
 
         SQLiteWrapper getWritableSqliteWrapper() {
@@ -61,6 +64,7 @@ public class DatabaseDI {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             final SQLiteWrapper sqliteWrapper = new SQLiteWrapper(db);
             mOpenHelperDelegate.onUpgrade(sqliteWrapper, oldVersion);
+            mPreferencesUpgrader.upgrade(oldVersion);
         }
     }
 

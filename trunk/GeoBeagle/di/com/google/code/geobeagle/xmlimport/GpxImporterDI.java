@@ -31,9 +31,9 @@ import com.google.code.geobeagle.xmlimport.EventHelperDI.EventHelperFactory;
 import com.google.code.geobeagle.xmlimport.GpxToCache.Aborter;
 import com.google.code.geobeagle.xmlimport.ImportThreadDelegate.ImportThreadHelper;
 import com.google.code.geobeagle.xmlimport.gpx.GpxAndZipFiles;
-import com.google.code.geobeagle.xmlimport.gpx.GpxFileIterAndZipFileIterFactory;
 import com.google.code.geobeagle.xmlimport.gpx.GpxAndZipFiles.GpxAndZipFilenameFilter;
 import com.google.code.geobeagle.xmlimport.gpx.GpxAndZipFiles.GpxFilenameFilter;
+import com.google.code.geobeagle.xmlimport.gpx.GpxFileIterAndZipFileIterFactory;
 import com.google.code.geobeagle.xmlimport.gpx.zip.ZipFileOpener.ZipInputFileTester;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -68,15 +68,15 @@ public class GpxImporterDI {
                     .getInstance(GeoBeagleEnvironment.class);
             final GpxFileIterAndZipFileIterFactory gpxFileIterAndZipFileIterFactory = new GpxFileIterAndZipFileIterFactory(
                     zipInputFileTester, aborter, geoBeagleEnvironment);
-            final GpxAndZipFiles gpxAndZipFiles = new GpxAndZipFiles(filenameFilter,
-                    gpxFileIterAndZipFileIterFactory, geoBeagleEnvironment);
-            final EventHelperFactory eventHelperFactory = new EventHelperFactory(
-                    xmlPullParserWrapper);
-            final OldCacheFilesCleaner oldCacheFilesCleaner = new OldCacheFilesCleaner(injector
-                    .getInstance(GeoBeagleEnvironment.class), messageHandler);
             final SharedPreferences sharedPreferences = injector
                     .getInstance(SharedPreferences.class);
-            
+            final GpxAndZipFiles gpxAndZipFiles = new GpxAndZipFiles(filenameFilter,
+                    gpxFileIterAndZipFileIterFactory, geoBeagleEnvironment, sharedPreferences);
+            final EventHelperFactory eventHelperFactory = new EventHelperFactory(
+                    xmlPullParserWrapper);
+            final OldCacheFilesCleaner oldCacheFilesCleaner = new OldCacheFilesCleaner(
+                    injector.getInstance(GeoBeagleEnvironment.class), messageHandler);
+
             final ImportThreadHelper importThreadHelper = new ImportThreadHelper(gpxLoader,
                     messageHandler, eventHelperFactory, eventHandler, oldCacheFilesCleaner,
                     sharedPreferences, geoBeagleEnvironment);
@@ -106,7 +106,7 @@ public class GpxImporterDI {
         public void run() {
             mImportThreadDelegate.run();
         }
-        
+
         public boolean isAliveHack() {
             return mImportThreadDelegate.isAlive();
         }
@@ -208,7 +208,7 @@ public class GpxImporterDI {
                         return;
                     }
 
-                    if (mSharedPreferences.getString(BCachingModule.BCACHING_USERNAME, "").length() > 0) {
+                    if (mSharedPreferences.getBoolean(BCachingModule.BCACHING_ENABLED, false)) {
                         ImportBCachingWorker importBCachingWorker = mImportBCachingWorkerProvider
                                 .get();
                         importBCachingWorker.start();
@@ -351,7 +351,7 @@ public class GpxImporterDI {
                 xmlPullParserWrapper, aborter);
         final EventHandlerGpx eventHandlerGpx = new EventHandlerGpx();
         final XmlWriter xmlWriter = injector.getInstance(XmlWriter.class);
-        
+
         final EventHandlerComposite eventHandlerComposite = new EventHandlerComposite(Arrays
                 .asList(xmlWriter, eventHandlerGpx));
 

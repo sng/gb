@@ -14,9 +14,6 @@
 
 package com.google.code.geobeagle;
 
-import com.google.code.geobeagle.LocationControlBuffered.GpsDisabledLocation;
-import com.google.code.geobeagle.LocationControlBuffered.GpsEnabledLocation;
-import com.google.code.geobeagle.LocationControlBuffered.IGpsLocation;
 import com.google.code.geobeagle.activity.cachelist.presenter.DistanceSortStrategy;
 import com.google.code.geobeagle.activity.cachelist.presenter.NullSortStrategy;
 import com.google.code.geobeagle.location.LocationControl;

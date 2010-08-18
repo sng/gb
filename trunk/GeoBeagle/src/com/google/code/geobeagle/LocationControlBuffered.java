@@ -32,11 +32,6 @@ public class LocationControlBuffered implements LocationListener {
         }
 
         @Override
-        public float distanceToGpsDisabledLocation(GpsDisabledLocation gpsLocation) {
-            return Float.MAX_VALUE;
-        }
-
-        @Override
         public float distanceToGpsEnabledLocation(GpsEnabledLocation gpsEnabledLocation) {
             return Float.MAX_VALUE;
         }
@@ -57,11 +52,6 @@ public class LocationControlBuffered implements LocationListener {
         }
 
         @Override
-        public float distanceToGpsDisabledLocation(GpsDisabledLocation gpsLocation) {
-            return Float.MAX_VALUE;
-        }
-
-        @Override
         public float distanceToGpsEnabledLocation(GpsEnabledLocation gpsEnabledLocation) {
             final float calculateDistanceFast = GeocacheVector.calculateDistanceFast(mLatitude,
                     mLongitude, gpsEnabledLocation.mLatitude, gpsEnabledLocation.mLongitude);
@@ -71,8 +61,6 @@ public class LocationControlBuffered implements LocationListener {
 
     public static interface IGpsLocation {
         public float distanceTo(IGpsLocation dest);
-
-        float distanceToGpsDisabledLocation(GpsDisabledLocation gpsLocation);
 
         float distanceToGpsEnabledLocation(GpsEnabledLocation gpsEnabledLocation);
     }

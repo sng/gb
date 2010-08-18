@@ -19,6 +19,7 @@ import com.google.code.geobeagle.LocationControlBuffered;
 import com.google.code.geobeagle.Refresher;
 import com.google.code.geobeagle.Timing;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 import com.google.inject.Singleton;
 
@@ -70,14 +71,16 @@ public class CacheListRefresh implements Refresher {
     }
 
     private final ActionManager mActionManager;
-    private final LocationControlBuffered mLocationControlBuffered;
     private final Timing mTiming;
     private final UpdateFlag mUpdateFlag;
+    private final Provider<LocationControlBuffered> mLocationControlBufferedProvider;
 
     @Inject
-    public CacheListRefresh(ActionManager actionManager, Timing timing,
-            LocationControlBuffered locationControlBuffered, UpdateFlag updateFlag) {
-        mLocationControlBuffered = locationControlBuffered;
+    public CacheListRefresh(ActionManager actionManager,
+            Timing timing,
+            Provider<LocationControlBuffered> locationControlBufferedProvider,
+            UpdateFlag updateFlag) {
+        mLocationControlBufferedProvider = locationControlBufferedProvider;
         mTiming = timing;
         mActionManager = actionManager;
         mUpdateFlag = updateFlag;
@@ -86,8 +89,8 @@ public class CacheListRefresh implements Refresher {
     public void forceRefresh() {
         mTiming.start();
         final long now = mTiming.getTime();
-        mActionManager.performActions(mLocationControlBuffered.getGpsLocation(),
-                mLocationControlBuffered.getAzimuth(), 0, now);
+        mActionManager.performActions(mLocationControlBufferedProvider.get().getGpsLocation(),
+                mLocationControlBufferedProvider.get().getAzimuth(), 0, now);
     }
 
     @Override
@@ -98,9 +101,11 @@ public class CacheListRefresh implements Refresher {
         mTiming.start();
         try {
             final long now = mTiming.getTime();
-            // Log.d("GeoBeagle", "LCB: " + mLocationControlBuffered);
-            final IGpsLocation here = mLocationControlBuffered.getGpsLocation();
-            final float azimuth = mLocationControlBuffered.getAzimuth();
+            LocationControlBuffered locationControlBuffered = mLocationControlBufferedProvider
+                    .get();
+            // Log.d("GeoBeagle", "LCB: " + locationControlBuffered);
+            final IGpsLocation here = locationControlBuffered.getGpsLocation();
+            final float azimuth = locationControlBuffered.getAzimuth();
             final int minActionExceedingTolerance = mActionManager.getMinActionExceedingTolerance(
                     here, azimuth, now);
             mActionManager.performActions(here, azimuth, minActionExceedingTolerance, now);

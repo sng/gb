@@ -53,6 +53,7 @@ public class GpsStatusWidgetDelegate implements LocationListener {
         mProvider = (TextView)inflatedGpsStatusWidget.findViewById(R.id.provider);
         mContext = context;
         mStatus = (TextView)inflatedGpsStatusWidget.findViewById(R.id.status);
+        mStatus.setText("WAITING FOR INITIAL GPS FIX");
         mTextLagUpdater = textLagUpdater;
     }
 

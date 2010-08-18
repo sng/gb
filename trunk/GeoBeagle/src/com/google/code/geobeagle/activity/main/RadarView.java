@@ -38,17 +38,15 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.SensorListener;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -56,9 +54,8 @@ import android.widget.TextView;
 @SuppressWarnings("deprecation")
 public class RadarView extends View implements SensorListener, LocationListener {
 
-    private static final long RETAIN_GPS_MILLIS = 10000L;
-    private Paint mGridPaint;
-    private Paint mErasePaint;
+    private final Paint mGridPaint;
+    private final Paint mErasePaint;
     private float mOrientation;
     private double mTargetLat;
     private double mTargetLon;
@@ -149,29 +146,17 @@ public class RadarView extends View implements SensorListener, LocationListener 
     // Ratio of the distance to the target to the radius of the outermost ring
     // on the radar screen
     private float mDistanceRatio;
-    private Bitmap mBlip; // The bitmap used to draw the target
+    private final Bitmap mBlip; // The bitmap used to draw the target
 
     // True if the display should use metric units; false if the display should
     // use standard units
     private boolean mUseMetric;
 
-    // Time in millis for the last time GPS reported a location
-    private long mLastGpsFixTime = 0L;
-
-    // The last location reported by the network provider. Use this if we can't
-    // get a location from GPS
-    private Location mNetworkLocation;
-
-    private boolean mGpsAvailable; // True if GPS is reporting a location
-
-    // True if the network provider is reporting a location
-    private boolean mNetworkAvailable;
-
     private TextView mBearingView;
     private float mMyLocationAccuracy;
     private TextView mAccuracyView;
     private final String mDegreesSymbol;
-    private Path mCompassPath;
+    private final Path mCompassPath;
     private final Paint mCompassPaint;
     private final Paint mArrowPaint;
     private final Path mArrowPath;
@@ -350,24 +335,8 @@ public class RadarView extends View implements SensorListener, LocationListener 
             mHaveLocation = true;
         }
 
-        final long now = SystemClock.uptimeMillis();
         boolean useLocation = false;
-        final String provider = location.getProvider();
-        if (LocationManager.GPS_PROVIDER.equals(provider)) {
-            // Use GPS if available
-            mLastGpsFixTime = SystemClock.uptimeMillis();
-            useLocation = true;
-        } else if (LocationManager.NETWORK_PROVIDER.equals(provider)) {
-            // Use network provider if GPS is getting stale
-            useLocation = now - mLastGpsFixTime > RETAIN_GPS_MILLIS;
-            if (mNetworkLocation == null) {
-                mNetworkLocation = new Location(location);
-            } else {
-                mNetworkLocation.set(location);
-            }
-
-            mLastGpsFixTime = 0L;
-        }
+        useLocation = true;
         if (useLocation) {
             mMyLocationLat = location.getLatitude();
             mMyLocationLon = location.getLongitude();
@@ -398,41 +367,15 @@ public class RadarView extends View implements SensorListener, LocationListener 
      */
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        //Log.d("GeoBeagle", "onStatusChanged " + provider + ", " + status);
-        if (LocationManager.GPS_PROVIDER.equals(provider)) {
-            switch (status) {
-                case LocationProvider.AVAILABLE:
-                    mGpsAvailable = true;
-                    break;
-                case LocationProvider.OUT_OF_SERVICE:
-                case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                    mGpsAvailable = false;
+        // Log.d("GeoBeagle", "onStatusChanged " + provider + ", " + status);
+        switch (status) {
+            case LocationProvider.AVAILABLE:
+                break;
+            case LocationProvider.OUT_OF_SERVICE:
+            case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                handleUnknownLocation();
 
-                    if (mNetworkLocation != null && mNetworkAvailable) {
-                        // Fallback to network location
-                        mLastGpsFixTime = 0L;
-                        onLocationChanged(mNetworkLocation);
-                    } else {
-                        handleUnknownLocation();
-                    }
-
-                    break;
-            }
-
-        } else if (LocationManager.NETWORK_PROVIDER.equals(provider)) {
-            switch (status) {
-                case LocationProvider.AVAILABLE:
-                    mNetworkAvailable = true;
-                    break;
-                case LocationProvider.OUT_OF_SERVICE:
-                case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                    mNetworkAvailable = false;
-
-                    if (!mGpsAvailable) {
-                        handleUnknownLocation();
-                    }
-                    break;
-            }
+                break;
         }
     }
 

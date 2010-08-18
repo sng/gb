@@ -18,42 +18,58 @@ import com.google.code.geobeagle.activity.cachelist.model.GeocacheVector;
 import com.google.code.geobeagle.activity.cachelist.presenter.DistanceSortStrategy;
 import com.google.code.geobeagle.activity.cachelist.presenter.NullSortStrategy;
 import com.google.code.geobeagle.activity.cachelist.presenter.SortStrategy;
-import com.google.code.geobeagle.location.LocationControl;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
+@Singleton
 public class LocationControlBuffered implements LocationListener {
     private final DistanceSortStrategy mDistanceSortStrategy;
     private final GpsDisabledLocation mGpsDisabledLocation;
     private IGpsLocation mGpsLocation;
     private Location mLocation;
-    private final LocationControl mLocationControl;
     private final NullSortStrategy mNullSortStrategy;
     private float mAzimuth;
+    private final Provider<LocationManager> mLocationManagerProvider;
 
-    public LocationControlBuffered(LocationControl locationControl,
+    @Inject
+    public LocationControlBuffered(Provider<LocationManager> locationManagerProvider,
             DistanceSortStrategy distanceSortStrategy, NullSortStrategy nullSortStrategy,
-            GpsDisabledLocation gpsDisabledLocation, IGpsLocation lastGpsLocation,
-            Location lastLocation) {
-        mLocationControl = locationControl;
+            GpsDisabledLocation gpsDisabledLocation) {
+        mLocationManagerProvider = locationManagerProvider;
         mDistanceSortStrategy = distanceSortStrategy;
         mNullSortStrategy = nullSortStrategy;
         mGpsDisabledLocation = gpsDisabledLocation;
-        mGpsLocation = lastGpsLocation;
-        mLocation = lastLocation;
+        mGpsLocation = gpsDisabledLocation;
+        mLocation = null;
     }
 
     public IGpsLocation getGpsLocation() {
+        mLocation = mLocationManagerProvider.get().getLastKnownLocation(
+                LocationManager.GPS_PROVIDER);
+        if (mLocation == null) {
+            mGpsLocation = mGpsDisabledLocation;
+        } else {
+            mGpsLocation = new GpsEnabledLocation((float)mLocation.getLatitude(),
+                    (float)mLocation.getLongitude());
+        }
+        Log.d("GeoBeagle", "getGpsLocation: " + mGpsLocation);
         return mGpsLocation;
     }
 
     public Location getLocation() {
+        getGpsLocation();
         return mLocation;
     }
 
     public SortStrategy getSortStrategy() {
+        getGpsLocation();
         if (mLocation == null)
             return mNullSortStrategy;
         return mDistanceSortStrategy;
@@ -61,13 +77,6 @@ public class LocationControlBuffered implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        mLocation = mLocationControl.getLocation();
-        if (location == null) {
-            mGpsLocation = mGpsDisabledLocation;
-        } else {
-            mGpsLocation = new GpsEnabledLocation((float)location.getLatitude(), (float)location
-                    .getLongitude());
-        }
     }
 
     @Override

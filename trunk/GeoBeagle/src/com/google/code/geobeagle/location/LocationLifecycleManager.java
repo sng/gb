@@ -43,8 +43,6 @@ public class LocationLifecycleManager implements LifecycleManager {
     public void onResume(SharedPreferences preferences) {
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
                 mLocationListener);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
-                mLocationListener);
     }
 
 }

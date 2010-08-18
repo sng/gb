@@ -95,7 +95,6 @@ public class GeoBeagle extends GuiceActivity {
 
         // Register for location updates
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, radarView);
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, radarView);
 
         mGeoBeagleDelegate = injector.getInstance(GeoBeagleDelegate.class);
 

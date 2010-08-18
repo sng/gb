@@ -34,8 +34,7 @@ public class CombinedLocationManager {
     }
 
     public boolean isProviderEnabled() {
-        return mLocationManager.isProviderEnabled("gps")
-                || mLocationManager.isProviderEnabled("network");
+        return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     public void removeUpdates() {
@@ -52,8 +51,6 @@ public class CombinedLocationManager {
     public void requestLocationUpdates(int minTime,
             int minDistance,
             LocationListener locationListener) {
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime,
-                minDistance, locationListener);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance,
                 locationListener);
         mLocationListeners.add(locationListener);
@@ -65,9 +62,6 @@ public class CombinedLocationManager {
     }
 
     public Location getLastKnownLocation() {
-        Location gpsLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (gpsLocation != null)
-            return gpsLocation;
-        return mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        return mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
 }

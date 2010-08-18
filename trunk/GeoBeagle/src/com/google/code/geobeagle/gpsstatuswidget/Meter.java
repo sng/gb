@@ -30,6 +30,7 @@ class Meter {
             InflatedGpsStatusWidget inflatedGpsStatusWidget,
             MeterState meterState) {
         mAccuracyView = ((TextView)inflatedGpsStatusWidget.findViewById(R.id.accuracy));
+        mAccuracyView.setText("getting location");
         mMeterState = meterState;
         mMeterView = meterBars;
     }

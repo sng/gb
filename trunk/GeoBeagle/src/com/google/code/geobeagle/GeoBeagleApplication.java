@@ -54,7 +54,7 @@ public class GeoBeagleApplication extends GuiceApplication {
 
     @Override
     protected void addApplicationModules(List<Module> modules) {
-        timing.start();
+        // timing.start();
 //        Debug.startMethodTracing("dmtrace", 32 * 1024 * 1024);
         modules.add(new GeoBeagleModule());      // +1 second (11.0)
         modules.add(new GeoBeaglePackageModule());

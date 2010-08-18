@@ -23,6 +23,8 @@ public class RelativeBearingFormatter implements BearingFormatter {
 
     @Override
     public String formatBearing(float absBearing, float myHeading) {
+        // Log.d("GeoBeagle", "formatBearing: " + absBearing + ", " +
+        // myHeading);
         return ARROWS[((((int)(absBearing - myHeading) + 45 + 720) % 360) / 90)];
     }
 }

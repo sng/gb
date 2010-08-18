@@ -18,6 +18,7 @@ import com.google.code.geobeagle.cachedetails.CacheDetailsLoader;
 import com.google.inject.Inject;
 
 import android.content.Intent;
+import android.util.Log;
 import android.webkit.WebView;
 
 class DetailsWebView {
@@ -33,6 +34,7 @@ class DetailsWebView {
         String sourceName = intent.getStringExtra(DetailsActivity.INTENT_EXTRA_GEOCACHE_SOURCE);
         String id = intent.getStringExtra(DetailsActivity.INTENT_EXTRA_GEOCACHE_ID);
         String details = cacheDetailsLoader.load(sourceName, id);
+        Log.d("GeoBeagle", "DETAILS: " + details);
         webView.loadDataWithBaseURL(null, details, "text/html", "utf-8", null);
         return id + ": " + intent.getStringExtra(DetailsActivity.INTENT_EXTRA_GEOCACHE_NAME);
     }

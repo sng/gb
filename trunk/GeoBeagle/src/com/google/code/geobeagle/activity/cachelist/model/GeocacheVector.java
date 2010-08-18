@@ -84,6 +84,7 @@ public class GeocacheVector {
             return "";
         }
         final float azimuth = mLocationControlBuffered.getAzimuth();
+        // Log.d("GeoBeagle", "GeocacheVector azimuth " + azimuth);
         final CharSequence formattedDistance = distanceFormatter
                 .formatDistance(distanceAndBearing[0]);
         final String formattedBearing = relativeBearingFormatter.formatBearing(

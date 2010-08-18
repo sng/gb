@@ -83,6 +83,7 @@ public class LocationControlBuffered implements LocationListener {
     }
 
     public void setAzimuth(float azimuth) {
+        // Log.d("GeoBeagle", "LCB " + this + ", setting azimuth" + azimuth);
         mAzimuth = azimuth;
     }
 

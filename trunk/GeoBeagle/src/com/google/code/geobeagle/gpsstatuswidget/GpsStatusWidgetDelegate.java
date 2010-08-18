@@ -25,6 +25,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationProvider;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 public class GpsStatusWidgetDelegate implements LocationListener {
@@ -57,7 +58,7 @@ public class GpsStatusWidgetDelegate implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        // Log.d("GeoBeagle", "GpsStatusWidget onLocationChanged " + location);
+        Log.d("GeoBeagle", "GpsStatusWidget onLocationChanged " + location);
         if (location == null)
             return;
 

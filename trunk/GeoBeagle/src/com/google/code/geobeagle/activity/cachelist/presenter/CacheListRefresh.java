@@ -38,8 +38,12 @@ public class CacheListRefresh implements Refresher {
         public int getMinActionExceedingTolerance(IGpsLocation here, float azimuth, long now) {
             int i;
             for (i = 0; i < mActionAndTolerances.length; i++) {
-                if (mActionAndTolerances[i].exceedsTolerance(here, azimuth, now))
+                if (mActionAndTolerances[i].exceedsTolerance(here, azimuth, now)) {
+                    Log.d("GeoBeagle",
+                            "getMinActionExceedingTolerance: "
+                                    + mActionAndTolerances[i].getRefreshAction());
                     break;
+                }
             }
             return i;
         }
@@ -94,6 +98,7 @@ public class CacheListRefresh implements Refresher {
         mTiming.start();
         try {
             final long now = mTiming.getTime();
+            // Log.d("GeoBeagle", "LCB: " + mLocationControlBuffered);
             final IGpsLocation here = mLocationControlBuffered.getGpsLocation();
             final float azimuth = mLocationControlBuffered.getAzimuth();
             final int minActionExceedingTolerance = mActionManager.getMinActionExceedingTolerance(

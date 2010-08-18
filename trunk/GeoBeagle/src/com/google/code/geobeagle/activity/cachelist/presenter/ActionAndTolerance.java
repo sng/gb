@@ -36,4 +36,8 @@ public class ActionAndTolerance {
     public void updateLastRefreshed(IGpsLocation here, float azimuth, long now) {
         mToleranceStrategy.updateLastRefreshed(here, azimuth, now);
     }
+
+    public RefreshAction getRefreshAction() {
+        return mRefreshAction;
+    }
 }

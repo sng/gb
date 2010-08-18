@@ -27,8 +27,10 @@ public class LocationAndAzimuthTolerance implements ToleranceStrategy {
 
     @Override
     public boolean exceedsTolerance(IGpsLocation here, float currentAzimuth, long now) {
+        // Log.d("GeoBeagle", "LAATolerance new azimuth: " + currentAzimuth +
+        // ", mLastAzimuth: " + mLastAzimuth);
         if (mLastAzimuth != currentAzimuth) {
-//            Log.d("GeoBeagle", "new azimuth: " + currentAzimuth);
+            // Log.d("GeoBeagle", "new azimuth: " + currentAzimuth);
             mLastAzimuth = currentAzimuth;
             return true;
         }

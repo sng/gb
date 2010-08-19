@@ -51,6 +51,9 @@ public class CacheDetailsWriter {
     private int logNumber;
     private String longitude;
     private String time;
+    private String relativeTime;
+    private String logType;
+    private String finder;
 
     @Inject
     public CacheDetailsWriter(HtmlWriter htmlWriter, Emotifier emotifier, Context context) {
@@ -62,6 +65,8 @@ public class CacheDetailsWriter {
     public void close() throws IOException {
         htmlWriter.writeFooter();
         htmlWriter.close();
+        latitude = longitude = time = relativeTime = logType = "";
+        logNumber = 0;
     }
 
     public void latitudeLongitude(String latitude, String longitude) {
@@ -70,11 +75,9 @@ public class CacheDetailsWriter {
                 .valueOf(longitude));
     }
 
-    public void logType(String trimmedText) throws IOException {
-        final String text = Emotifier.ICON_PREFIX + "log_"
-                + trimmedText.replace(' ', '_').replace('\'', '_') + Emotifier.ICON_SUFFIX + " "
-                + trimmedText;
-        htmlWriter.writeln(text);
+    public void logType(String trimmedText) {
+        logType = Emotifier.ICON_PREFIX + "log_" + trimmedText.replace(' ', '_').replace('\'', '_')
+                + Emotifier.ICON_SUFFIX;
     }
 
     public void placedBy(String text) throws IOException {
@@ -111,7 +114,7 @@ public class CacheDetailsWriter {
     public void writeLogDate(String text) throws IOException {
         htmlWriter.writeSeparator();
         try {
-            htmlWriter.writeln(getRelativeTime(text));
+            relativeTime = getRelativeTime(text);
         } catch (ParseException e) {
             htmlWriter.writeln("error parsing date: " + e.getLocalizedMessage());
         }
@@ -119,6 +122,7 @@ public class CacheDetailsWriter {
 
     public void writeLogText(String text, boolean encoded) throws IOException {
         String f;
+        htmlWriter.writeln("<b>" + logType + " " + relativeTime + " by " + finder + "</b>");
         if (encoded)
             f = "<a class=hint id=log_%1$s onclick=\"dht('log_%1$s');return false;\" "
                     + "href=#>Encrypt</a><div id=log_%1$s_text>%2$s</div>";
@@ -150,6 +154,10 @@ public class CacheDetailsWriter {
         latitude = longitude = null;
     }
 
+    public void writeLogFinder(String finder) {
+        this.finder = finder;
+    }
+
     private String getRelativeTime(String utcTime) throws ParseException {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -177,4 +185,5 @@ public class CacheDetailsWriter {
         CharSequence dateClause = DateUtils.getRelativeTimeSpanString(context, time, false);
         return dateClause + timeClause;
     }
+
 }

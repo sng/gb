@@ -22,6 +22,7 @@ import com.google.code.geobeagle.activity.cachelist.CacheListView.ScrollListener
 import com.google.code.geobeagle.activity.cachelist.GeocacheListController.CacheListOnCreateContextMenuListener;
 import com.google.code.geobeagle.activity.cachelist.Pausable;
 import com.google.code.geobeagle.activity.cachelist.model.GeocacheVectors;
+import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable;
 import com.google.code.geobeagle.location.CombinedLocationListener;
@@ -31,6 +32,8 @@ import com.google.inject.Provider;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.hardware.SensorManager;
 import android.location.LocationListener;
 import android.view.View;
@@ -101,6 +104,15 @@ public class GeocacheListPresenter implements Pausable {
     }
 
     public void onResume(CacheListRefresh cacheListRefresh) {
+        SharedPreferences sharedPreferences = null;
+        if (sharedPreferences.getBoolean("filter-dirty", false)) {
+            DbFrontend dbFrontend = null;
+            dbFrontend.updateFilter();
+            Editor editor = sharedPreferences.edit();
+            editor.putBoolean("filter-dirty", false);
+            editor.commit();
+        }
+
         final CacheListRefreshLocationListener cacheListRefreshLocationListener = new CacheListRefreshLocationListener(
                 cacheListRefresh);
         final CacheListCompassListener mCompassListener = mCacheListCompassListenerProvider.get();

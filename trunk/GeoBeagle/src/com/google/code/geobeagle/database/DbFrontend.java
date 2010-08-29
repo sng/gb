@@ -22,6 +22,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.util.Log;
 
@@ -82,6 +83,43 @@ public class DbFrontend {
         countCursor.close();
         Log.d("GeoBeagle", this + ": DbFrontEnd.count all:" + count);
         return count;
+    }
+
+    public void updateFilter() {
+        SharedPreferences sharedPreferences = null;
+        boolean showFoundCaches = sharedPreferences.getBoolean("show-found-caches", false);
+        openDatabase();
+        mDatabase.rawQuery("UPDATE CACHES SET Visible = 1", null);
+        if (showFoundCaches)
+            return;
+        Cursor cursor = null;
+        try {
+            cursor = mDatabase.rawQuery("SELECT ROWID, Id FROM " + Database.TBL_CACHES, null);
+            String cache = cursor.getString(1);
+            if (!cursor.moveToFirst())
+                return;
+            while (!cursor.isAfterLast()) {
+                int rowId = cursor.getInt(0);
+                boolean isFound = isFound(cache);
+                if (!isFound) {
+                    mDatabase.execSQL("UPDATE CACHES SET Visible = 0 WHERE ROWID = ?",
+                            rowId);
+                }
+            }
+            cursor.moveToFirst();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+
+        }
+    }
+
+    private boolean isFound(String cache) {
+        return mDatabase.hasValue("TAGS", new String[] {
+                "Cache", "Id"
+        }, new String[] {
+                cache, String.valueOf(Tag.FOUND.ordinal())
+        });
     }
 
     public ArrayList<Geocache> loadCaches(double latitude, double longitude,

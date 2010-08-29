@@ -43,6 +43,12 @@ public class Database {
         + "Latitude DOUBLE, Longitude DOUBLE, Source VARCHAR, " + S0_COLUMN_DELETE_ME + ", "
         + S0_COLUMN_CACHE_TYPE + ", " + S0_COLUMN_CONTAINER + ", " + S0_COLUMN_DIFFICULTY
         + ", " + S0_COLUMN_TERRAIN + ", " + S0_COLUMN_AVAILABLE + ", " + S0_COLUMN_ARCHIVED + ");";
+    public static final String SQL_CREATE_CACHE_TABLE_V15 = "CREATE TABLE CACHES ("
+            + "Id VARCHAR PRIMARY KEY, Description VARCHAR, "
+            + "Latitude DOUBLE, Longitude DOUBLE, Source VARCHAR, " + S0_COLUMN_DELETE_ME + ", "
+            + S0_COLUMN_CACHE_TYPE + ", " + S0_COLUMN_CONTAINER + ", " + S0_COLUMN_DIFFICULTY
+            + ", " + S0_COLUMN_TERRAIN + ", " + S0_COLUMN_AVAILABLE + ", " + S0_COLUMN_ARCHIVED
+            + ", BOOLEAN NOT NULL Visible Default 1);";
     public static final String SQL_CREATE_GPX_TABLE_V10 = "CREATE TABLE GPX ("
             + "Name VARCHAR PRIMARY KEY NOT NULL, ExportTime DATETIME NOT NULL, DeleteMe BOOLEAN NOT NULL);";
     public static final String SQL_CREATE_TAGS_TABLE_V12 = "CREATE TABLE TAGS ("
@@ -52,6 +58,7 @@ public class Database {
     public static final String SQL_CREATE_IDX_LONGITUDE = "CREATE INDEX IDX_LONGITUDE on CACHES (Longitude);";
     public static final String SQL_CREATE_IDX_SOURCE = "CREATE INDEX IDX_SOURCE on CACHES (Source);";
     public static final String SQL_CREATE_IDX_TAGS = "CREATE INDEX IDX_TAGS on TAGS (Cache);";
+    public static final String SQL_CREATE_IDX_VISIBLE = "CREATE INDEX IDX_VISIBE on CACHES (Visible);";
     public static final String SQL_DELETE_CACHE = "DELETE FROM CACHES WHERE Id=?";
     public static final String SQL_DELETE_OLD_CACHES = "DELETE FROM CACHES WHERE DeleteMe = 1";
     public static final String SQL_DELETE_OLD_GPX = "DELETE FROM GPX WHERE DeleteMe = 1";

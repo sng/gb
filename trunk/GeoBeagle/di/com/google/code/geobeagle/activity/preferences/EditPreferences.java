@@ -26,6 +26,8 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 
 public class EditPreferences extends GuicePreferenceActivity {
+    public static final String SHOW_FOUND_CACHES = "show-found-caches";
+
     static final class FilterSettingsChangeListener implements OnPreferenceChangeListener {
         private final SharedPreferences sharedPreferences;
 
@@ -38,6 +40,7 @@ public class EditPreferences extends GuicePreferenceActivity {
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             Editor editor = sharedPreferences.edit();
             editor.putBoolean("filter-dirty", true);
+            editor.commit();
             return true;
         }
     }
@@ -47,7 +50,7 @@ public class EditPreferences extends GuicePreferenceActivity {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preferences);
-        Preference preference = findPreference("filter-found-caches");
+        Preference preference = findPreference(SHOW_FOUND_CACHES);
         OnPreferenceChangeListener onPreferenceChangeListener = getInjector().getInstance(
                 FilterSettingsChangeListener.class);
         preference.setOnPreferenceChangeListener(onPreferenceChangeListener);

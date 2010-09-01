@@ -55,5 +55,9 @@ public class OpenHelperDelegate {
             // to get new gpx details.
             db.execSQL(Database.SQL_FORCE_UPDATE_ALL);
         }
+        if (oldVersion < 18) {
+            db.execSQL("ALTER TABLE CACHES ADD COLUMN VISIBLE");
+            db.execSQL(Database.SQL_CREATE_IDX_VISIBLE);
+        }
     }
 }

@@ -22,7 +22,11 @@ import com.google.code.geobeagle.activity.cachelist.CacheListView.ScrollListener
 import com.google.code.geobeagle.activity.cachelist.GeocacheListController.CacheListOnCreateContextMenuListener;
 import com.google.code.geobeagle.activity.cachelist.Pausable;
 import com.google.code.geobeagle.activity.cachelist.model.GeocacheVectors;
+import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
 import com.google.code.geobeagle.database.DbFrontend;
+import com.google.code.geobeagle.database.UpdateFilterWorker;
+import com.google.code.geobeagle.database.UpdateFilterWorker.DeterminateUpdateFilterProgressDialog;
+import com.google.code.geobeagle.database.UpdateFilterWorker.IndeterminateUpdateFilterProgressDialog;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable;
 import com.google.code.geobeagle.location.CombinedLocationListener;
@@ -32,11 +36,15 @@ import com.google.inject.Provider;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.hardware.SensorManager;
 import android.location.LocationListener;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ListView;
 
 public class GeocacheListPresenter implements Pausable {
@@ -55,6 +63,10 @@ public class GeocacheListPresenter implements Pausable {
     private final UpdateGpsWidgetRunnable mUpdateGpsWidgetRunnable;
     private final CacheListView.ScrollListener mScrollListener;
     private final GpsStatusListener mGpsStatusListener;
+    private final SharedPreferences mSharedPreferences;
+    private final UpdateFilterWorker mUpdateFilterWorker;
+    private final UpdateFlag mUpdateFlag;
+    private final Provider<IndeterminateUpdateFilterProgressDialog> mProgressDialogProvider;
 
     @Inject
     public GeocacheListPresenter(CombinedLocationListener combinedLocationListener,
@@ -68,7 +80,12 @@ public class GeocacheListPresenter implements Pausable {
             SensorManagerWrapper sensorManagerWrapper,
             UpdateGpsWidgetRunnable updateGpsWidgetRunnable,
             ScrollListener scrollListener,
-            GpsStatusListener gpsStatusListener) {
+            GpsStatusListener gpsStatusListener,
+            SharedPreferences sharedPreferences,
+            DbFrontend dbFrontend,
+            UpdateFilterWorker updateFilterWorker,
+            UpdateFlag updateFlag,
+            Provider<IndeterminateUpdateFilterProgressDialog> progressDialogProvider) {
         mCombinedLocationListener = combinedLocationListener;
         mCombinedLocationManager = combinedLocationManager;
         mCacheListCompassListenerProvider = cacheListCompassListenerProvider;
@@ -81,6 +98,10 @@ public class GeocacheListPresenter implements Pausable {
         mSensorManagerWrapper = sensorManagerWrapper;
         mScrollListener = scrollListener;
         mGpsStatusListener = gpsStatusListener;
+        mSharedPreferences = sharedPreferences;
+        mUpdateFilterWorker = updateFilterWorker;
+        mUpdateFlag = updateFlag;
+        mProgressDialogProvider = progressDialogProvider;
     }
 
     public void onCreate() {
@@ -103,14 +124,71 @@ public class GeocacheListPresenter implements Pausable {
         mSensorManagerWrapper.unregisterListener();
     }
 
+    public static class UpdateFilterHandler extends Handler {
+        private final Provider<IndeterminateUpdateFilterProgressDialog> bulkUpdateProgressDialogProvider;
+        private final Provider<DeterminateUpdateFilterProgressDialog> incrementalUpdateProgressDialogProvider;
+        private final Activity activity;
+        private final CacheListRefresh cacheListRefresh;
+        private final UpdateFlag updateFlag;
+
+        @Inject
+        UpdateFilterHandler(Provider<IndeterminateUpdateFilterProgressDialog> progressDialogProvider,
+                Activity activity,
+                CacheListRefresh cacheListRefresh,
+                UpdateFlag updateFlag,
+                Provider<DeterminateUpdateFilterProgressDialog> incrementalUpdateProgressDialogProvider) {
+            this.bulkUpdateProgressDialogProvider = progressDialogProvider;
+            this.incrementalUpdateProgressDialogProvider = incrementalUpdateProgressDialogProvider;
+            this.activity = activity;
+            this.cacheListRefresh = cacheListRefresh;
+            this.updateFlag = updateFlag;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 4) {
+                IndeterminateUpdateFilterProgressDialog updateFilterProgressDialog = bulkUpdateProgressDialogProvider
+                        .get();
+                Log.d("GeoBeagle", "dismissing " + updateFilterProgressDialog);
+                activity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, 10000);
+                updateFilterProgressDialog.dismiss();
+                updateFlag.setUpdatesEnabled(true);
+                cacheListRefresh.forceRefresh();
+            } else if (msg.what == 1) {
+                DeterminateUpdateFilterProgressDialog determinateUpdateFilterProgressDialog = incrementalUpdateProgressDialogProvider
+                        .get();
+                Log.d("GeoBeagle", "dismissing " + bulkUpdateProgressDialogProvider);
+                activity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, 10000);
+                determinateUpdateFilterProgressDialog.dismiss();
+                updateFlag.setUpdatesEnabled(true);
+                cacheListRefresh.forceRefresh();
+            } else if (msg.what == 2) {
+                DeterminateUpdateFilterProgressDialog determinateUpdateFilterProgressDialog = incrementalUpdateProgressDialogProvider
+                        .get();
+                IndeterminateUpdateFilterProgressDialog bulkUpdateFilterProgressDialog = bulkUpdateProgressDialogProvider
+                        .get();
+                bulkUpdateFilterProgressDialog.dismiss();
+                determinateUpdateFilterProgressDialog.setMax(msg.arg1);
+                determinateUpdateFilterProgressDialog.show();
+                Log.d("GeoBeagle", "setting max " + msg.arg1);
+            } else if (msg.what == 3) {
+                DeterminateUpdateFilterProgressDialog determinateUpdateFilterProgressDialog = incrementalUpdateProgressDialogProvider
+                        .get();
+                determinateUpdateFilterProgressDialog.incrementProgressBy(1);
+            }
+        }
+    }
+
     public void onResume(CacheListRefresh cacheListRefresh) {
-        SharedPreferences sharedPreferences = null;
-        if (sharedPreferences.getBoolean("filter-dirty", false)) {
-            DbFrontend dbFrontend = null;
-            dbFrontend.updateFilter();
-            Editor editor = sharedPreferences.edit();
-            editor.putBoolean("filter-dirty", false);
-            editor.commit();
+        if (mSharedPreferences.getBoolean("filter-dirty", false)) {
+            // mDbFrontend.updateFilter();
+            ProgressDialog progressDialog = mProgressDialogProvider.get();
+            progressDialog.incrementProgressBy(1);
+            Log.d("GeoBeagle", "showing " + progressDialog);
+            progressDialog.show();
+            mListActivity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, 5000);
+            mUpdateFlag.setUpdatesEnabled(false);
+            mUpdateFilterWorker.start();
         }
 
         final CacheListRefreshLocationListener cacheListRefreshLocationListener = new CacheListRefreshLocationListener(
@@ -128,5 +206,6 @@ public class GeocacheListPresenter implements Pausable {
         mUpdateGpsWidgetRunnable.run();
         mSensorManagerWrapper.registerListener(mCompassListener, SensorManager.SENSOR_ORIENTATION,
                 SensorManager.SENSOR_DELAY_UI);
+        Log.d("GeoBeagle", "GeocacheListPresenter onResume done");
     }
 }

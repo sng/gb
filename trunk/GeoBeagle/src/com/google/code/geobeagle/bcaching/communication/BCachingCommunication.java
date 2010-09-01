@@ -82,7 +82,7 @@ public class BCachingCommunication {
         return new String(out);
     }
 
-    private final String baseUrl = "http://www.bcaching.com/api";
+    private final String baseUrl = "http://test.bcaching.com/api";
     private final String hashword;
     private final int timeout = 60000; // millisec
     private final String username;

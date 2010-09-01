@@ -88,7 +88,7 @@ public class DatabaseTest extends GeoBeagleTest {
         String gpx = db.dumpTable("GPX");
         assertEquals("seattle.gpx|1970-01-01|1\n", gpx);
     }
-    
+
 
     @Test
     public void testUpgradeFrom11() {
@@ -109,7 +109,7 @@ public class DatabaseTest extends GeoBeagleTest {
         String gpx = db.dumpTable("GPX");
         assertEquals("seattle.gpx|1970-01-01|1\n", gpx);
     }
-    
+
     @Test
     public void testUpgradeFrom10() {
         DesktopSQLiteDatabase db = new DesktopSQLiteDatabase();

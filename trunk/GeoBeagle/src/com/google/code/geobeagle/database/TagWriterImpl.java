@@ -26,13 +26,28 @@ import android.util.Log;
 public class TagWriterImpl implements TagWriter {
 
     private final Provider<ISQLiteDatabase> databaseProvider;
-    private final SharedPreferences sharedPreferences;
+    private final Filter filter;
+
+    static class Filter {
+        private final SharedPreferences sharedPreferences;
+
+        @Inject
+        public Filter(SharedPreferences sharedPreferences) {
+            this.sharedPreferences = sharedPreferences;
+        }
+
+        public boolean isVisible(boolean found) {
+            boolean showFoundCaches = sharedPreferences.getBoolean(
+                    EditPreferences.SHOW_FOUND_CACHES, false);
+            return showFoundCaches || !(found);
+        }
+    }
 
     @Inject
     public TagWriterImpl(Provider<ISQLiteDatabase> databaseProvider,
-            SharedPreferences sharedPreferences) {
+            Filter filter) {
         this.databaseProvider = databaseProvider;
-        this.sharedPreferences = sharedPreferences;
+        this.filter = filter;
     }
 
     @Override
@@ -45,10 +60,8 @@ public class TagWriterImpl implements TagWriter {
         }, new Object[] {
                 geocacheId, tag.ordinal()
         });
-        boolean showFoundCaches = sharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES,
-                false);
-        boolean visible = showFoundCaches || !(tag == Tag.FOUND);
-        if (!visible) {
+
+        if (!filter.isVisible(tag == Tag.FOUND)) {
             ContentValues contentValues = new ContentValues();
             contentValues.put("Visible", 0);
             database.update("CACHES", contentValues, "ID=?", new String[] {

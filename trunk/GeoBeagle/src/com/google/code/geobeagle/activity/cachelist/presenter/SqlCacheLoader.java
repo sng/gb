@@ -54,7 +54,7 @@ public class SqlCacheLoader implements RefreshAction {
     public void refresh() {
         if (!mActivityVisible.getVisible())
             return;
-        final Location location = mLocationControlBuffered.getLocation();
+        Location location = mLocationControlBuffered.getLocation();
         double latitude = 0;
         double longitude = 0;
         if (location != null) {
@@ -70,7 +70,7 @@ public class SqlCacheLoader implements RefreshAction {
         mCacheListData.add(geocaches, mLocationControlBuffered);
         mTiming.lap("add to list time");
 
-        final int nearestCachesCount = mCacheListData.size();
+        int nearestCachesCount = mCacheListData.size();
         mTitleUpdater.update(dbFrontend.countAll(), nearestCachesCount);
     }
 }

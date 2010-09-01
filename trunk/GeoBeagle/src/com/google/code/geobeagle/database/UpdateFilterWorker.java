@@ -1,7 +1,7 @@
 package com.google.code.geobeagle.database;
 
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
-import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter.UpdateFilterHandler;
+import com.google.code.geobeagle.activity.cachelist.presenter.UpdateFilterHandler;
 import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.inject.Inject;
 

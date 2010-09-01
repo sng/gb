@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
-import android.util.Log;
 
 public class UpdateFilterWorker extends RoboThread {
     private final SharedPreferences sharedPreferences;
@@ -27,13 +26,11 @@ public class UpdateFilterWorker extends RoboThread {
         @Inject
         public ClearFilterProgressDialog(Context context) {
             super(context);
-            // setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            setMessage("Clearing previous filter...");
+            setMessage("Clearing filter...");
             setIndeterminate(true);
             setTitle("Filtering caches");
             setCancelable(false);
         }
-
     }
 
     @ContextScoped
@@ -74,8 +71,11 @@ public class UpdateFilterWorker extends RoboThread {
             editor.commit();
             return;
         }
-        Cursor cursor = database
-                .rawQuery("SELECT ROWID, Id FROM " + Database.TBL_CACHES, null);
+        Cursor cursor = database.query("TAGS", new String[] {
+            "Cache"
+        }, "Id = ?", new String[] {
+            String.valueOf(Tag.FOUND.ordinal())
+        }, null, null, null, null);
         updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
                 UpdateFilterHandler.SHOW_APPLY_FILTER_PROGRESS, cursor.getCount(), 0));
         try {
@@ -84,12 +84,8 @@ public class UpdateFilterWorker extends RoboThread {
             while (!cursor.isAfterLast()) {
                 updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
                         UpdateFilterHandler.INCREMENT_APPLY_FILTER_PROGRESS, 0, 0));
-                int rowId = cursor.getInt(0);
-                String cache = cursor.getString(1);
-                boolean isFound = isFound(cache, database);
-                if (isFound) {
-                    database.execSQL("UPDATE CACHES SET Visible = 0 WHERE ROWID = ?", rowId);
-                }
+                String cache = cursor.getString(0);
+                database.execSQL("UPDATE CACHES SET Visible = 0 WHERE ID = ?", cache);
                 cursor.moveToNext();
             }
         } finally {
@@ -99,16 +95,7 @@ public class UpdateFilterWorker extends RoboThread {
         editor.putBoolean("filter-dirty", false);
         editor.commit();
         updateFlag.setUpdatesEnabled(true);
-        Log.d("GeoBeagle", "updating filter complete!");
         updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                UpdateFilterHandler.DISMISS_CLEAR_FILTER_PROGRESS, 0, 0));
-    }
-
-    private boolean isFound(String cache, ISQLiteDatabase database) {
-        return database.hasValue("TAGS", new String[] {
-                "Cache", "Id"
-        }, new String[] {
-                cache, String.valueOf(Tag.FOUND.ordinal())
-        });
+                UpdateFilterHandler.DISMISS_APPLY_FILTER_PROGRESS, 0, 0));
     }
 }

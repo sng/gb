@@ -14,10 +14,22 @@
 
 package com.google.code.geobeagle.database;
 
-public class TagWriterNull implements TagWriter {
+import com.google.code.geobeagle.activity.preferences.EditPreferences;
+import com.google.inject.Inject;
 
-    @Override
-    public void add(CharSequence geocacheId, Tag tag) {
+import android.content.SharedPreferences;
+
+class Filter {
+    private final SharedPreferences sharedPreferences;
+
+    @Inject
+    public Filter(SharedPreferences sharedPreferences) {
+        this.sharedPreferences = sharedPreferences;
     }
 
+    public boolean isVisible(boolean found) {
+        boolean showFoundCaches = sharedPreferences.getBoolean(
+                EditPreferences.SHOW_FOUND_CACHES, false);
+        return showFoundCaches || !(found);
+    }
 }

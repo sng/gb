@@ -18,27 +18,39 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 
+import android.content.ContentValues;
 import android.util.Log;
 
 public class TagWriterImpl implements TagWriter {
 
     private final Provider<ISQLiteDatabase> databaseProvider;
+    private final Filter filter;
 
     @Inject
-    public TagWriterImpl(Provider<ISQLiteDatabase> databaseProvider) {
+    public TagWriterImpl(Provider<ISQLiteDatabase> databaseProvider,
+            Filter filter) {
         this.databaseProvider = databaseProvider;
+        this.filter = filter;
     }
 
     @Override
     public void add(CharSequence geocacheId, Tag tag) {
         Log.d("GeoBeagle", "TagWriterImpl: " + geocacheId + ", " + tag);
         ISQLiteDatabase database = databaseProvider.get();
-        mDatabase.delete("TAGS", "Cache", (String)geocacheId);
-        mDatabase.insert("TAGS", new String[] {
+        database.delete("TAGS", "Cache", (String)geocacheId);
+        database.insert("TAGS", new String[] {
                 "Cache", "Id"
         }, new Object[] {
                 geocacheId, tag.ordinal()
         });
+
+        if (!filter.isVisible(tag == Tag.FOUND)) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("Visible", 0);
+            database.update("CACHES", contentValues, "ID=?", new String[] {
+                geocacheId.toString()
+            });
+        }
     }
 
     public boolean hasTag(CharSequence geocacheId, Tag tag) {

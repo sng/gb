@@ -32,7 +32,7 @@ public class TagWriterImpl implements TagWriter {
     @Override
     public void add(CharSequence geocacheId, Tag tag) {
         Log.d("GeoBeagle", "TagWriterImpl: " + geocacheId + ", " + tag);
-        final ISQLiteDatabase mDatabase = databaseProvider.get();
+        ISQLiteDatabase database = databaseProvider.get();
         mDatabase.delete("TAGS", "Cache", (String)geocacheId);
         mDatabase.insert("TAGS", new String[] {
                 "Cache", "Id"
@@ -49,7 +49,7 @@ public class TagWriterImpl implements TagWriter {
             Log.e("GeoBeagle", "Provision exception");
             return false;
         }
-        final boolean hasValue = mDatabase.hasValue("TAGS", new String[] {
+        boolean hasValue = mDatabase.hasValue("TAGS", new String[] {
                 "Cache", "Id"
         }, new String[] {
                 geocacheId.toString(), String.valueOf(tag.ordinal())

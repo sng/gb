@@ -17,7 +17,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.google.code.geobeagle.activity.cachelist.GeoBeagleTest;
-import com.google.code.geobeagle.database.TagWriterImpl.Filter;
 import com.google.inject.Provider;
 
 import org.easymock.EasyMock;

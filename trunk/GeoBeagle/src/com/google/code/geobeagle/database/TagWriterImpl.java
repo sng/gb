@@ -14,34 +14,17 @@
 
 package com.google.code.geobeagle.database;
 
-import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 
 import android.content.ContentValues;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 public class TagWriterImpl implements TagWriter {
 
     private final Provider<ISQLiteDatabase> databaseProvider;
     private final Filter filter;
-
-    static class Filter {
-        private final SharedPreferences sharedPreferences;
-
-        @Inject
-        public Filter(SharedPreferences sharedPreferences) {
-            this.sharedPreferences = sharedPreferences;
-        }
-
-        public boolean isVisible(boolean found) {
-            boolean showFoundCaches = sharedPreferences.getBoolean(
-                    EditPreferences.SHOW_FOUND_CACHES, false);
-            return showFoundCaches || !(found);
-        }
-    }
 
     @Inject
     public TagWriterImpl(Provider<ISQLiteDatabase> databaseProvider,

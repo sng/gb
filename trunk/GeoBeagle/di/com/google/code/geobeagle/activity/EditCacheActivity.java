@@ -17,7 +17,6 @@ package com.google.code.geobeagle.activity;
 import com.google.code.geobeagle.GeocacheFactory;
 import com.google.code.geobeagle.activity.main.view.EditCacheActivityDelegate;
 import com.google.code.geobeagle.activity.main.view.EditCacheActivityDelegate.CancelButtonOnClickListener;
-import com.google.code.geobeagle.database.CacheWriter;
 import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.database.LocationSaver;
 import com.google.inject.Provider;
@@ -29,8 +28,7 @@ import android.os.Bundle;
 public class EditCacheActivity extends GuiceActivity {
     private EditCacheActivityDelegate mEditCacheActivityDelegate;
     private Provider<DbFrontend> mDbFrontendProvider;
-    private Provider<CacheWriter> mCacheWriterProvider;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,11 +36,10 @@ public class EditCacheActivity extends GuiceActivity {
                 this);
         GeocacheFactory geocacheFactory = new GeocacheFactory();
         mDbFrontendProvider = getInjector().getProvider(DbFrontend.class);
-        mCacheWriterProvider = getInjector().getProvider(CacheWriter.class);
-        LocationSaver locationSaver = new LocationSaver(mCacheWriterProvider);
+        LocationSaver locationSaver = getInjector().getInstance(LocationSaver.class);
         mEditCacheActivityDelegate = new EditCacheActivityDelegate(this,
                 cancelButtonOnClickListener, geocacheFactory, locationSaver);
-        
+
         mEditCacheActivityDelegate.onCreate();
     }
 

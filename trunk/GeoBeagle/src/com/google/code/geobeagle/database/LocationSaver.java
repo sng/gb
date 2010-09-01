@@ -15,25 +15,38 @@
 package com.google.code.geobeagle.database;
 
 import com.google.code.geobeagle.Geocache;
+import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
+import android.content.SharedPreferences;
+
 public class LocationSaver {
     private final Provider<CacheWriter> cacheWriterProvider;
+    private final TagWriterImpl tagWriterImpl;
+    private final SharedPreferences sharedPreferences;
 
     @Inject
-    public LocationSaver(Provider<CacheWriter> cacheWriterProvider) {
+    public LocationSaver(Provider<CacheWriter> cacheWriterProvider,
+            TagWriterImpl tagWriterImpl,
+            SharedPreferences sharedPreferences) {
         this.cacheWriterProvider = cacheWriterProvider;
+        this.tagWriterImpl = tagWriterImpl;
+        this.sharedPreferences = sharedPreferences;
     }
 
     public void saveLocation(Geocache geocache) {
         final CharSequence id = geocache.getId();
         CacheWriter cacheWriter = cacheWriterProvider.get();
         cacheWriter.startWriting();
-        cacheWriter.insertAndUpdateCache(id, geocache.getName(), geocache.getLatitude(), geocache
-                .getLongitude(), geocache.getSourceType(), geocache.getSourceName(), geocache
-                .getCacheType(), geocache.getDifficulty(), geocache.getTerrain(), geocache
-                .getContainer(), geocache.getAvailable(), geocache.getArchived());
+        boolean found = tagWriterImpl.hasTag(id, Tag.FOUND);
+        boolean showFoundCaches = sharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES,
+                false);
+        boolean visible = showFoundCaches || !found;
+        cacheWriter.insertAndUpdateCache(id, geocache.getName(), geocache.getLatitude(),
+                geocache.getLongitude(), geocache.getSourceType(), geocache.getSourceName(),
+                geocache.getCacheType(), geocache.getDifficulty(), geocache.getTerrain(),
+                geocache.getContainer(), geocache.getAvailable(), geocache.getArchived(), visible);
         cacheWriter.stopWriting();
     }
 }

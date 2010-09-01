@@ -23,9 +23,8 @@ import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.ActivitySaver;
 import com.google.code.geobeagle.activity.ActivityType;
 import com.google.code.geobeagle.activity.main.view.CheckDetailsButton;
-import com.google.code.geobeagle.activity.main.view.WebPageMenuEnabler;
 import com.google.code.geobeagle.activity.main.view.GeocacheViewer;
-import com.google.code.geobeagle.database.CacheWriter;
+import com.google.code.geobeagle.activity.main.view.WebPageMenuEnabler;
 import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.database.LocationSaver;
 import com.google.code.geobeagle.xmlimport.GeoBeagleEnvironment;
@@ -83,9 +82,9 @@ public class GeoBeagleDelegate {
     private final SensorManager mSensorManager;
     private final SharedPreferences mSharedPreferences;
     private final CheckDetailsButton mCheckDetailsButton;
-    private final Provider<CacheWriter> mCacheWriterProvider;
     private final GeoBeagleEnvironment mGeoBeagleEnvironment;
     private final WebPageMenuEnabler mWebPageMenuEnabler;
+    private final LocationSaver mLocationSaver;
 
     public GeoBeagleDelegate(ActivitySaver activitySaver,
             AppLifecycleManager appLifecycleManager,
@@ -102,8 +101,8 @@ public class GeoBeagleDelegate {
             SharedPreferences sharedPreferences,
             CheckDetailsButton checkDetailsButton,
             WebPageMenuEnabler webPageMenuEnabler,
-            Provider<CacheWriter> cacheWriterProvider,
-            GeoBeagleEnvironment geoBeagleEnvironment) {
+            GeoBeagleEnvironment geoBeagleEnvironment,
+            LocationSaver locationSaver) {
         mParent = (GeoBeagle)parent;
         mActivitySaver = activitySaver;
         mAppLifecycleManager = appLifecycleManager;
@@ -117,10 +116,10 @@ public class GeoBeagleDelegate {
         mIncomingIntentHandler = incomingIntentHandler;
         mDbFrontendProvider = dbFrontendProvider;
         mGeocacheFromParcelFactory = geocacheFromParcelFactory;
-        mCacheWriterProvider = cacheWriterProvider;
         mGeoBeagleEnvironment = geoBeagleEnvironment;
         mCheckDetailsButton = checkDetailsButton;
         mWebPageMenuEnabler = webPageMenuEnabler;
+        mLocationSaver = locationSaver;
     }
 
     @Inject
@@ -138,10 +137,10 @@ public class GeoBeagleDelegate {
         mIncomingIntentHandler = injector.getInstance(IncomingIntentHandler.class);
         mDbFrontendProvider = injector.getProvider(DbFrontend.class);
         mGeocacheFromParcelFactory = injector.getInstance(GeocacheFromParcelFactory.class);
-        mCacheWriterProvider = injector.getProvider(CacheWriter.class);
         mGeoBeagleEnvironment = injector.getInstance(GeoBeagleEnvironment.class);
         mCheckDetailsButton = injector.getInstance(CheckDetailsButton.class);
         mWebPageMenuEnabler = injector.getInstance(WebPageMenuEnabler.class);
+        mLocationSaver = injector.getInstance(LocationSaver.class);
     }
 
     public Geocache getGeocache() {
@@ -199,7 +198,7 @@ public class GeoBeagleDelegate {
         mSensorManager.registerListener(mCompassListener, SensorManager.SENSOR_ORIENTATION,
                 SensorManager.SENSOR_DELAY_UI);
         mGeocache = mIncomingIntentHandler.maybeGetGeocacheFromIntent(mParent.getIntent(),
-                mGeocache, new LocationSaver(mCacheWriterProvider));
+                mGeocache, mLocationSaver);
 
         // Possible fix for issue 53.
         if (mGeocache == null) {

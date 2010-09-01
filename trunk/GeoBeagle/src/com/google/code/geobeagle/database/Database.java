@@ -67,7 +67,7 @@ public class Database {
     public static final String SQL_MATCH_NAME_AND_EXPORTED_LATER = "Name = ? AND ExportTime >= ?";
     public static final String SQL_REPLACE_CACHE = "REPLACE INTO CACHES "
             + "(Id, Description, Latitude, Longitude, Source, DeleteMe, CacheType, Difficulty, "
-            + "Terrain, Container, Available, Archived) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?)";
+            + "Terrain, Container, Available, Archived, Visible) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?)";
     public static final String SQL_REPLACE_GPX = "REPLACE INTO GPX (Name, ExportTime, DeleteMe) VALUES (?, ?, 0)";
     public static final String SQL_RESET_DELETE_ME_CACHES = "UPDATE CACHES SET DeleteMe = 1 WHERE Source != '"
             + S0_INTENT + "'" + "AND SOURCE != 'BCaching.com'";

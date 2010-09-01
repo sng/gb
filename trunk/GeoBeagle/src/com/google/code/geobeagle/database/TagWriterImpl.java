@@ -14,31 +14,47 @@
 
 package com.google.code.geobeagle.database;
 
+import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 
+import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 public class TagWriterImpl implements TagWriter {
 
     private final Provider<ISQLiteDatabase> databaseProvider;
+    private final SharedPreferences sharedPreferences;
 
     @Inject
-    public TagWriterImpl(Provider<ISQLiteDatabase> databaseProvider) {
+    public TagWriterImpl(Provider<ISQLiteDatabase> databaseProvider,
+            SharedPreferences sharedPreferences) {
         this.databaseProvider = databaseProvider;
+        this.sharedPreferences = sharedPreferences;
     }
 
     @Override
     public void add(CharSequence geocacheId, Tag tag) {
         Log.d("GeoBeagle", "TagWriterImpl: " + geocacheId + ", " + tag);
         ISQLiteDatabase database = databaseProvider.get();
-        mDatabase.delete("TAGS", "Cache", (String)geocacheId);
-        mDatabase.insert("TAGS", new String[] {
+        database.delete("TAGS", "Cache", (String)geocacheId);
+        database.insert("TAGS", new String[] {
                 "Cache", "Id"
         }, new Object[] {
                 geocacheId, tag.ordinal()
         });
+        boolean showFoundCaches = sharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES,
+                false);
+        boolean visible = showFoundCaches || !(tag == Tag.FOUND);
+        if (!visible) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("Visible", 0);
+            database.update("CACHES", contentValues, "ID=?", new String[] {
+                geocacheId.toString()
+            });
+        }
     }
 
     public boolean hasTag(CharSequence geocacheId, Tag tag) {

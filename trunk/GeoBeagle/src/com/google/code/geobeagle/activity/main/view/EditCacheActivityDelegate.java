@@ -28,11 +28,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class EditCacheActivityDelegate {
-    private final CancelButtonOnClickListener mCancelButtonOnClickListener;
-    private final GeocacheFactory mGeocacheFactory;
-    private final Activity mParent;
-    private final LocationSaver mLocationSaver;
-    private final Provider<DbFrontend> mDbFrontendProvider;
+    private final CancelButtonOnClickListener cancelButtonOnClickListener;
+    private final GeocacheFactory geocacheFactory;
+    private final Activity parent;
+    private final LocationSaver locationSaver;
+    private final Provider<DbFrontend> dbFrontendProvider;
 
     @Inject
     public EditCacheActivityDelegate(Activity parent,
@@ -40,35 +40,35 @@ public class EditCacheActivityDelegate {
             GeocacheFactory geocacheFactory,
             LocationSaver locationSaver,
             Provider<DbFrontend> dbFrontendProvider) {
-        mParent = parent;
-        mCancelButtonOnClickListener = cancelButtonOnClickListener;
-        mGeocacheFactory = geocacheFactory;
-        mLocationSaver = locationSaver;
-        mDbFrontendProvider = dbFrontendProvider;
+        this.parent = parent;
+        this.cancelButtonOnClickListener = cancelButtonOnClickListener;
+        this.geocacheFactory = geocacheFactory;
+        this.locationSaver = locationSaver;
+        this.dbFrontendProvider = dbFrontendProvider;
     }
 
     public void onCreate() {
-        mParent.setContentView(R.layout.cache_edit);
+        parent.setContentView(R.layout.cache_edit);
     }
 
     public void onResume() {
-        final Intent intent = mParent.getIntent();
+        final Intent intent = parent.getIntent();
         final Geocache geocache = intent.<Geocache> getParcelableExtra("geocache");
-        final EditCache editCache = new EditCache(mGeocacheFactory, (EditText)mParent
-                .findViewById(R.id.edit_id), (EditText)mParent.findViewById(R.id.edit_name),
-                (EditText)mParent.findViewById(R.id.edit_latitude), (EditText)mParent
+        final EditCache editCache = new EditCache(geocacheFactory, (EditText)parent
+                .findViewById(R.id.edit_id), (EditText)parent.findViewById(R.id.edit_name),
+                (EditText)parent.findViewById(R.id.edit_latitude), (EditText)parent
                         .findViewById(R.id.edit_longitude));
 
         editCache.set(geocache);
         final SetButtonOnClickListener setButtonOnClickListener = new SetButtonOnClickListener(
-                mParent, editCache, mLocationSaver);
+                parent, editCache, locationSaver);
 
-        ((Button)mParent.findViewById(R.id.edit_set)).setOnClickListener(setButtonOnClickListener);
-        ((Button)mParent.findViewById(R.id.edit_cancel))
-                .setOnClickListener(mCancelButtonOnClickListener);
+        ((Button)parent.findViewById(R.id.edit_set)).setOnClickListener(setButtonOnClickListener);
+        ((Button)parent.findViewById(R.id.edit_cancel))
+                .setOnClickListener(cancelButtonOnClickListener);
     }
 
     public void onPause() {
-        mDbFrontendProvider.get().closeDatabase();
+        dbFrontendProvider.get().closeDatabase();
     }
 }

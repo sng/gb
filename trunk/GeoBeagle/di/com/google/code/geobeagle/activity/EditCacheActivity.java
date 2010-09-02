@@ -22,26 +22,26 @@ import roboguice.activity.GuiceActivity;
 import android.os.Bundle;
 
 public class EditCacheActivity extends GuiceActivity {
-    private EditCacheActivityDelegate mEditCacheActivityDelegate;
+    private EditCacheActivityDelegate editCacheActivityDelegate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Injector injector = getInjector();
-        mEditCacheActivityDelegate = injector.getInstance(EditCacheActivityDelegate.class);
+        editCacheActivityDelegate = injector.getInstance(EditCacheActivityDelegate.class);
 
-        mEditCacheActivityDelegate.onCreate();
+        editCacheActivityDelegate.onCreate();
     }
 
     @Override
     protected void onPause() {
-        mEditCacheActivityDelegate.onPause();
+        editCacheActivityDelegate.onPause();
         super.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mEditCacheActivityDelegate.onResume();
+        editCacheActivityDelegate.onResume();
     }
 }

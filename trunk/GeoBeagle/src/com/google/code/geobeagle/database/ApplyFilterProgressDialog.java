@@ -12,23 +12,25 @@
  ** limitations under the License.
  */
 
-package com.google.code.geobeagle.activity.cachelist.presenter;
+package com.google.code.geobeagle.database;
 
 import com.google.inject.Inject;
 
-import android.os.Handler;
-import android.os.Message;
+import roboguice.inject.ContextScoped;
 
-public class UpdateFilterHandler extends Handler {
-    private final UpdateFilterMediator updateFilterMediator;
+import android.app.ProgressDialog;
+import android.content.Context;
+
+@ContextScoped
+public class ApplyFilterProgressDialog extends ProgressDialog {
 
     @Inject
-    UpdateFilterHandler(UpdateFilterMediator updateFilterMediator) {
-        this.updateFilterMediator = updateFilterMediator;
+    public ApplyFilterProgressDialog(Context context) {
+        super(context);
+        setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        setMessage("Applying new filter...");
+        setTitle("Filtering caches");
+        setCancelable(false);
     }
 
-    @Override
-    public void handleMessage(Message msg) {
-        UpdateFilterMessages.fromOrd(msg.what).handleMessage(updateFilterMediator, msg.arg1);
-    }
 }

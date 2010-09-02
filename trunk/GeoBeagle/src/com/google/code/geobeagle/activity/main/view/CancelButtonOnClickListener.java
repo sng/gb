@@ -21,16 +21,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class CancelButtonOnClickListener implements OnClickListener {
-    private final Activity mActivity;
+    private final Activity activity;
 
     @Inject
     public CancelButtonOnClickListener(Activity activity) {
-        mActivity = activity;
+        this.activity = activity;
     }
 
     @Override
     public void onClick(View v) {
-        mActivity.setResult(Activity.RESULT_CANCELED, null);
-        mActivity.finish();
+        activity.setResult(Activity.RESULT_CANCELED, null);
+        activity.finish();
     }
 }

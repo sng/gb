@@ -11,6 +11,7 @@
  ** See the License for the specific language governing permissions and
  ** limitations under the License.
  */
+
 package com.google.code.geobeagle.database;
 
 import static org.easymock.EasyMock.expect;
@@ -35,27 +36,27 @@ import android.content.ContentValues;
 import android.util.Log;
 
 @PrepareForTest({
-        Log.class, TagWriterImpl.class, ContentValues.class
+        Log.class, TagWriterDatabase.class, ContentValues.class
 })
 @RunWith(PowerMockRunner.class)
-
 public class TagWriterImplTest extends GeoBeagleTest {
 
     private Provider<ISQLiteDatabase> databaseProvider;
     private DesktopSQLiteDatabase db;
     private Filter filter;
-    private TagWriterImpl tagWriterImpl;
     private ContentValues contentValues;
 
     @SuppressWarnings("unchecked")
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         databaseProvider = createMock(Provider.class);
         filter = createMock(Filter.class);
         db = new DesktopSQLiteDatabase();
         db.execSQL(DatabaseTest.currentSchema());
-        tagWriterImpl = new TagWriterImpl(databaseProvider, filter);
         contentValues = createMock(ContentValues.class);
+        suppressConstructor(ContentValues.class);
+        contentValues.put("Visible", 0);
+        PowerMock.expectNew(ContentValues.class).andReturn(contentValues);
     }
 
     @Test
@@ -65,6 +66,8 @@ public class TagWriterImplTest extends GeoBeagleTest {
         expect(filter.isVisible(false)).andReturn(true).anyTimes();
         replayAll();
 
+        TagWriterImpl tagWriterImpl = new TagWriterImpl(filter, new TagWriterDatabase(
+                databaseProvider));
         tagWriterImpl.add("GC123", Tag.DNF);
         assertTrue(tagWriterImpl.hasTag("GC123", Tag.DNF));
         assertFalse(tagWriterImpl.hasTag("GC123", Tag.FOUND));
@@ -75,11 +78,10 @@ public class TagWriterImplTest extends GeoBeagleTest {
     public void testAddNotVisible() throws Exception {
         expect(databaseProvider.get()).andReturn(db).anyTimes();
         expect(filter.isVisible(true)).andReturn(false).anyTimes();
-        suppressConstructor(ContentValues.class);
-        PowerMock.expectNew(ContentValues.class).andReturn(contentValues);
-        contentValues.put("Visible", 0);
         replayAll();
 
+        TagWriterImpl tagWriterImpl = new TagWriterImpl(filter, new TagWriterDatabase(
+                databaseProvider));
         tagWriterImpl.add("GC123", Tag.FOUND);
         verifyAll();
     }
@@ -91,6 +93,8 @@ public class TagWriterImplTest extends GeoBeagleTest {
         expect(filter.isVisible(false)).andReturn(true).anyTimes();
         replayAll();
 
+        TagWriterImpl tagWriterImpl = new TagWriterImpl(filter, new TagWriterDatabase(
+                databaseProvider));
         tagWriterImpl.add("GC123", Tag.FOUND);
         tagWriterImpl.add("GCabc", Tag.FOUND);
         assertTrue(tagWriterImpl.hasTag("GC123", Tag.FOUND));
@@ -105,7 +109,8 @@ public class TagWriterImplTest extends GeoBeagleTest {
         expect(filter.isVisible(false)).andReturn(true).anyTimes();
 
         replayAll();
-        TagWriterImpl tagWriterImpl = new TagWriterImpl(databaseProvider, filter);
+        TagWriterImpl tagWriterImpl = new TagWriterImpl(filter, new TagWriterDatabase(
+                databaseProvider));
         assertFalse(tagWriterImpl.hasTag("GC123", Tag.FOUND));
         assertFalse(tagWriterImpl.hasTag("GC123", Tag.DNF));
         verifyAll();

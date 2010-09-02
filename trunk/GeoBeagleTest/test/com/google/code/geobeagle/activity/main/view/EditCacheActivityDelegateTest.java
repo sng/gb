@@ -19,8 +19,8 @@ import static org.junit.Assert.assertEquals;
 import com.google.code.geobeagle.CacheType;
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.GeocacheFactory;
-import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.GeocacheFactory.Source;
+import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.cachelist.GeocacheListController;
 import com.google.code.geobeagle.activity.main.view.EditCacheActivityDelegate.CancelButtonOnClickListener;
 import com.google.code.geobeagle.activity.main.view.EditCacheActivityDelegate.EditCache;
@@ -67,7 +67,7 @@ public class EditCacheActivityDelegateTest {
         activity.setContentView(R.layout.cache_edit);
 
         PowerMock.replayAll();
-        new EditCacheActivityDelegate(activity, null, null, null).onCreate();
+        new EditCacheActivityDelegate(activity, null, null, null, null).onCreate();
         PowerMock.verifyAll();
     }
 
@@ -110,7 +110,7 @@ public class EditCacheActivityDelegateTest {
 
         PowerMock.replayAll();
         new EditCacheActivityDelegate(activity, cancelButtonOnClickListener, geocacheFactory,
-                locationSaver).onResume();
+                locationSaver, null).onResume();
         PowerMock.verifyAll();
     }
 

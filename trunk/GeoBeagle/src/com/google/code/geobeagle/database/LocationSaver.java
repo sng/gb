@@ -15,34 +15,29 @@
 package com.google.code.geobeagle.database;
 
 import com.google.code.geobeagle.Geocache;
-import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-
-import android.content.SharedPreferences;
 
 public class LocationSaver {
     private final Provider<CacheWriter> cacheWriterProvider;
     private final TagWriterImpl tagWriterImpl;
-    private final SharedPreferences sharedPreferences;
+    private final Filter filter;
 
     @Inject
     public LocationSaver(Provider<CacheWriter> cacheWriterProvider,
             TagWriterImpl tagWriterImpl,
-            SharedPreferences sharedPreferences) {
+            Filter filter) {
         this.cacheWriterProvider = cacheWriterProvider;
         this.tagWriterImpl = tagWriterImpl;
-        this.sharedPreferences = sharedPreferences;
+        this.filter = filter;
     }
 
     public void saveLocation(Geocache geocache) {
-        final CharSequence id = geocache.getId();
+        CharSequence id = geocache.getId();
         CacheWriter cacheWriter = cacheWriterProvider.get();
         cacheWriter.startWriting();
         boolean found = tagWriterImpl.hasTag(id, Tag.FOUND);
-        boolean showFoundCaches = sharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES,
-                false);
-        boolean visible = showFoundCaches || !found;
+        boolean visible = filter.isVisible(found);
         cacheWriter.insertAndUpdateCache(id, geocache.getName(), geocache.getLatitude(),
                 geocache.getLongitude(), geocache.getSourceType(), geocache.getSourceName(),
                 geocache.getCacheType(), geocache.getDifficulty(), geocache.getTerrain(),

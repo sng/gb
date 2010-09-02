@@ -12,12 +12,14 @@
  ** limitations under the License.
  */
 
-package com.google.code.geobeagle.database;
+package com.google.code.geobeagle;
 
-public class TagWriterNull implements TagWriter {
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 
+public class OnClickCancelListener implements OnClickListener {
     @Override
-    public void add(CharSequence geocacheId, Tag tag) {
+    public void onClick(DialogInterface dialog, int id) {
+        dialog.cancel();
     }
-
 }

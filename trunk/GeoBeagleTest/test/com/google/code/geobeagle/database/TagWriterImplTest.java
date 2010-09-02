@@ -13,47 +13,77 @@
  */
 package com.google.code.geobeagle.database;
 
+import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import com.google.code.geobeagle.activity.cachelist.GeoBeagleTest;
 import com.google.inject.Provider;
 
-import org.easymock.EasyMock;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 
 public class TagWriterImplTest extends GeoBeagleTest {
 
+    private Provider<ISQLiteDatabase> databaseProvider;
+    private DesktopSQLiteDatabase db;
+    private Filter filter;
+    private TagWriterImpl tagWriterImpl;
+
     @SuppressWarnings("unchecked")
-    @Test
-    public void testTags() {
-        Provider<ISQLiteDatabase> databaseProvider = PowerMock.createMock(Provider.class);
-        Filter filter = PowerMock.createMock(Filter.class);
-
-        DesktopSQLiteDatabase db = new DesktopSQLiteDatabase();
-        EasyMock.expect(databaseProvider.get()).andReturn(db).anyTimes();
-        EasyMock.expect(filter.isVisible(true)).andReturn(true).anyTimes();
-        EasyMock.expect(filter.isVisible(false)).andReturn(true).anyTimes();
-
-        PowerMock.replayAll();
+    @Before
+    public void setUp() {
+        databaseProvider = createMock(Provider.class);
+        filter = createMock(Filter.class);
+        db = new DesktopSQLiteDatabase();
         db.execSQL(DatabaseTest.currentSchema());
-        TagWriterImpl tagWriterImpl = new TagWriterImpl(databaseProvider, filter);
+        tagWriterImpl = new TagWriterImpl(databaseProvider, filter);
+    }
+
+    @Test
+    public void testAddDnf() {
+        expect(databaseProvider.get()).andReturn(db).anyTimes();
+        expect(filter.isVisible(true)).andReturn(true).anyTimes();
+        expect(filter.isVisible(false)).andReturn(true).anyTimes();
+        replayAll();
+
+        tagWriterImpl.add("GC123", Tag.DNF);
+        assertTrue(tagWriterImpl.hasTag("GC123", Tag.DNF));
         assertFalse(tagWriterImpl.hasTag("GC123", Tag.FOUND));
-        assertFalse(tagWriterImpl.hasTag("GC123", Tag.DNF));
+        verifyAll();
+    }
+
+    @Test
+    public void testAddFound() {
+        expect(databaseProvider.get()).andReturn(db).anyTimes();
+        expect(filter.isVisible(true)).andReturn(true).anyTimes();
+        expect(filter.isVisible(false)).andReturn(true).anyTimes();
+        replayAll();
 
         tagWriterImpl.add("GC123", Tag.FOUND);
         tagWriterImpl.add("GCabc", Tag.FOUND);
         assertTrue(tagWriterImpl.hasTag("GC123", Tag.FOUND));
         assertFalse(tagWriterImpl.hasTag("GC123", Tag.DNF));
-
-        tagWriterImpl.add("GC123", Tag.DNF);
-        assertTrue(tagWriterImpl.hasTag("GC123", Tag.DNF));
-        assertFalse(tagWriterImpl.hasTag("GC123", Tag.FOUND));
+        verifyAll();
     }
 
+    @Test
+    public void testNoTagsOnStartUp() {
+        expect(databaseProvider.get()).andReturn(db).anyTimes();
+        expect(filter.isVisible(true)).andReturn(true).anyTimes();
+        expect(filter.isVisible(false)).andReturn(true).anyTimes();
+
+        replayAll();
+        TagWriterImpl tagWriterImpl = new TagWriterImpl(databaseProvider, filter);
+        assertFalse(tagWriterImpl.hasTag("GC123", Tag.FOUND));
+        assertFalse(tagWriterImpl.hasTag("GC123", Tag.DNF));
+        verifyAll();
+    }
 }

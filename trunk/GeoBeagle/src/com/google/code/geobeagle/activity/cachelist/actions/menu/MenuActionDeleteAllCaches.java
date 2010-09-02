@@ -31,7 +31,7 @@ import android.content.DialogInterface;
 public class MenuActionDeleteAllCaches implements Action {
     private static class OnClickOkayListener implements DialogInterface.OnClickListener {
         private final CacheListRefresh cacheListRefresh;
-        private Provider<DbFrontend> dbFrontendProvider;
+        private final Provider<DbFrontend> dbFrontendProvider;
         private final BCachingStartTime bcachingLastUpdated;
 
         OnClickOkayListener(Provider<DbFrontend> dbFrontendProvider, CacheListRefresh cacheListRefresh,

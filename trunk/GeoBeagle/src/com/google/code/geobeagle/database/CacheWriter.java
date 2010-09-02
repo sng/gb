@@ -16,11 +16,8 @@ package com.google.code.geobeagle.database;
 
 import com.google.code.geobeagle.CacheType;
 import com.google.code.geobeagle.GeocacheFactory.Source;
-import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-
-import android.content.SharedPreferences;
 
 /**
  * @author sng
@@ -32,15 +29,15 @@ public class CacheWriter {
     };
     private final DbToGeocacheAdapter mDbToGeocacheAdapter;
     private final Provider<ISQLiteDatabase> sqliteProvider;
-    private final SharedPreferences mSharedPreferences;
+    private final Filter mFilter;
 
     @Inject
     CacheWriter(Provider<ISQLiteDatabase> writableDatabaseProvider,
             DbToGeocacheAdapter dbToGeocacheAdapter,
-            SharedPreferences sharedPreferences) {
+            Filter filter) {
         sqliteProvider = writableDatabaseProvider;
         mDbToGeocacheAdapter = dbToGeocacheAdapter;
-        mSharedPreferences = sharedPreferences;
+        mFilter = filter;
     }
 
 
@@ -56,9 +53,7 @@ public class CacheWriter {
             boolean available,
             boolean archived,
             boolean mFound) {
-        boolean showFoundCaches = mSharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES,
-                false);
-        boolean visible = showFoundCaches || !mFound;
+        boolean visible = mFilter.isVisible(mFound);
         sqliteProvider.get().execSQL(Database.SQL_REPLACE_CACHE, id, name, new Double(latitude),
                 new Double(longitude),
                 mDbToGeocacheAdapter.sourceTypeToSourceName(sourceType, sourceName),

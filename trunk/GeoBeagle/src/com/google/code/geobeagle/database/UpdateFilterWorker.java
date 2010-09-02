@@ -1,101 +1,66 @@
+/*
+ ** Licensed under the Apache License, Version 2.0 (the "License");
+ ** you may not use this file except in compliance with the License.
+ ** You may obtain a copy of the License at
+ **
+ **     http://www.apache.org/licenses/LICENSE-2.0
+ **
+ ** Unless required by applicable law or agreed to in writing, software
+ ** distributed under the License is distributed on an "AS IS" BASIS,
+ ** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ** See the License for the specific language governing permissions and
+ ** limitations under the License.
+ */
+
 package com.google.code.geobeagle.database;
 
-import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
 import com.google.code.geobeagle.activity.cachelist.presenter.UpdateFilterHandler;
 import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.inject.Inject;
 
-import roboguice.inject.ContextScoped;
 import roboguice.util.RoboThread;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
 
 public class UpdateFilterWorker extends RoboThread {
-    private final SharedPreferences sharedPreferences;
-    private final DbFrontend dbFrontEnd;
-    private final UpdateFlag updateFlag;
     private final UpdateFilterHandler updateFilterHandler;
+    private final TagReader tagReader;
+    private final SharedPreferences sharedPreferences;
+    private final CacheVisibilityStore cacheVisibilityStore;
 
-    @ContextScoped
-    public static class ClearFilterProgressDialog extends ProgressDialog {
-
-        @Inject
-        public ClearFilterProgressDialog(Context context) {
-            super(context);
-            setMessage("Clearing filter...");
-            setIndeterminate(true);
-            setTitle("Filtering caches");
-            setCancelable(false);
-        }
-    }
-
-    @ContextScoped
-    public static class ApplyFilterProgressDialog extends ProgressDialog {
-
-        @Inject
-        public ApplyFilterProgressDialog(Context context) {
-            super(context);
-            setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            setMessage("Applying new filter...");
-            setTitle("Filtering caches");
-            setCancelable(false);
-        }
-
-    }
     @Inject
     public UpdateFilterWorker(SharedPreferences sharedPreferences,
-            DbFrontend dbFrontEnd,
-            UpdateFlag updateFlag,
-            UpdateFilterHandler updateFilterHandler) {
-        this.sharedPreferences = sharedPreferences;
-        this.dbFrontEnd = dbFrontEnd;
-        this.updateFlag = updateFlag;
+            UpdateFilterHandler updateFilterHandler,
+            TagReader tagReader,
+            CacheVisibilityStore cacheVisibilityStore) {
         this.updateFilterHandler = updateFilterHandler;
+        this.tagReader = tagReader;
+        this.sharedPreferences = sharedPreferences;
+        this.cacheVisibilityStore = cacheVisibilityStore;
     }
 
     @Override
     public void run() {
-        boolean showFoundCaches = sharedPreferences.getBoolean(
-                EditPreferences.SHOW_FOUND_CACHES, false);
-        ISQLiteDatabase database = dbFrontEnd.getDatabase();
-        database.execSQL("UPDATE CACHES SET Visible = 1");
-        if (showFoundCaches) {
-            updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                    UpdateFilterHandler.DISMISS_CLEAR_FILTER_PROGRESS, 0, 0));
-            Editor editor = sharedPreferences.edit();
-            editor.putBoolean("filter-dirty", false);
-            editor.commit();
+        cacheVisibilityStore.setAllVisible();
+
+        if (sharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES, false)) {
+            updateFilterHandler.dismissClearFilterProgress();
             return;
         }
-        Cursor cursor = database.query("TAGS", new String[] {
-            "Cache"
-        }, "Id = ?", new String[] {
-            String.valueOf(Tag.FOUND.ordinal())
-        }, null, null, null, null);
-        updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                UpdateFilterHandler.SHOW_APPLY_FILTER_PROGRESS, cursor.getCount(), 0));
+
+        FoundCaches foundCaches = null;
         try {
-            if (!cursor.moveToFirst())
-                return;
-            while (!cursor.isAfterLast()) {
-                updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                        UpdateFilterHandler.INCREMENT_APPLY_FILTER_PROGRESS, 0, 0));
-                String cache = cursor.getString(0);
-                database.execSQL("UPDATE CACHES SET Visible = 0 WHERE ID = ?", cache);
-                cursor.moveToNext();
+            foundCaches = tagReader.getFoundCaches();
+            updateFilterHandler.showApplyFilterProgress(foundCaches.getCount());
+
+            for (String cache : foundCaches.getCaches()) {
+                updateFilterHandler.incrementApplyFilterProgress();
+                cacheVisibilityStore.setInvisible(cache);
             }
         } finally {
-            cursor.close();
+            if (foundCaches != null)
+                foundCaches.close();
         }
-        Editor editor = sharedPreferences.edit();
-        editor.putBoolean("filter-dirty", false);
-        editor.commit();
-        updateFlag.setUpdatesEnabled(true);
-        updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                UpdateFilterHandler.DISMISS_APPLY_FILTER_PROGRESS, 0, 0));
+        updateFilterHandler.dismissApplyFilterProgress();
     }
 }

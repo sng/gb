@@ -1,7 +1,9 @@
+
 package com.google.code.geobeagle.database;
 
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
 import com.google.code.geobeagle.activity.cachelist.presenter.UpdateFilterHandler;
+import com.google.code.geobeagle.activity.cachelist.presenter.UpdateFilterHandler.UpdateFilterMessages;
 import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.inject.Inject;
 
@@ -46,6 +48,7 @@ public class UpdateFilterWorker extends RoboThread {
         }
 
     }
+
     @Inject
     public UpdateFilterWorker(SharedPreferences sharedPreferences,
             DbFrontend dbFrontEnd,
@@ -59,13 +62,13 @@ public class UpdateFilterWorker extends RoboThread {
 
     @Override
     public void run() {
-        boolean showFoundCaches = sharedPreferences.getBoolean(
-                EditPreferences.SHOW_FOUND_CACHES, false);
+        boolean showFoundCaches = sharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES,
+                false);
         ISQLiteDatabase database = dbFrontEnd.getDatabase();
         database.execSQL("UPDATE CACHES SET Visible = 1");
         if (showFoundCaches) {
             updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                    UpdateFilterHandler.DISMISS_CLEAR_FILTER_PROGRESS, 0, 0));
+                    UpdateFilterMessages.DISMISS_CLEAR_FILTER_PROGRESS.ordinal(), 0, 0));
             Editor editor = sharedPreferences.edit();
             editor.putBoolean("filter-dirty", false);
             editor.commit();
@@ -77,13 +80,13 @@ public class UpdateFilterWorker extends RoboThread {
             String.valueOf(Tag.FOUND.ordinal())
         }, null, null, null, null);
         updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                UpdateFilterHandler.SHOW_APPLY_FILTER_PROGRESS, cursor.getCount(), 0));
+                UpdateFilterMessages.SHOW_APPLY_FILTER_PROGRESS.ordinal(), cursor.getCount(), 0));
         try {
             if (!cursor.moveToFirst())
                 return;
             while (!cursor.isAfterLast()) {
                 updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                        UpdateFilterHandler.INCREMENT_APPLY_FILTER_PROGRESS, 0, 0));
+                        UpdateFilterMessages.INCREMENT_APPLY_FILTER_PROGRESS.ordinal(), 0, 0));
                 String cache = cursor.getString(0);
                 database.execSQL("UPDATE CACHES SET Visible = 0 WHERE ID = ?", cache);
                 cursor.moveToNext();
@@ -96,6 +99,6 @@ public class UpdateFilterWorker extends RoboThread {
         editor.commit();
         updateFlag.setUpdatesEnabled(true);
         updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                UpdateFilterHandler.DISMISS_APPLY_FILTER_PROGRESS, 0, 0));
+                UpdateFilterMessages.DISMISS_APPLY_FILTER_PROGRESS.ordinal(), 0, 0));
     }
 }

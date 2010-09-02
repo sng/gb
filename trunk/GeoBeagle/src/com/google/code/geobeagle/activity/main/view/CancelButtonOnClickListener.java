@@ -30,8 +30,7 @@ public class CancelButtonOnClickListener implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        // TODO: replace magic number.
-        mActivity.setResult(-1, null);
+        mActivity.setResult(Activity.RESULT_CANCELED, null);
         mActivity.finish();
     }
 }

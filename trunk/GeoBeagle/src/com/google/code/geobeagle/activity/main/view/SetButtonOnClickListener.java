@@ -42,7 +42,7 @@ public class SetButtonOnClickListener implements OnClickListener {
         final Intent i = new Intent();
         i.setAction(GeocacheListController.SELECT_CACHE);
         i.putExtra("geocache", geocache);
-        mActivity.setResult(0, i);
+        mActivity.setResult(Activity.RESULT_OK, i);
         mActivity.finish();
     }
 }

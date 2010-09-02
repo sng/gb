@@ -19,7 +19,9 @@ import com.google.code.geobeagle.GeocacheFactory;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.cachelist.GeocacheListController;
 import com.google.code.geobeagle.activity.main.Util;
+import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.database.LocationSaver;
+import com.google.inject.Provider;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -107,21 +109,29 @@ public class EditCacheActivityDelegate {
     }
 
     private final CancelButtonOnClickListener cancelButtonOnClickListener;
+    private final Provider<DbFrontend> dbFrontendProvider;
     private final GeocacheFactory geocacheFactory;
-    private final Activity parent;
     private final LocationSaver locationSaver;
+    private final Activity parent;
 
     public EditCacheActivityDelegate(Activity parent,
             CancelButtonOnClickListener cancelButtonOnClickListener,
-            GeocacheFactory geocacheFactory, LocationSaver locationSaver) {
+            GeocacheFactory geocacheFactory,
+            LocationSaver locationSaver,
+            Provider<DbFrontend> dbFrontendProvider) {
         this.parent = parent;
         this.cancelButtonOnClickListener = cancelButtonOnClickListener;
         this.geocacheFactory = geocacheFactory;
         this.locationSaver = locationSaver;
+        this.dbFrontendProvider = dbFrontendProvider;
     }
 
     public void onCreate() {
         parent.setContentView(R.layout.cache_edit);
+    }
+
+    public void onPause() {
+        dbFrontendProvider.get().closeDatabase();
     }
 
     public void onResume() {

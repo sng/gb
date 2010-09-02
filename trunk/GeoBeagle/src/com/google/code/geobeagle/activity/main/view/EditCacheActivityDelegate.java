@@ -20,6 +20,7 @@ import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.cachelist.GeocacheListController;
 import com.google.code.geobeagle.activity.main.Util;
 import com.google.code.geobeagle.database.LocationSaver;
+import com.google.inject.Inject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,6 +33,7 @@ public class EditCacheActivityDelegate {
     public static class CancelButtonOnClickListener implements OnClickListener {
         private final Activity mActivity;
 
+        @Inject
         public CancelButtonOnClickListener(Activity activity) {
             mActivity = activity;
         }
@@ -111,6 +113,7 @@ public class EditCacheActivityDelegate {
     private final Activity mParent;
     private final LocationSaver mLocationSaver;
 
+    @Inject
     public EditCacheActivityDelegate(Activity parent,
             CancelButtonOnClickListener cancelButtonOnClickListener,
             GeocacheFactory geocacheFactory, LocationSaver locationSaver) {

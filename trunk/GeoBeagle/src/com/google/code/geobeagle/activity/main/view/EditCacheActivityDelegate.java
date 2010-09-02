@@ -17,8 +17,6 @@ package com.google.code.geobeagle.activity.main.view;
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.GeocacheFactory;
 import com.google.code.geobeagle.R;
-import com.google.code.geobeagle.activity.cachelist.GeocacheListController;
-import com.google.code.geobeagle.activity.main.Util;
 import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.database.LocationSaver;
 import com.google.inject.Inject;
@@ -26,90 +24,10 @@ import com.google.inject.Provider;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
 public class EditCacheActivityDelegate {
-    public static class CancelButtonOnClickListener implements OnClickListener {
-        private final Activity mActivity;
-
-        @Inject
-        public CancelButtonOnClickListener(Activity activity) {
-            mActivity = activity;
-        }
-
-        @Override
-        public void onClick(View v) {
-            // TODO: replace magic number.
-            mActivity.setResult(-1, null);
-            mActivity.finish();
-        }
-    }
-
-    public static class EditCache {
-        private final GeocacheFactory mGeocacheFactory;
-        private final EditText mId;
-        private final EditText mLatitude;
-        private final EditText mLongitude;
-        private final EditText mName;
-        private Geocache mOriginalGeocache;
-
-        public EditCache(GeocacheFactory geocacheFactory, EditText id, EditText name,
-                EditText latitude, EditText longitude) {
-            mGeocacheFactory = geocacheFactory;
-            mId = id;
-            mName = name;
-            mLatitude = latitude;
-            mLongitude = longitude;
-        }
-
-        Geocache get() {
-            return mGeocacheFactory.create(mId.getText(), mName.getText(), Util
-                    .parseCoordinate(mLatitude.getText()), Util.parseCoordinate(mLongitude
-                    .getText()), mOriginalGeocache.getSourceType(), mOriginalGeocache
-                    .getSourceName(), mOriginalGeocache.getCacheType(), mOriginalGeocache
-                    .getDifficulty(), mOriginalGeocache.getTerrain(), mOriginalGeocache
-                    .getContainer(), mOriginalGeocache.getAvailable(), mOriginalGeocache
-                    .getArchived());
-        }
-
-        void set(Geocache geocache) {
-            mOriginalGeocache = geocache;
-            mId.setText(geocache.getId());
-            mName.setText(geocache.getName());
-            mLatitude.setText(Util.formatDegreesAsDecimalDegreesString(geocache.getLatitude()));
-            mLongitude.setText(Util.formatDegreesAsDecimalDegreesString(geocache.getLongitude()));
-
-            mLatitude.requestFocus();
-        }
-    }
-
-    public static class SetButtonOnClickListener implements OnClickListener {
-        private final Activity mActivity;
-        private final EditCache mGeocacheView;
-        private final LocationSaver mLocationSaver;
-
-        public SetButtonOnClickListener(Activity activity, EditCache editCache,
-                LocationSaver locationSaver) {
-            mActivity = activity;
-            mGeocacheView = editCache;
-            mLocationSaver = locationSaver;
-        }
-
-        @Override
-        public void onClick(View v) {
-            final Geocache geocache = mGeocacheView.get();
-            mLocationSaver.saveLocation(geocache);
-            final Intent i = new Intent();
-            i.setAction(GeocacheListController.SELECT_CACHE);
-            i.putExtra("geocache", geocache);
-            mActivity.setResult(0, i);
-            mActivity.finish();
-        }
-    }
-
     private final CancelButtonOnClickListener mCancelButtonOnClickListener;
     private final GeocacheFactory mGeocacheFactory;
     private final Activity mParent;

@@ -14,6 +14,7 @@
 
 package com.google.code.geobeagle.database;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
 import java.io.BufferedReader;
@@ -29,12 +30,15 @@ class DesktopSQLiteDatabase implements ISQLiteDatabase {
         db.delete();
     }
 
+    @Override
     public void beginTransaction() {
     }
 
+    @Override
     public void close() {
     }
 
+    @Override
     public int countResults(String table, String sql, String... args) {
         return 0;
     }
@@ -47,15 +51,18 @@ class DesktopSQLiteDatabase implements ISQLiteDatabase {
         return DesktopSQLiteDatabase.exec("SELECT * FROM " + table);
     }
 
+    @Override
     public void endTransaction() {
     }
 
+    @Override
     public void execSQL(String s, Object... bindArg1) {
         if (bindArg1.length > 0)
             throw new UnsupportedOperationException("bindArgs not yet supported");
         System.out.print(DesktopSQLiteDatabase.exec(s));
     }
 
+    @Override
     public Cursor query(String table, String[] columns, String selection, String groupBy,
             String having, String orderBy, String limit, String... selectionArgs) {
         return null;
@@ -67,6 +74,7 @@ class DesktopSQLiteDatabase implements ISQLiteDatabase {
         return null;
     }
 
+    @Override
     public void setTransactionSuccessful() {
     }
 
@@ -103,7 +111,7 @@ class DesktopSQLiteDatabase implements ISQLiteDatabase {
     @Override
     public boolean hasValue(String table, String[] columns, String[] selectionArgs) {
         StringBuilder stringBuilder = new StringBuilder();
-        
+
         stringBuilder.append(" WHERE " + columns[0] + "=");
         stringBuilder.append("'" + selectionArgs[0] + "'");
         for (int ix = 1; ix < columns.length; ix++) {
@@ -121,24 +129,24 @@ class DesktopSQLiteDatabase implements ISQLiteDatabase {
 
     /**
      * <pre>
-     * 
+     *
      * version 8
-     * same as version 7 but rebuilds everything because a released version mistakenly puts 
+     * same as version 7 but rebuilds everything because a released version mistakenly puts
      * *intent* into imported caches.
-     * 
+     *
      * version 9
      * fixes bug where INDEX wasn't being created on upgrade.
-     * 
+     *
      * version 10
      * adds GPX table
-     * 
+     *
      * version 11
      * adds new CACHES columns: CacheType, Difficulty, Terrain, and Container
-     * 
+     *
      * version 12: 4/21/2010
      * adds new TAGS table:
      * </pre>
-     * 
+     *
      * @throws IOException
      */
     static String convertStreamToString(InputStream is) throws IOException {
@@ -172,5 +180,27 @@ class DesktopSQLiteDatabase implements ISQLiteDatabase {
             throw (new RuntimeException(e + "\n" + output));
         }
         return output;
+    }
+
+    @Override
+    public Cursor query(String table,
+            String[] columns,
+            String selection,
+            String[] selectionArgs,
+            String groupBy,
+            String having,
+            String orderBy,
+            String limit) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void update(String string,
+            ContentValues contentValues,
+            String whereClause,
+            String[] strings) {
+        // TODO Auto-generated method stub
+
     }
 }

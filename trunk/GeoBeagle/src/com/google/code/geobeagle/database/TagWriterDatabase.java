@@ -1,5 +1,6 @@
 package com.google.code.geobeagle.database;
 
+import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 
@@ -11,6 +12,7 @@ class TagWriterDatabase {
     private final ContentValues hideColumn;
     private final Provider<ISQLiteDatabase> databaseProvider;
 
+    @Inject
     public TagWriterDatabase(Provider<ISQLiteDatabase> databaseProvider) {
         this.databaseProvider = databaseProvider;
         hideColumn = new ContentValues();

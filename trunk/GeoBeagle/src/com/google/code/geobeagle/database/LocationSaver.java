@@ -20,15 +20,15 @@ import com.google.inject.Provider;
 
 public class LocationSaver {
     private final Provider<CacheWriter> cacheWriterProvider;
-    private final TagWriterImpl tagWriterImpl;
+    private final TagWriter tagWriter;
     private final Filter filter;
 
     @Inject
     public LocationSaver(Provider<CacheWriter> cacheWriterProvider,
-            TagWriterImpl tagWriterImpl,
+            TagWriter tagWriter,
             Filter filter) {
         this.cacheWriterProvider = cacheWriterProvider;
-        this.tagWriterImpl = tagWriterImpl;
+        this.tagWriter = tagWriter;
         this.filter = filter;
     }
 
@@ -36,7 +36,7 @@ public class LocationSaver {
         CharSequence id = geocache.getId();
         CacheWriter cacheWriter = cacheWriterProvider.get();
         cacheWriter.startWriting();
-        boolean found = tagWriterImpl.hasTag(id, Tag.FOUND);
+        boolean found = tagWriter.hasTag(id, Tag.FOUND);
         boolean visible = filter.isVisible(found);
         cacheWriter.insertAndUpdateCache(id, geocache.getName(), geocache.getLatitude(),
                 geocache.getLongitude(), geocache.getSourceType(), geocache.getSourceName(),

@@ -14,6 +14,33 @@
 
 package com.google.code.geobeagle.database;
 
-public interface TagWriter {
-    void add(CharSequence geocacheId, Tag tag);
+import com.google.inject.Inject;
+
+import android.util.Log;
+
+public class TagWriter {
+    private final Filter filter;
+    private final TagStore tagStore;
+
+    @Inject
+    public TagWriter(
+            Filter filter,
+            TagStore tagStore) {
+        this.filter = filter;
+        this.tagStore = tagStore;
+    }
+
+    public void add(CharSequence geocacheId, Tag tag) {
+        Log.d("GeoBeagle", "TagWriterImpl: " + geocacheId + ", " + tag);
+        tagStore.addTag(geocacheId, tag);
+
+        if (!filter.isVisible(tag == Tag.FOUND)) {
+            tagStore.hideCache(geocacheId);
+        }
+    }
+
+    public boolean hasTag(CharSequence geocacheId, Tag tag) {
+        return tagStore.hasTag(geocacheId, tag);
+    }
+
 }

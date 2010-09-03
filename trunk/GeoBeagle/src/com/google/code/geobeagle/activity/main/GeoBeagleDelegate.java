@@ -44,27 +44,10 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 
 import java.io.File;
 
 public class GeoBeagleDelegate {
-
-    public static class LogFindClickListener implements OnClickListener {
-        private final GeoBeagle mGeoBeagle;
-        private final int mIdDialog;
-
-        LogFindClickListener(GeoBeagle geoBeagle, int idDialog) {
-            mGeoBeagle = geoBeagle;
-            mIdDialog = idDialog;
-        }
-
-        @Override
-        public void onClick(View v) {
-            mGeoBeagle.showDialog(mIdDialog);
-        }
-    }
 
     static int ACTIVITY_REQUEST_TAKE_PICTURE = 1;
     private final ActivitySaver mActivitySaver;

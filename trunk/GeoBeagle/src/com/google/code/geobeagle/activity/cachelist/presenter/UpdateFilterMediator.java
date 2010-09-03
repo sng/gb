@@ -36,33 +36,25 @@ class UpdateFilterMediator {
     }
 
     void dismissApplyFilterProgress() {
-        ApplyFilterProgressDialog applyFilterProgressDialog = applyFilterProgressDialogProvider
-                .get();
-        applyFilterProgressDialog.dismiss();
+        applyFilterProgressDialogProvider.get().dismiss();
         updateFlag.setUpdatesEnabled(true);
         cacheListRefresh.forceRefresh();
     }
 
     void dismissClearFilterProgress() {
-        ClearFilterProgressDialog clearFilterProgressDialog = clearFilterProgressDialogProvider
-                .get();
-        clearFilterProgressDialog.dismiss();
+        clearFilterProgressDialogProvider.get().dismiss();
         updateFlag.setUpdatesEnabled(true);
         cacheListRefresh.forceRefresh();
     }
 
     void incrementApplyFilterProgress() {
-        ApplyFilterProgressDialog applyFilterProgressDialog = applyFilterProgressDialogProvider
-                .get();
-        applyFilterProgressDialog.incrementProgressBy(1);
+        applyFilterProgressDialogProvider.get().incrementProgressBy(1);
     }
 
     void showApplyFilterProgress(int arg1) {
         ApplyFilterProgressDialog applyFilterProgressDialog = applyFilterProgressDialogProvider
                 .get();
-        ClearFilterProgressDialog clearFilterProgressDialog = clearFilterProgressDialogProvider
-                .get();
-        clearFilterProgressDialog.dismiss();
+        clearFilterProgressDialogProvider.get().dismiss();
         applyFilterProgressDialog.setMax(arg1);
         applyFilterProgressDialog.show();
     }

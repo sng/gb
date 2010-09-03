@@ -15,15 +15,15 @@
 package com.google.code.geobeagle.activity.main.fieldnotes;
 
 import com.google.code.geobeagle.database.Tag;
-import com.google.code.geobeagle.database.TagWriterImpl;
+import com.google.code.geobeagle.database.TagWriter;
 import com.google.inject.Inject;
 
 public class DatabaseLogger {
-    private final TagWriterImpl mTagWriter;
+    private final TagWriter mTagWriter;
 
     @Inject
-    DatabaseLogger(TagWriterImpl tagWriterImpl) {
-        mTagWriter = tagWriterImpl;
+    DatabaseLogger(TagWriter tagWriter) {
+        mTagWriter = tagWriter;
     }
 
     public void log(CharSequence geocacheId, boolean dnf) {

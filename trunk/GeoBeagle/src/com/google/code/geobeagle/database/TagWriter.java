@@ -18,12 +18,12 @@ import com.google.inject.Inject;
 
 import android.util.Log;
 
-public class TagWriterImpl {
+public class TagWriter {
     private final Filter filter;
     private final TagWriterDatabase tagWriterDatabase;
 
     @Inject
-    public TagWriterImpl(
+    public TagWriter(
             Filter filter,
             TagWriterDatabase tagWriterDatabase) {
         this.filter = filter;

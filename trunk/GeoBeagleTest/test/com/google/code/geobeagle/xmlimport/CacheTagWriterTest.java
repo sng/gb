@@ -27,7 +27,7 @@ import com.google.code.geobeagle.database.CacheWriter;
 import com.google.code.geobeagle.database.ClearCachesFromSource;
 import com.google.code.geobeagle.database.GpxWriter;
 import com.google.code.geobeagle.database.Tag;
-import com.google.code.geobeagle.database.TagWriterImpl;
+import com.google.code.geobeagle.database.TagWriter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class CacheTagWriterTest extends GeoBeagleTest {
     private CacheWriter cacheWriter;
     private GpxWriter gpxWriter;
-    private TagWriterImpl tagWriterImpl;
+    private TagWriter tagWriter;
     private CacheTypeFactory cacheTypeFactory;
     private CacheTagSqlWriter cacheTagSqlWriter;
     private ClearCachesFromSource clearCachesFromSource;
@@ -48,11 +48,11 @@ public class CacheTagWriterTest extends GeoBeagleTest {
     public void setUp() {
         cacheWriter = PowerMock.createMock(CacheWriter.class);
         gpxWriter = PowerMock.createMock(GpxWriter.class);
-        tagWriterImpl = PowerMock.createMock(TagWriterImpl.class);
+        tagWriter = PowerMock.createMock(TagWriter.class);
         cacheTypeFactory = PowerMock.createMock(CacheTypeFactory.class);
         clearCachesFromSource = PowerMock.createMock(ClearCachesFromSource.class);
         cacheTagSqlWriter = new CacheTagSqlWriter(cacheWriter, gpxWriter, cacheTypeFactory,
-                tagWriterImpl, clearCachesFromSource);
+                tagWriter, clearCachesFromSource);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class CacheTagWriterTest extends GeoBeagleTest {
     public void testSymbol() {
         cacheWriter.insertAndUpdateCache(null, null, 0, 0, Source.GPX, null, null, 0, 0, 0, false,
                 false, true);
-        tagWriterImpl.add(null, Tag.FOUND);
+        tagWriter.add(null, Tag.FOUND);
 
         PowerMock.replayAll();
         cacheTagSqlWriter.symbol("Geocache Found");
@@ -153,7 +153,7 @@ public class CacheTagWriterTest extends GeoBeagleTest {
         expect(cacheTypeFactory.stars("2.5")).andReturn(5);
         expect(cacheTypeFactory.stars("3")).andReturn(6);
         expect(cacheTypeFactory.fromTag("Traditional Cache")).andReturn(CacheType.TRADITIONAL);
-        tagWriterImpl.add("GC123", Tag.FOUND);
+        tagWriter.add("GC123", Tag.FOUND);
 
         PowerMock.replayAll();
         cacheTagSqlWriter.id("GC123");

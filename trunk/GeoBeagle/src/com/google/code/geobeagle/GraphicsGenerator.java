@@ -15,7 +15,7 @@
 package com.google.code.geobeagle;
 
 import com.google.code.geobeagle.database.Tag;
-import com.google.code.geobeagle.database.TagWriterImpl;
+import com.google.code.geobeagle.database.TagWriter;
 import com.google.inject.Inject;
 
 import android.content.res.Resources;
@@ -225,12 +225,12 @@ public class GraphicsGenerator {
     }
 
     public static class IconOverlayFactory {
-        private final TagWriterImpl mTagWriter;
+        private final TagWriter mTagWriter;
         private final Resources mResources;
 
         @Inject
-        public IconOverlayFactory(TagWriterImpl tagWriterImpl, Resources resources) {
-            mTagWriter = tagWriterImpl;
+        public IconOverlayFactory(TagWriter tagWriter, Resources resources) {
+            mTagWriter = tagWriter;
             mResources = resources;
         }
 

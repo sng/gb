@@ -27,6 +27,7 @@ import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 
 public class UpdateFilterWorker extends RoboThread {
+    public static final String PREF_FILTER_DIRTY = "filter-dirty";
     private final SharedPreferences sharedPreferences;
     private final DbFrontend dbFrontEnd;
     private final UpdateFlag updateFlag;
@@ -53,7 +54,7 @@ public class UpdateFilterWorker extends RoboThread {
             updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
                     UpdateFilterMessages.DISMISS_CLEAR_FILTER_PROGRESS.ordinal(), 0, 0));
             Editor editor = sharedPreferences.edit();
-            editor.putBoolean("filter-dirty", false);
+            editor.putBoolean(PREF_FILTER_DIRTY, false);
             editor.commit();
             return;
         }
@@ -78,7 +79,7 @@ public class UpdateFilterWorker extends RoboThread {
             cursor.close();
         }
         Editor editor = sharedPreferences.edit();
-        editor.putBoolean("filter-dirty", false);
+        editor.putBoolean(PREF_FILTER_DIRTY, false);
         editor.commit();
         updateFlag.setUpdatesEnabled(true);
         updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(

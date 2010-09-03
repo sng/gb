@@ -119,7 +119,7 @@ public class GeocacheListPresenter implements Pausable {
     }
 
     public void onResume(CacheListRefresh cacheListRefresh) {
-        if (mSharedPreferences.getBoolean("filter-dirty", false)) {
+        if (mSharedPreferences.getBoolean(UpdateFilterWorker.PREF_FILTER_DIRTY, false)) {
             ProgressDialog progressDialog = mProgressDialogProvider.get();
             progressDialog.incrementProgressBy(1);
             progressDialog.show();

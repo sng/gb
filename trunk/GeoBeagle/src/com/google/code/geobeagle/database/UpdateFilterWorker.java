@@ -25,34 +25,33 @@ import roboguice.util.RoboThread;
 import android.content.SharedPreferences;
 
 public class UpdateFilterWorker extends RoboThread {
-    private final DbFrontend dbFrontEnd;
     private final UpdateFlag updateFlag;
     private final UpdateFilterHandler updateFilterHandler;
     private final TagReader tagReader;
     private final FilterCleanliness filterCleanliness;
     private final SharedPreferences sharedPreferences;
+    private final CacheVisibilityStore cacheVisibilityStore;
 
     @Inject
     public UpdateFilterWorker(SharedPreferences sharedPreferences,
-            DbFrontend dbFrontEnd,
             UpdateFlag updateFlag,
             UpdateFilterHandler updateFilterHandler,
             TagReader tagReader,
-            FilterCleanliness filterCleanliness) {
-        this.dbFrontEnd = dbFrontEnd;
+            FilterCleanliness filterCleanliness,
+            CacheVisibilityStore cacheVisibilityStore) {
         this.updateFlag = updateFlag;
         this.updateFilterHandler = updateFilterHandler;
         this.tagReader = tagReader;
         this.filterCleanliness = filterCleanliness;
         this.sharedPreferences = sharedPreferences;
+        this.cacheVisibilityStore = cacheVisibilityStore;
     }
 
     @Override
     public void run() {
         boolean showFoundCaches = sharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES,
                 false);
-        ISQLiteDatabase database = dbFrontEnd.getDatabase();
-        database.execSQL("UPDATE CACHES SET Visible = 1");
+        cacheVisibilityStore.setAllVisible();
         if (showFoundCaches) {
             updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
                     UpdateFilterMessages.DISMISS_CLEAR_FILTER_PROGRESS.ordinal(), 0, 0));
@@ -70,7 +69,7 @@ public class UpdateFilterWorker extends RoboThread {
             for (String cache : foundCaches.getCaches()) {
                 updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
                         UpdateFilterMessages.INCREMENT_APPLY_FILTER_PROGRESS.ordinal(), 0, 0));
-                database.execSQL("UPDATE CACHES SET Visible = 0 WHERE ID = ?", cache);
+                cacheVisibilityStore.setInvisible(cache);
             }
         } finally {
             if (foundCaches != null)

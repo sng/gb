@@ -63,6 +63,7 @@ public class UpdateFilterWorker extends RoboThread {
         }, "Id = ?", new String[] {
             String.valueOf(Tag.FOUND.ordinal())
         }, null, null, null, null);
+
         updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
                 UpdateFilterMessages.SHOW_APPLY_FILTER_PROGRESS.ordinal(), cursor.getCount(), 0));
         try {

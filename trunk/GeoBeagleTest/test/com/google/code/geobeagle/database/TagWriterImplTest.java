@@ -36,7 +36,7 @@ import android.content.ContentValues;
 import android.util.Log;
 
 @PrepareForTest({
-        Log.class, TagWriterDatabase.class, ContentValues.class
+        Log.class, TagStore.class, ContentValues.class
 })
 @RunWith(PowerMockRunner.class)
 public class TagWriterImplTest extends GeoBeagleTest {
@@ -66,7 +66,7 @@ public class TagWriterImplTest extends GeoBeagleTest {
         expect(filter.isVisible(false)).andReturn(true).anyTimes();
         replayAll();
 
-        TagWriter tagWriter = new TagWriter(filter, new TagWriterDatabase(
+        TagWriter tagWriter = new TagWriter(filter, new TagStore(
                 databaseProvider));
         tagWriter.add("GC123", Tag.DNF);
         assertTrue(tagWriter.hasTag("GC123", Tag.DNF));
@@ -80,7 +80,7 @@ public class TagWriterImplTest extends GeoBeagleTest {
         expect(filter.isVisible(true)).andReturn(false).anyTimes();
         replayAll();
 
-        TagWriter tagWriter = new TagWriter(filter, new TagWriterDatabase(
+        TagWriter tagWriter = new TagWriter(filter, new TagStore(
                 databaseProvider));
         tagWriter.add("GC123", Tag.FOUND);
         verifyAll();
@@ -93,7 +93,7 @@ public class TagWriterImplTest extends GeoBeagleTest {
         expect(filter.isVisible(false)).andReturn(true).anyTimes();
         replayAll();
 
-        TagWriter tagWriter = new TagWriter(filter, new TagWriterDatabase(
+        TagWriter tagWriter = new TagWriter(filter, new TagStore(
                 databaseProvider));
         tagWriter.add("GC123", Tag.FOUND);
         tagWriter.add("GCabc", Tag.FOUND);
@@ -109,7 +109,7 @@ public class TagWriterImplTest extends GeoBeagleTest {
         expect(filter.isVisible(false)).andReturn(true).anyTimes();
 
         replayAll();
-        TagWriter tagWriter = new TagWriter(filter, new TagWriterDatabase(
+        TagWriter tagWriter = new TagWriter(filter, new TagStore(
                 databaseProvider));
         assertFalse(tagWriter.hasTag("GC123", Tag.FOUND));
         assertFalse(tagWriter.hasTag("GC123", Tag.DNF));

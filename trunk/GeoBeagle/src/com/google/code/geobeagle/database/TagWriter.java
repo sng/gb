@@ -20,27 +20,27 @@ import android.util.Log;
 
 public class TagWriter {
     private final Filter filter;
-    private final TagWriterDatabase tagWriterDatabase;
+    private final TagStore tagStore;
 
     @Inject
     public TagWriter(
             Filter filter,
-            TagWriterDatabase tagWriterDatabase) {
+            TagStore tagStore) {
         this.filter = filter;
-        this.tagWriterDatabase = tagWriterDatabase;
+        this.tagStore = tagStore;
     }
 
     public void add(CharSequence geocacheId, Tag tag) {
         Log.d("GeoBeagle", "TagWriterImpl: " + geocacheId + ", " + tag);
-        tagWriterDatabase.addTag(geocacheId, tag);
+        tagStore.addTag(geocacheId, tag);
 
         if (!filter.isVisible(tag == Tag.FOUND)) {
-            tagWriterDatabase.hideCache(geocacheId);
+            tagStore.hideCache(geocacheId);
         }
     }
 
     public boolean hasTag(CharSequence geocacheId, Tag tag) {
-        return tagWriterDatabase.hasTag(geocacheId, tag);
+        return tagStore.hasTag(geocacheId, tag);
     }
 
 }

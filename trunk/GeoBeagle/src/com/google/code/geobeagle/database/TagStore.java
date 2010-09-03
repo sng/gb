@@ -8,7 +8,7 @@ import com.google.inject.ProvisionException;
 import android.content.ContentValues;
 import android.util.Log;
 
-class TagWriterDatabase {
+class TagStore {
     private static final String COLUMN_CACHE = "Cache";
     private static final String TBL_TAGS = "TAGS";
     private final ContentValues hideColumn;
@@ -16,7 +16,7 @@ class TagWriterDatabase {
     private final String[] columns;
 
     @Inject
-    public TagWriterDatabase(Provider<ISQLiteDatabase> databaseProvider) {
+    public TagStore(Provider<ISQLiteDatabase> databaseProvider) {
         this.databaseProvider = databaseProvider;
         hideColumn = new ContentValues();
         hideColumn.put("Visible", 0);

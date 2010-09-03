@@ -23,27 +23,28 @@ import com.google.inject.Inject;
 import roboguice.util.RoboThread;
 
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 
 public class UpdateFilterWorker extends RoboThread {
-    public static final String PREF_FILTER_DIRTY = "filter-dirty";
-    private final SharedPreferences sharedPreferences;
     private final DbFrontend dbFrontEnd;
     private final UpdateFlag updateFlag;
     private final UpdateFilterHandler updateFilterHandler;
     private final TagReader tagReader;
+    private final FilterCleanliness filterCleanliness;
+    private final SharedPreferences sharedPreferences;
 
     @Inject
     public UpdateFilterWorker(SharedPreferences sharedPreferences,
             DbFrontend dbFrontEnd,
             UpdateFlag updateFlag,
             UpdateFilterHandler updateFilterHandler,
-            TagReader tagReader) {
-        this.sharedPreferences = sharedPreferences;
+            TagReader tagReader,
+            FilterCleanliness filterCleanliness) {
         this.dbFrontEnd = dbFrontEnd;
         this.updateFlag = updateFlag;
         this.updateFilterHandler = updateFilterHandler;
         this.tagReader = tagReader;
+        this.filterCleanliness = filterCleanliness;
+        this.sharedPreferences = sharedPreferences;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class UpdateFilterWorker extends RoboThread {
         if (showFoundCaches) {
             updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
                     UpdateFilterMessages.DISMISS_CLEAR_FILTER_PROGRESS.ordinal(), 0, 0));
-            markFilterClean();
+            filterCleanliness.markDirty(false);
             return;
         }
 
@@ -75,15 +76,9 @@ public class UpdateFilterWorker extends RoboThread {
             if (foundCaches != null)
                 foundCaches.close();
         }
-        markFilterClean();
+        filterCleanliness.markDirty(false);
         updateFlag.setUpdatesEnabled(true);
         updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
                 UpdateFilterMessages.DISMISS_APPLY_FILTER_PROGRESS.ordinal(), 0, 0));
-    }
-
-    private void markFilterClean() {
-        Editor editor = sharedPreferences.edit();
-        editor.putBoolean(PREF_FILTER_DIRTY, false);
-        editor.commit();
     }
 }

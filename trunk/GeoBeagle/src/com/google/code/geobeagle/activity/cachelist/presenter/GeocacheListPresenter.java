@@ -24,6 +24,7 @@ import com.google.code.geobeagle.activity.cachelist.Pausable;
 import com.google.code.geobeagle.activity.cachelist.model.GeocacheVectors;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
 import com.google.code.geobeagle.database.ClearFilterProgressDialog;
+import com.google.code.geobeagle.database.FilterCleanliness;
 import com.google.code.geobeagle.database.UpdateFilterWorker;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable;
@@ -62,6 +63,7 @@ public class GeocacheListPresenter implements Pausable {
     private final UpdateFilterWorker mUpdateFilterWorker;
     private final UpdateFlag mUpdateFlag;
     private final Provider<ClearFilterProgressDialog> mProgressDialogProvider;
+    private final FilterCleanliness mFilterCleanliness;
 
     @Inject
     public GeocacheListPresenter(CombinedLocationListener combinedLocationListener,
@@ -79,7 +81,8 @@ public class GeocacheListPresenter implements Pausable {
             SharedPreferences sharedPreferences,
             UpdateFilterWorker updateFilterWorker,
             UpdateFlag updateFlag,
-            Provider<ClearFilterProgressDialog> progressDialogProvider) {
+            Provider<ClearFilterProgressDialog> progressDialogProvider,
+            FilterCleanliness filterCleanliness) {
         mCombinedLocationListener = combinedLocationListener;
         mCombinedLocationManager = combinedLocationManager;
         mCacheListCompassListenerProvider = cacheListCompassListenerProvider;
@@ -96,6 +99,7 @@ public class GeocacheListPresenter implements Pausable {
         mUpdateFilterWorker = updateFilterWorker;
         mUpdateFlag = updateFlag;
         mProgressDialogProvider = progressDialogProvider;
+        mFilterCleanliness = filterCleanliness;
     }
 
     public void onCreate() {
@@ -119,7 +123,7 @@ public class GeocacheListPresenter implements Pausable {
     }
 
     public void onResume(CacheListRefresh cacheListRefresh) {
-        if (mSharedPreferences.getBoolean(UpdateFilterWorker.PREF_FILTER_DIRTY, false)) {
+        if (mFilterCleanliness.isDirty()) {
             ProgressDialog progressDialog = mProgressDialogProvider.get();
             progressDialog.incrementProgressBy(1);
             progressDialog.show();

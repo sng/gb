@@ -32,7 +32,9 @@ public class FieldnoteLogger {
         private final EditText mEditText;
         private final CharSequence mGeocacheId;
 
-        public OnClickOk(CharSequence geocacheId, EditText editText, CacheLogger cacheLogger,
+        public OnClickOk(CharSequence geocacheId,
+                EditText editText,
+                CacheLogger cacheLogger,
                 boolean dnf) {
             mGeocacheId = geocacheId;
             mEditText = editText;
@@ -46,7 +48,6 @@ public class FieldnoteLogger {
         }
     }
 
-
     private final DialogHelperCommon mDialogHelperCommon;
     private final DialogHelperFile mDialogHelperFile;
     private final DialogHelperSms mDialogHelperSms;
@@ -54,7 +55,8 @@ public class FieldnoteLogger {
 
     @Inject
     public FieldnoteLogger(DialogHelperCommon dialogHelperCommon,
-            DialogHelperFile dialogHelperFile, @Assisted DialogHelperSms dialogHelperSms,
+            DialogHelperFile dialogHelperFile,
+            @Assisted DialogHelperSms dialogHelperSms,
             SharedPreferences sharedPreferences) {
         mDialogHelperSms = dialogHelperSms;
         mDialogHelperFile = dialogHelperFile;

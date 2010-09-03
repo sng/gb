@@ -15,18 +15,13 @@
 package com.google.code.geobeagle.database;
 
 import com.google.code.geobeagle.Geocache;
-import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
-import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.code.geobeagle.database.DatabaseDI.GeoBeagleSqliteOpenHelper;
 import com.google.code.geobeagle.preferences.PreferencesUpgrader;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.util.Log;
 
@@ -45,20 +40,14 @@ public class DbFrontend {
     private GeoBeagleSqliteOpenHelper mSqliteOpenHelper;
     private final Provider<Context> mContextProvider;
     private final PreferencesUpgrader mPreferencesUpgrader;
-    private final SharedPreferences mSharedPreferences;
-    private final UpdateFlag mUpdateFlag;
 
     @Inject
     DbFrontend(Provider<Context> contextProvider,
             CacheReader cacheReader,
-            PreferencesUpgrader preferencesUpgrader,
-            SharedPreferences sharedPreferences,
-            UpdateFlag updateFlag) {
+            PreferencesUpgrader preferencesUpgrader) {
         mContextProvider = contextProvider;
         mCacheReader = cacheReader;
         mPreferencesUpgrader = preferencesUpgrader;
-        mSharedPreferences = sharedPreferences;
-        mUpdateFlag = updateFlag;
         mContext = null;
     }
 
@@ -93,49 +82,6 @@ public class DbFrontend {
         countCursor.close();
         Log.d("GeoBeagle", this + ": DbFrontEnd.count all:" + count);
         return count;
-    }
-
-    public void updateFilter() {
-        doUpdateFilter();
-    }
-
-    private void doUpdateFilter() {
-        boolean showFoundCaches = mSharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES,
-                false);
-        openDatabase();
-        mDatabase.execSQL("UPDATE CACHES SET Visible = 1");
-        if (showFoundCaches)
-            return;
-        Cursor cursor = mDatabase.rawQuery("SELECT ROWID, Id FROM " + Database.TBL_CACHES, null);
-        try {
-            if (!cursor.moveToFirst())
-                return;
-            while (!cursor.isAfterLast()) {
-                int rowId = cursor.getInt(0);
-                String cache = cursor.getString(1);
-                boolean isFound = isFound(cache);
-                if (isFound) {
-                    mDatabase.execSQL("UPDATE CACHES SET Visible = 0 WHERE ROWID = ?",
-                            rowId);
-                }
-                cursor.moveToNext();
-            }
-        } finally {
-            if (cursor != null)
-                cursor.close();
-
-        }
-        Editor editor = mSharedPreferences.edit();
-        editor.putBoolean("filter-dirty", false);
-        editor.commit();
-    }
-
-    private boolean isFound(String cache) {
-        return mDatabase.hasValue("TAGS", new String[] {
-                "Cache", "Id"
-        }, new String[] {
-                cache, String.valueOf(Tag.FOUND.ordinal())
-        });
     }
 
     public ArrayList<Geocache> loadCaches(double latitude, double longitude,

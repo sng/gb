@@ -18,7 +18,7 @@ import com.google.inject.Inject;
 
 import android.util.Log;
 
-public class TagWriterImpl implements TagWriter {
+public class TagWriterImpl {
     private final Filter filter;
     private final TagWriterDatabase tagWriterDatabase;
 
@@ -30,7 +30,6 @@ public class TagWriterImpl implements TagWriter {
         this.tagWriterDatabase = tagWriterDatabase;
     }
 
-    @Override
     public void add(CharSequence geocacheId, Tag tag) {
         Log.d("GeoBeagle", "TagWriterImpl: " + geocacheId + ", " + tag);
         tagWriterDatabase.addTag(geocacheId, tag);

@@ -21,7 +21,6 @@ import com.google.code.geobeagle.database.CacheWriter;
 import com.google.code.geobeagle.database.ClearCachesFromSource;
 import com.google.code.geobeagle.database.GpxWriter;
 import com.google.code.geobeagle.database.Tag;
-import com.google.code.geobeagle.database.TagWriter;
 import com.google.code.geobeagle.database.TagWriterImpl;
 import com.google.inject.Inject;
 
@@ -43,7 +42,7 @@ public class CacheTagSqlWriter {
     private double mLongitude;
     private CharSequence mName;
     private int mTerrain;
-    private final TagWriter mTagWriter;
+    private final TagWriterImpl mTagWriter;
     private final ClearCachesFromSource mClearCachesFromSource;
     private boolean mArchived;
     private boolean mAvailable;

@@ -24,7 +24,6 @@ import roboguice.util.RoboThread;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
 
 public class UpdateFilterWorker extends RoboThread {
     public static final String PREF_FILTER_DIRTY = "filter-dirty";
@@ -32,16 +31,19 @@ public class UpdateFilterWorker extends RoboThread {
     private final DbFrontend dbFrontEnd;
     private final UpdateFlag updateFlag;
     private final UpdateFilterHandler updateFilterHandler;
+    private final TagReader tagReader;
 
     @Inject
     public UpdateFilterWorker(SharedPreferences sharedPreferences,
             DbFrontend dbFrontEnd,
             UpdateFlag updateFlag,
-            UpdateFilterHandler updateFilterHandler) {
+            UpdateFilterHandler updateFilterHandler,
+            TagReader tagReader) {
         this.sharedPreferences = sharedPreferences;
         this.dbFrontEnd = dbFrontEnd;
         this.updateFlag = updateFlag;
         this.updateFilterHandler = updateFilterHandler;
+        this.tagReader = tagReader;
     }
 
     @Override
@@ -53,37 +55,35 @@ public class UpdateFilterWorker extends RoboThread {
         if (showFoundCaches) {
             updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
                     UpdateFilterMessages.DISMISS_CLEAR_FILTER_PROGRESS.ordinal(), 0, 0));
-            Editor editor = sharedPreferences.edit();
-            editor.putBoolean(PREF_FILTER_DIRTY, false);
-            editor.commit();
+            markFilterClean();
             return;
         }
-        Cursor cursor = database.query("TAGS", new String[] {
-            "Cache"
-        }, "Id = ?", new String[] {
-            String.valueOf(Tag.FOUND.ordinal())
-        }, null, null, null, null);
 
-        updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                UpdateFilterMessages.SHOW_APPLY_FILTER_PROGRESS.ordinal(), cursor.getCount(), 0));
+        FoundCaches foundCaches = null;
         try {
-            if (!cursor.moveToFirst())
-                return;
-            while (!cursor.isAfterLast()) {
+            foundCaches = tagReader.getFoundCaches();
+            updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
+                    UpdateFilterMessages.SHOW_APPLY_FILTER_PROGRESS.ordinal(),
+                    foundCaches.getCount(), 0));
+
+            for (String cache : foundCaches.getCaches()) {
                 updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
                         UpdateFilterMessages.INCREMENT_APPLY_FILTER_PROGRESS.ordinal(), 0, 0));
-                String cache = cursor.getString(0);
                 database.execSQL("UPDATE CACHES SET Visible = 0 WHERE ID = ?", cache);
-                cursor.moveToNext();
             }
         } finally {
-            cursor.close();
+            if (foundCaches != null)
+                foundCaches.close();
         }
-        Editor editor = sharedPreferences.edit();
-        editor.putBoolean(PREF_FILTER_DIRTY, false);
-        editor.commit();
+        markFilterClean();
         updateFlag.setUpdatesEnabled(true);
         updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
                 UpdateFilterMessages.DISMISS_APPLY_FILTER_PROGRESS.ordinal(), 0, 0));
+    }
+
+    private void markFilterClean() {
+        Editor editor = sharedPreferences.edit();
+        editor.putBoolean(PREF_FILTER_DIRTY, false);
+        editor.commit();
     }
 }

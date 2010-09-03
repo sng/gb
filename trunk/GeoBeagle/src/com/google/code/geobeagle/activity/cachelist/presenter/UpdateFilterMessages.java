@@ -16,22 +16,16 @@ package com.google.code.geobeagle.activity.cachelist.presenter;
 
 public enum UpdateFilterMessages {
 
-    DISMISS_CLEAR_FILTER_PROGRESS {
-        @Override
-        void handleMessage(UpdateFilterMediator updateFilterMediator, int arg1) {
-            updateFilterMediator.dismissClearFilterProgress();
-        }
-    },
     DISMISS_APPLY_FILTER_PROGRESS {
         @Override
         void handleMessage(UpdateFilterMediator updateFilterMediator, int arg1) {
             updateFilterMediator.dismissApplyFilterProgress();
         }
     },
-    SHOW_APPLY_FILTER_PROGRESS {
+    DISMISS_CLEAR_FILTER_PROGRESS {
         @Override
         void handleMessage(UpdateFilterMediator updateFilterMediator, int arg1) {
-            updateFilterMediator.showApplyFilterProgress(arg1);
+            updateFilterMediator.dismissClearFilterProgress();
         }
     },
     INCREMENT_APPLY_FILTER_PROGRESS {
@@ -39,10 +33,16 @@ public enum UpdateFilterMessages {
         void handleMessage(UpdateFilterMediator updateFilterMediator, int arg1) {
             updateFilterMediator.incrementApplyFilterProgress();
         }
+    },
+    SHOW_APPLY_FILTER_PROGRESS {
+        @Override
+        void handleMessage(UpdateFilterMediator updateFilterMediator, int arg1) {
+            updateFilterMediator.showApplyFilterProgress(arg1);
+        }
     };
-    abstract void handleMessage(UpdateFilterMediator updateFilterMediator, int arg1);
-
     public static UpdateFilterMessages fromOrd(int i) {
         return UpdateFilterMessages.values()[i];
     }
+
+    abstract void handleMessage(UpdateFilterMediator updateFilterMediator, int arg1);
 }

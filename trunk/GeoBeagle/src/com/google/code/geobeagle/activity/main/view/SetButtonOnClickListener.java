@@ -24,25 +24,25 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class SetButtonOnClickListener implements OnClickListener {
-    private final Activity mActivity;
-    private final EditCache mGeocacheView;
-    private final LocationSaver mLocationSaver;
+    private final Activity activity;
+    private final EditCache geocacheView;
+    private final LocationSaver locationSaver;
 
     public SetButtonOnClickListener(Activity activity, EditCache editCache,
             LocationSaver locationSaver) {
-        mActivity = activity;
-        mGeocacheView = editCache;
-        mLocationSaver = locationSaver;
+        this.activity = activity;
+        this.geocacheView = editCache;
+        this.locationSaver = locationSaver;
     }
 
     @Override
     public void onClick(View v) {
-        final Geocache geocache = mGeocacheView.get();
-        mLocationSaver.saveLocation(geocache);
+        final Geocache geocache = geocacheView.get();
+        locationSaver.saveLocation(geocache);
         final Intent i = new Intent();
         i.setAction(GeocacheListController.SELECT_CACHE);
         i.putExtra("geocache", geocache);
-        mActivity.setResult(Activity.RESULT_OK, i);
-        mActivity.finish();
+        activity.setResult(Activity.RESULT_OK, i);
+        activity.finish();
     }
 }

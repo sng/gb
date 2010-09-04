@@ -17,7 +17,6 @@ package com.google.code.geobeagle.database;
 import com.google.inject.Inject;
 
 public class TagReader {
-
     private final TagStore tagStore;
 
     @Inject

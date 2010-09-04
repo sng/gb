@@ -17,6 +17,7 @@ package com.google.code.geobeagle.activity.cachelist.presenter;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
 import com.google.code.geobeagle.database.ApplyFilterProgressDialog;
 import com.google.code.geobeagle.database.ClearFilterProgressDialog;
+import com.google.code.geobeagle.database.FilterCleanliness;
 import com.google.inject.Provider;
 
 class UpdateFilterMediator {
@@ -24,27 +25,31 @@ class UpdateFilterMediator {
     private final CacheListRefresh cacheListRefresh;
     private final Provider<ClearFilterProgressDialog> clearFilterProgressDialogProvider;
     private final UpdateFlag updateFlag;
+    private final FilterCleanliness filterCleanliness;
 
     public UpdateFilterMediator(CacheListRefresh cacheListRefresh,
             UpdateFlag updateFlag,
             Provider<ApplyFilterProgressDialog> applyFilterProgressDialogProvider,
-            Provider<ClearFilterProgressDialog> clearFilterProgressDialogProvider) {
+            Provider<ClearFilterProgressDialog> clearFilterProgressDialogProvider,
+            FilterCleanliness filterCleanliness) {
         this.cacheListRefresh = cacheListRefresh;
         this.updateFlag = updateFlag;
         this.applyFilterProgressDialogProvider = applyFilterProgressDialogProvider;
         this.clearFilterProgressDialogProvider = clearFilterProgressDialogProvider;
+        this.filterCleanliness = filterCleanliness;
     }
 
     void dismissApplyFilterProgress() {
-        applyFilterProgressDialogProvider.get().dismiss();
         updateFlag.setUpdatesEnabled(true);
         cacheListRefresh.forceRefresh();
+        applyFilterProgressDialogProvider.get().dismiss();
     }
 
     void dismissClearFilterProgress() {
-        clearFilterProgressDialogProvider.get().dismiss();
+        filterCleanliness.markDirty(false);
         updateFlag.setUpdatesEnabled(true);
         cacheListRefresh.forceRefresh();
+        clearFilterProgressDialogProvider.get().dismiss();
     }
 
     void incrementApplyFilterProgress() {
@@ -52,9 +57,10 @@ class UpdateFilterMediator {
     }
 
     void showApplyFilterProgress(int arg1) {
+        filterCleanliness.markDirty(false);
+        clearFilterProgressDialogProvider.get().dismiss();
         ApplyFilterProgressDialog applyFilterProgressDialog = applyFilterProgressDialogProvider
                 .get();
-        clearFilterProgressDialogProvider.get().dismiss();
         applyFilterProgressDialog.setMax(arg1);
         applyFilterProgressDialog.show();
     }

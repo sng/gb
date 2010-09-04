@@ -28,7 +28,7 @@ public class FilterCleanliness {
         this.sharedPreferences = sharedPreferences;
     }
 
-    void markDirty(boolean dirty) {
+    public void markDirty(boolean dirty) {
         Editor editor = sharedPreferences.edit();
         editor.putBoolean(PREF_FILTER_DIRTY, dirty);
         editor.commit();

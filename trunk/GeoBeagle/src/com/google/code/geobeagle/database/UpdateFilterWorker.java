@@ -14,7 +14,6 @@
 
 package com.google.code.geobeagle.database;
 
-import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
 import com.google.code.geobeagle.activity.cachelist.presenter.UpdateFilterHandler;
 import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.inject.Inject;
@@ -24,24 +23,18 @@ import roboguice.util.RoboThread;
 import android.content.SharedPreferences;
 
 public class UpdateFilterWorker extends RoboThread {
-    private final UpdateFlag updateFlag;
     private final UpdateFilterHandler updateFilterHandler;
     private final TagReader tagReader;
-    private final FilterCleanliness filterCleanliness;
     private final SharedPreferences sharedPreferences;
     private final CacheVisibilityStore cacheVisibilityStore;
 
     @Inject
     public UpdateFilterWorker(SharedPreferences sharedPreferences,
-            UpdateFlag updateFlag,
             UpdateFilterHandler updateFilterHandler,
             TagReader tagReader,
-            FilterCleanliness filterCleanliness,
             CacheVisibilityStore cacheVisibilityStore) {
-        this.updateFlag = updateFlag;
         this.updateFilterHandler = updateFilterHandler;
         this.tagReader = tagReader;
-        this.filterCleanliness = filterCleanliness;
         this.sharedPreferences = sharedPreferences;
         this.cacheVisibilityStore = cacheVisibilityStore;
     }
@@ -51,7 +44,6 @@ public class UpdateFilterWorker extends RoboThread {
         cacheVisibilityStore.setAllVisible();
 
         if (sharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES, false)) {
-            filterCleanliness.markDirty(false);
             updateFilterHandler.dismissClearFilterProgress();
             return;
         }
@@ -69,7 +61,6 @@ public class UpdateFilterWorker extends RoboThread {
             if (foundCaches != null)
                 foundCaches.close();
         }
-        filterCleanliness.markDirty(false);
         updateFilterHandler.dismissApplyFilterProgress();
     }
 }

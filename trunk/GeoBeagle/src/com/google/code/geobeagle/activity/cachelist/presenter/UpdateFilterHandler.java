@@ -27,8 +27,28 @@ public class UpdateFilterHandler extends Handler {
         this.updateFilterMediator = updateFilterMediator;
     }
 
+    public void dismissApplyFilterProgress() {
+        sendMessage(obtainMessage(UpdateFilterMessages.DISMISS_APPLY_FILTER_PROGRESS.ordinal(), 0,
+                0));
+    }
+
+    public void dismissClearFilterProgress() {
+        sendMessage(obtainMessage(UpdateFilterMessages.DISMISS_CLEAR_FILTER_PROGRESS.ordinal(), 0,
+                0));
+    }
+
     @Override
     public void handleMessage(Message msg) {
         UpdateFilterMessages.fromOrd(msg.what).handleMessage(updateFilterMediator, msg.arg1);
+    }
+
+    public void incrementApplyFilterProgress() {
+        sendMessage(obtainMessage(UpdateFilterMessages.INCREMENT_APPLY_FILTER_PROGRESS.ordinal(),
+                0, 0));
+    }
+
+    public void showApplyFilterProgress(int count) {
+        sendMessage(obtainMessage(UpdateFilterMessages.SHOW_APPLY_FILTER_PROGRESS.ordinal(), count,
+                0));
     }
 }

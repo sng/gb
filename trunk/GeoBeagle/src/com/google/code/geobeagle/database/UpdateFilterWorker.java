@@ -16,7 +16,6 @@ package com.google.code.geobeagle.database;
 
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh.UpdateFlag;
 import com.google.code.geobeagle.activity.cachelist.presenter.UpdateFilterHandler;
-import com.google.code.geobeagle.activity.cachelist.presenter.UpdateFilterMessages;
 import com.google.code.geobeagle.activity.preferences.EditPreferences;
 import com.google.inject.Inject;
 
@@ -49,26 +48,21 @@ public class UpdateFilterWorker extends RoboThread {
 
     @Override
     public void run() {
-        boolean showFoundCaches = sharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES,
-                false);
         cacheVisibilityStore.setAllVisible();
-        if (showFoundCaches) {
-            updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                    UpdateFilterMessages.DISMISS_CLEAR_FILTER_PROGRESS.ordinal(), 0, 0));
+
+        if (sharedPreferences.getBoolean(EditPreferences.SHOW_FOUND_CACHES, false)) {
             filterCleanliness.markDirty(false);
+            updateFilterHandler.dismissClearFilterProgress();
             return;
         }
 
         FoundCaches foundCaches = null;
         try {
             foundCaches = tagReader.getFoundCaches();
-            updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                    UpdateFilterMessages.SHOW_APPLY_FILTER_PROGRESS.ordinal(),
-                    foundCaches.getCount(), 0));
+            updateFilterHandler.showApplyFilterProgress(foundCaches.getCount());
 
             for (String cache : foundCaches.getCaches()) {
-                updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                        UpdateFilterMessages.INCREMENT_APPLY_FILTER_PROGRESS.ordinal(), 0, 0));
+                updateFilterHandler.incrementApplyFilterProgress();
                 cacheVisibilityStore.setInvisible(cache);
             }
         } finally {
@@ -76,8 +70,6 @@ public class UpdateFilterWorker extends RoboThread {
                 foundCaches.close();
         }
         filterCleanliness.markDirty(false);
-        updateFlag.setUpdatesEnabled(true);
-        updateFilterHandler.sendMessage(updateFilterHandler.obtainMessage(
-                UpdateFilterMessages.DISMISS_APPLY_FILTER_PROGRESS.ordinal(), 0, 0));
+        updateFilterHandler.dismissApplyFilterProgress();
     }
 }

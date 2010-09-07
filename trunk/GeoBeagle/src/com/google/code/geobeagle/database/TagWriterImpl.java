@@ -15,58 +15,33 @@
 package com.google.code.geobeagle.database;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.ProvisionException;
 
-import android.content.ContentValues;
 import android.util.Log;
 
 public class TagWriterImpl implements TagWriter {
-
-    private final Provider<ISQLiteDatabase> databaseProvider;
     private final Filter filter;
+    private final TagWriterDatabase tagWriterDatabase;
 
     @Inject
-    public TagWriterImpl(Provider<ISQLiteDatabase> databaseProvider,
-            Filter filter) {
-        this.databaseProvider = databaseProvider;
+    public TagWriterImpl(
+            Filter filter,
+            TagWriterDatabase tagWriterDatabase) {
         this.filter = filter;
+        this.tagWriterDatabase = tagWriterDatabase;
     }
 
     @Override
     public void add(CharSequence geocacheId, Tag tag) {
         Log.d("GeoBeagle", "TagWriterImpl: " + geocacheId + ", " + tag);
-        ISQLiteDatabase database = databaseProvider.get();
-        database.delete("TAGS", "Cache", (String)geocacheId);
-        database.insert("TAGS", new String[] {
-                "Cache", "Id"
-        }, new Object[] {
-                geocacheId, tag.ordinal()
-        });
+        tagWriterDatabase.addTag(geocacheId, tag);
 
         if (!filter.isVisible(tag == Tag.FOUND)) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("Visible", 0);
-            database.update("CACHES", contentValues, "ID=?", new String[] {
-                geocacheId.toString()
-            });
+            tagWriterDatabase.hideCache(geocacheId);
         }
     }
 
     public boolean hasTag(CharSequence geocacheId, Tag tag) {
-        ISQLiteDatabase mDatabase = null;
-        try {
-            mDatabase = databaseProvider.get();
-        } catch (ProvisionException e) {
-            Log.e("GeoBeagle", "Provision exception");
-            return false;
-        }
-        boolean hasValue = mDatabase.hasValue("TAGS", new String[] {
-                "Cache", "Id"
-        }, new String[] {
-                geocacheId.toString(), String.valueOf(tag.ordinal())
-        });
-        return hasValue;
+        return tagWriterDatabase.hasTag(geocacheId, tag);
     }
 
 }

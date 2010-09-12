@@ -68,7 +68,7 @@ public class CacheListPresenterTest {
 
     @Test
     public void testCompassOnAccuracyChanged() {
-        new CompassListener(null, null, 0).onAccuracyChanged(0, 0);
+        new CompassListener(null, null).onAccuracyChanged(0, 0);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class CacheListPresenterTest {
 
         PowerMock.replayAll();
         final CompassListener compassListener = new CompassListener(refresher,
-                locationControlBuffered, 0);
+                locationControlBuffered);
         compassListener.onSensorChanged(0, values);
         PowerMock.verifyAll();
     }
@@ -100,7 +100,7 @@ public class CacheListPresenterTest {
         float values[] = new float[] {
             4f
         };
-        final CompassListener compassListener = new CompassListener(null, null, 0);
+        final CompassListener compassListener = new CompassListener(null, null);
         compassListener.onSensorChanged(0, values);
     }
 
@@ -128,8 +128,9 @@ public class CacheListPresenterTest {
         listView.setOnScrollListener(scrollListener);
 
         PowerMock.replayAll();
-        new GeocacheListPresenter(null, null, null, geocacheListAdapter, geocacheVectors,
-                gpsStatusWidget, listActivity, locationControlBuffered, null, null, scrollListener)
+        new GeocacheListPresenter(null, null, null, geocacheListAdapter, geocacheVectors, null,
+                listActivity, locationControlBuffered, null, null, scrollListener, null, null,
+                null, null, null, null)
                 .onCreate();
         PowerMock.verifyAll();
     }
@@ -146,7 +147,8 @@ public class CacheListPresenterTest {
 
         PowerMock.replayAll();
         new GeocacheListPresenter(null, combinedLocationManager, null, null, null, null, null,
-                null, sensorManagerWrapper, null, null).onPause();
+                null, sensorManagerWrapper, null, null, null, null, null, null, null, null)
+                .onPause();
         PowerMock.verifyAll();
     }
 
@@ -189,9 +191,10 @@ public class CacheListPresenterTest {
                 SensorManager.SENSOR_DELAY_UI);
 
         PowerMock.replayAll();
-        new GeocacheListPresenter(combinedLocationListener, combinedLocationManager,
-                compassListenerProvider, geocacheListAdapter, null, gpsStatusWidget, listActivity,
-                locationControlBuffered, sensorManagerWrapper, updateGpsRunnable, null).onResume(cacheListRefresh);
+        new GeocacheListPresenter(combinedLocationListener, combinedLocationManager, null,
+                geocacheListAdapter, null, null, listActivity, locationControlBuffered,
+                sensorManagerWrapper, updateGpsRunnable, null, null, null, null, null, null, null)
+                .onResume(cacheListRefresh);
 
         PowerMock.verifyAll();
     }

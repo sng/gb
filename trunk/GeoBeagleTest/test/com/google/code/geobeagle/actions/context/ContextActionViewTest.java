@@ -48,7 +48,7 @@ public class ContextActionViewTest {
         context.startActivity(intent);
 
         PowerMock.replayAll();
-        new ContextActionView(geocacheVectors, context, intent).act(34);
+        new ContextActionView(geocacheVectors, context).act(34);
         PowerMock.verifyAll();
     }
 }

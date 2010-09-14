@@ -41,6 +41,7 @@ public class IntentStarterViewUriTest {
     private Intent intent;
     private Geocache geocache;
     private ErrorDisplayer errorDisplayer;
+    private Uri uri;
 
     @Before
     public void setUp() {
@@ -49,13 +50,13 @@ public class IntentStarterViewUriTest {
         intent = PowerMock.createMock(Intent.class);
         geocache = PowerMock.createMock(Geocache.class);
         errorDisplayer = PowerMock.createMock(ErrorDisplayer.class);
+        uri = PowerMock.createMock(Uri.class);
+
+        PowerMock.mockStatic(Uri.class);
     }
 
     @Test
     public void testStartIntent() throws Exception {
-        Uri uri = PowerMock.createMock(Uri.class);
-        PowerMock.mockStatic(Uri.class);
-
         EasyMock.expect(geoBeagle.getGeocache()).andReturn(geocache);
         EasyMock.expect(geocacheToUri.convert(geocache)).andReturn("destination uri");
         EasyMock.expect(Uri.parse("destination uri")).andReturn(uri);
@@ -69,8 +70,6 @@ public class IntentStarterViewUriTest {
 
     @Test
     public void testStartIntentNoHandler() throws Exception {
-        Uri uri = PowerMock.createMock(Uri.class);
-        PowerMock.mockStatic(Uri.class);
         ActivityNotFoundException activityNotFoundException = PowerMock
                 .createMock(ActivityNotFoundException.class);
 

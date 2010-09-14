@@ -14,7 +14,9 @@
 
 package com.google.code.geobeagle.activity.map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.google.android.maps.Overlay;
 
@@ -51,7 +53,7 @@ public class OverlayManagerTest {
                 OverlayManager.DENSITY_MAP_ZOOM_THRESHOLD - 1);
 
         PowerMock.replayAll();
-        final OverlayManager overlayManager = new OverlayManager(geoMapView, null, null, null, true);
+        final OverlayManager overlayManager = new OverlayManager(null, null, null);
         overlayManager.selectOverlay();
         assertTrue(overlayManager.usesDensityMap());
         PowerMock.verifyAll();
@@ -68,8 +70,7 @@ public class OverlayManagerTest {
                 OverlayManager.DENSITY_MAP_ZOOM_THRESHOLD - 1);
 
         PowerMock.replayAll();
-        final OverlayManager overlayManager = new OverlayManager(geoMapView, overlays,
-                densityOverlay, null, false);
+        final OverlayManager overlayManager = new OverlayManager(null, densityOverlay, null);
         overlayManager.selectOverlay();
         assertTrue(overlayManager.usesDensityMap());
         assertEquals(densityOverlay, overlays.get(0));
@@ -90,8 +91,8 @@ public class OverlayManagerTest {
         EasyMock.expect(cachePinsOverlayFactory.getCachePinsOverlay()).andReturn(cachePinsOverlay);
 
         PowerMock.replayAll();
-        final OverlayManager overlayManager = new OverlayManager(geoMapView, overlays, null,
-                cachePinsOverlayFactory, true);
+        final OverlayManager overlayManager = new OverlayManager(null, null,
+                cachePinsOverlayFactory);
         overlayManager.selectOverlay();
         assertFalse(overlayManager.usesDensityMap());
         assertEquals(cachePinsOverlay, overlays.get(0));

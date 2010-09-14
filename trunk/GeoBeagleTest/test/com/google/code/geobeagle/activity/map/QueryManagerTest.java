@@ -74,8 +74,8 @@ public class QueryManagerTest {
                         whereFactoryFixedArea, latLonMinMax)).andReturn(list);
         PowerMock.replayAll();
 
-        QueryManager queryManager = new QueryManager(peggedLoader, null, latLonMinMax);
-        assertEquals(list, queryManager.load(topLeft, bottomRight));
+        QueryManager queryManager = new QueryManager(null);
+        assertEquals(list, queryManager.load(topLeft, bottomRight, peggedLoader));
         PowerMock.verifyAll();
     }
 
@@ -97,7 +97,7 @@ public class QueryManagerTest {
         int[] latLonMinMax = {
                 34000000, -122000000, 37000000, -119000000
         };
-        QueryManager queryManager = new QueryManager(null, cachedNeedsLoading, latLonMinMax);
+        QueryManager queryManager = new QueryManager(null);
         assertEquals(false, queryManager.needsLoading(newTopLeft, newBottomRight));
         PowerMock.verifyAll();
     }
@@ -116,7 +116,7 @@ public class QueryManagerTest {
         int[] latLonMinMax = {
                 0, 0, 0, 0
         };
-        QueryManager queryManager = new QueryManager(null, cachedNeedsLoading, latLonMinMax);
+        QueryManager queryManager = new QueryManager(null);
         assertEquals(true, queryManager.needsLoading(newTopLeft, newBottomRight));
         PowerMock.verifyAll();
     }
@@ -131,7 +131,7 @@ public class QueryManagerTest {
         };
 
         EasyMock.expect(dbFrontend.loadCaches(0, 0, where)).andReturn(fullList);
-        
+
         PowerMock.replayAll();
         new LoaderImpl(dbFrontend).load(0, 1, 2, 3, where, newBounds);
         PowerMock.verifyAll();
@@ -163,7 +163,7 @@ public class QueryManagerTest {
         GeoPoint bottomRight = PowerMock.createMock(GeoPoint.class);
 
         PowerMock.replayAll();
-        CachedNeedsLoading cachedNeedsLoading = new CachedNeedsLoading(topLeft, bottomRight);
+        CachedNeedsLoading cachedNeedsLoading = new CachedNeedsLoading();
         assertFalse(cachedNeedsLoading.needsLoading(topLeft, bottomRight));
         assertTrue(cachedNeedsLoading.needsLoading(bottomRight, topLeft));
         assertFalse(cachedNeedsLoading.needsLoading(bottomRight, topLeft));
@@ -185,7 +185,7 @@ public class QueryManagerTest {
         EasyMock.expect(geocachesLoader.count(0, 0, where)).andReturn(2000);
 
         PowerMock.replayAll();
-        final ArrayList<Geocache> list = new QueryManager.PeggedLoader(geocachesLoader, toaster,
+        final ArrayList<Geocache> list = new QueryManager.PeggedLoader(geocachesLoader, null,
                 loaderImpl).load(0, 1, 2, 3, where, newBounds);
         assertEquals(nullList, list);
         assertEquals(newBounds[0], 0);

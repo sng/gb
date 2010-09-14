@@ -18,8 +18,6 @@ import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 
 import com.google.code.geobeagle.R;
-import com.google.code.geobeagle.gpsstatuswidget.MeterFormatter;
-import com.google.code.geobeagle.gpsstatuswidget.MeterBars;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,7 +99,7 @@ public class MeterViewTest {
         textView.setText("<-90°->");
 
         PowerMock.replayAll();
-        new MeterBars(textView, meterFormatter).set(342, 90);
+        new MeterBars(null, meterFormatter).set(342, 90);
         PowerMock.verifyAll();
     }
 
@@ -116,7 +114,7 @@ public class MeterViewTest {
         textView.setTextColor(333);
 
         PowerMock.replayAll();
-        new MeterBars(textView, meterFormatter).setLag(17);
+        new MeterBars(null, meterFormatter).setLag(17);
         PowerMock.verifyAll();
     }
 

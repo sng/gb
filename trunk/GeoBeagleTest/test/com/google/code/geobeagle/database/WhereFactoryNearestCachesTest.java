@@ -46,7 +46,7 @@ public class WhereFactoryNearestCachesTest {
         PowerMock.verifyAll();
     }
 
-    
+
     //andpe: testReadOne and testReadTwo removed since I didn't see how they tested WhereFactoryNearestCaches
 
     @Test
@@ -144,7 +144,8 @@ public class WhereFactoryNearestCachesTest {
         EasyMock.expect(whereStringFactory.getWhereString(122, 37, 0.87f)).andReturn("WHERE foo");
 
         PowerMock.replayAll();
-        assertEquals("WHERE foo", new WhereFactoryNearestCaches(searchFactory, whereStringFactory)
+        assertEquals("WHERE foo", new WhereFactoryNearestCaches(searchFactory, whereStringFactory,
+                null)
                 .getWhere(sqliteWrapper, 122, 37));
         PowerMock.verifyAll();
     }

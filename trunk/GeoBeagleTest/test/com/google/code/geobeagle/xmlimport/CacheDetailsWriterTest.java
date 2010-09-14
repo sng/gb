@@ -15,7 +15,9 @@
 package com.google.code.geobeagle.xmlimport;
 
 import static org.easymock.EasyMock.expect;
-import static org.powermock.api.easymock.PowerMock.*;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import com.google.code.geobeagle.activity.cachelist.GeoBeagleTest;
 import com.google.code.geobeagle.cachedetails.CacheDetailsWriter;
@@ -47,7 +49,7 @@ public class CacheDetailsWriterTest extends GeoBeagleTest {
         htmlWriter.close();
 
         replayAll();
-        new CacheDetailsWriter(htmlWriter, null, null).close();
+        new CacheDetailsWriter(htmlWriter, null, null, null).close();
         verifyAll();
     }
 
@@ -57,7 +59,7 @@ public class CacheDetailsWriterTest extends GeoBeagleTest {
         htmlWriter.writeln("some text");
 
         replayAll();
-        new CacheDetailsWriter(htmlWriter, null, null).writeLine("some text");
+        new CacheDetailsWriter(htmlWriter, null, null, null).writeLine("some text");
         verifyAll();
     }
 
@@ -79,7 +81,7 @@ public class CacheDetailsWriterTest extends GeoBeagleTest {
 
         replayAll();
         CacheDetailsWriter cacheDetailsWriter = new CacheDetailsWriter(htmlWriter, new Emotifier(
-                patternProvider), context);
+                patternProvider), context, null);
         cacheDetailsWriter.writeLogText("sad [:(] face", false);
         cacheDetailsWriter.writeLogText("clown [:o)] face", false);
         cacheDetailsWriter.writeLogText("not a smiley []", false);
@@ -94,7 +96,7 @@ public class CacheDetailsWriterTest extends GeoBeagleTest {
         htmlWriter.writeln("<font color=grey>Location:</font> 37 00.000, 122 00.000");
 
         replayAll();
-        CacheDetailsWriter cacheDetailsWriter = new CacheDetailsWriter(htmlWriter, null, null);
+        CacheDetailsWriter cacheDetailsWriter = new CacheDetailsWriter(htmlWriter, null, null, null);
         cacheDetailsWriter.latitudeLongitude("37.0", "122.0");
         cacheDetailsWriter.writeWptName();
         verifyAll();

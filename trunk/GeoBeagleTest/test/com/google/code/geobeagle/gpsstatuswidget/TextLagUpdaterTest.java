@@ -119,7 +119,7 @@ public class TextLagUpdaterTest {
         textLag.setText("4s");
 
         PowerMock.replayAll();
-        final TextLagUpdater textLagUpdater = new TextLagUpdater(null, textLag, time);
+        final TextLagUpdater textLagUpdater = new TextLagUpdater(null, null, time);
         textLagUpdater.reset(2000);
         textLagUpdater.updateTextLag();
         PowerMock.verifyAll();
@@ -132,7 +132,7 @@ public class TextLagUpdaterTest {
         textLag.setText("");
 
         PowerMock.replayAll();
-        new TextLagUpdater(null, textLag, null).setDisabled();
+        new TextLagUpdater(null, null, null).setDisabled();
         PowerMock.verifyAll();
     }
 
@@ -157,7 +157,7 @@ public class TextLagUpdaterTest {
         textLag.setText("5s");
 
         PowerMock.replayAll();
-        final TextLagUpdater textLagUpdater = new TextLagUpdater(lastLocationUnknown, textLag, time);
+        final TextLagUpdater textLagUpdater = new TextLagUpdater(lastLocationUnknown, null, time);
         textLagUpdater.updateTextLag();
         PowerMock.verifyAll();
     }

@@ -68,7 +68,8 @@ public class ImportBCachingWorkerTest extends GeoBeagleTest {
 
         replayAll();
         new ImportBCachingWorker(progressHandler, progressManager, null, null, null,
-                cursor).run();
+ cursor, null)
+                .run();
         verifyAll();
     }
 
@@ -89,7 +90,7 @@ public class ImportBCachingWorkerTest extends GeoBeagleTest {
 
         replayAll();
         new ImportBCachingWorker(progressHandler, progressManager, null, detailsReaderImport, null,
-                cursor).run();
+                cursor, null).run();
         verifyAll();
     }
 
@@ -104,7 +105,7 @@ public class ImportBCachingWorkerTest extends GeoBeagleTest {
 
         replayAll();
         new ImportBCachingWorker(progressHandler, progressManager, errorDisplayer, null, null,
-                cursor).run();
+                cursor, null).run();
         verifyAll();
     }
 
@@ -122,7 +123,7 @@ public class ImportBCachingWorkerTest extends GeoBeagleTest {
         expect(cursor.getCacheIds()).andReturn("4,5,6");
         expect(detailsReaderImport.loadCacheDetails("4,5,6")).andReturn(true);
         cursor.increment();
-        
+
         expect(cursor.readCaches()).andReturn(false);
         cursor.close();
         progressManager.update(progressHandler, ProgressMessage.REFRESH, 0);
@@ -130,7 +131,7 @@ public class ImportBCachingWorkerTest extends GeoBeagleTest {
 
         replayAll();
         new ImportBCachingWorker(progressHandler, progressManager, null, detailsReaderImport, null,
-                cursor).run();
+                cursor, null).run();
         verifyAll();
     }
 }

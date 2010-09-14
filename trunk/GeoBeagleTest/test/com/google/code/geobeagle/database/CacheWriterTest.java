@@ -18,6 +18,9 @@ import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import com.google.code.geobeagle.CacheType;
 import com.google.code.geobeagle.GeocacheFactory.Source;
@@ -27,8 +30,6 @@ import com.google.inject.Provider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import static org.powermock.api.easymock.PowerMock.*;
 @RunWith(PowerMockRunner.class)
 
 public class CacheWriterTest {
@@ -55,7 +56,7 @@ public class CacheWriterTest {
         replayAll();
         new ClearCachesFromSourceImpl(sqliteProvider).clearEarlierLoads();
         verifyAll();
-        
+
         assertEquals("GCTHISIMPORT|just loaded|||foo.gpx|1|0|0|0|0|1|0\n"
                 + "GCCLICKEDLINK|from a link|||intent|0|0|0|0|0|1|0\n", db.dumpTable("CACHES"));
         assertEquals("keep.gpx|2009-04-30|1\n", db.dumpTable("GPX"));
@@ -71,7 +72,7 @@ public class CacheWriterTest {
         sqlite.execSQL(Database.SQL_DELETE_CACHE, "GC123");
 
         replayAll();
-        CacheWriter cacheWriterSql = new CacheWriter(sqliteProvider, null);
+        CacheWriter cacheWriterSql = new CacheWriter(sqliteProvider, null, null);
         cacheWriterSql.deleteCache("GC123");
         verifyAll();
     }
@@ -90,9 +91,9 @@ public class CacheWriterTest {
                 .andReturn("source");
 
         replayAll();
-        CacheWriter cacheWriterSql = new CacheWriter(sqliteProvider, dbToGeocacheAdapter);
+        CacheWriter cacheWriterSql = new CacheWriter(sqliteProvider, dbToGeocacheAdapter, null);
         cacheWriterSql.insertAndUpdateCache("gc123", "a cache", 122, 37, Source.GPX, "source",
-                CacheType.NULL, 0, 0, 0, false, false);
+                CacheType.NULL, 0, 0, 0, false, false, false);
         verifyAll();
     }
 
@@ -142,7 +143,7 @@ public class CacheWriterTest {
         sqlite.beginTransaction();
 
         replayAll();
-        new CacheWriter(sqliteProvider, null).startWriting();
+        new CacheWriter(sqliteProvider, null, null).startWriting();
         verifyAll();
     }
 
@@ -156,7 +157,7 @@ public class CacheWriterTest {
         sqlite.endTransaction();
 
         replayAll();
-        new CacheWriter(sqliteProvider, null).stopWriting();
+        new CacheWriter(sqliteProvider, null, null).stopWriting();
         verifyAll();
     }
 }

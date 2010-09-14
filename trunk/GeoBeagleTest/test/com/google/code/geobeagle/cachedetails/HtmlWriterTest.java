@@ -18,9 +18,6 @@ import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
 
-import com.google.code.geobeagle.cachedetails.HtmlWriter;
-import com.google.code.geobeagle.cachedetails.WriterWrapper;
-
 import org.junit.Test;
 
 import java.io.IOException;
@@ -33,7 +30,7 @@ public class HtmlWriterTest {
         writer.close();
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(writer);
+        HtmlWriter htmlWriter = new HtmlWriter(null);
         htmlWriter.close();
         verify(writer);
     }
@@ -45,7 +42,7 @@ public class HtmlWriterTest {
         writer.open("/path/to/file");
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(writer);
+        HtmlWriter htmlWriter = new HtmlWriter(null);
         htmlWriter.open("/path/to/file");
         verify(writer);
     }
@@ -57,7 +54,7 @@ public class HtmlWriterTest {
         writer.write("some text<br/>\n");
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(writer);
+        HtmlWriter htmlWriter = new HtmlWriter(null);
         htmlWriter.writeln("some text");
         verify(writer);
     }
@@ -69,7 +66,7 @@ public class HtmlWriterTest {
         writer.write("</html>\n");
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(writer);
+        HtmlWriter htmlWriter = new HtmlWriter(null);
         htmlWriter.writeFooter();
         verify(writer);
     }
@@ -80,7 +77,7 @@ public class HtmlWriterTest {
         writer.write(HtmlWriter.HEADER);
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(writer);
+        HtmlWriter htmlWriter = new HtmlWriter(null);
         htmlWriter.writeHeader();
         verify(writer);
     }
@@ -91,7 +88,7 @@ public class HtmlWriterTest {
         writer.write("<hr/>\n");
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(writer);
+        HtmlWriter htmlWriter = new HtmlWriter(null);
         htmlWriter.writeSeparator();
         verify(writer);
     }

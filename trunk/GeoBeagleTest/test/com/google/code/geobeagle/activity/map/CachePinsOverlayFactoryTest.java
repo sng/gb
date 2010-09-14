@@ -14,7 +14,7 @@
 
 package com.google.code.geobeagle.activity.map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.Projection;
@@ -67,13 +67,13 @@ public class CachePinsOverlayFactoryTest {
         EasyMock.expect(projection.fromPixels(100, 200)).andReturn(newBottomRight);
         EasyMock.expect(queryManager.needsLoading(newTopLeft, newBottomRight)).andReturn(true);
 
-        EasyMock.expect(queryManager.load(newTopLeft, newBottomRight)).andReturn(list);
+        EasyMock.expect(queryManager.load(newTopLeft, newBottomRight, null)).andReturn(list);
         PowerMock.expectNew(CachePinsOverlay.class, cacheItemFactory, context, defaultMarker, list)
                 .andReturn(cachePinsOverlay);
 
         PowerMock.replayAll();
-        final CachePinsOverlayFactory cachePinsOverlayFactory = new CachePinsOverlayFactory(
-                geoMapView, context, defaultMarker, cacheItemFactory, null, queryManager);
+        final CachePinsOverlayFactory cachePinsOverlayFactory = new CachePinsOverlayFactory(null,
+                cacheItemFactory, queryManager, null, null);
         assertEquals(cachePinsOverlay, cachePinsOverlayFactory.getCachePinsOverlay());
         PowerMock.verifyAll();
     }
@@ -95,8 +95,8 @@ public class CachePinsOverlayFactoryTest {
         EasyMock.expect(queryManager.needsLoading(newTopLeft, newBottomRight)).andReturn(false);
 
         PowerMock.replayAll();
-        final CachePinsOverlayFactory cachePinsOverlayFactory = new CachePinsOverlayFactory(
-                geoMapView, null, null, null, cachePinsOverlay, queryManager);
+        final CachePinsOverlayFactory cachePinsOverlayFactory = new CachePinsOverlayFactory(null,
+                null, queryManager, null, null);
         assertEquals(cachePinsOverlay, cachePinsOverlayFactory.getCachePinsOverlay());
         PowerMock.verifyAll();
     }

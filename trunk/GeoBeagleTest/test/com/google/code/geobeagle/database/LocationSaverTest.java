@@ -63,7 +63,7 @@ public class LocationSaverTest {
         writer.stopWriting();
 
         replayAll();
-        new LocationSaver(cacheWriterProvider, tagWriter, filter).saveLocation(geocache);
+        new LocationSaver(cacheWriterProvider, tagWriter).saveLocation(geocache);
         verifyAll();
     }
 }

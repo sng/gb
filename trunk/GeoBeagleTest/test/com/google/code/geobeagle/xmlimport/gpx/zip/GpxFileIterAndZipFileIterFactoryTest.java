@@ -53,8 +53,8 @@ public class GpxFileIterAndZipFileIterFactoryTest {
         expect(gpxFileOpener.iterator()).andReturn(zipFileIterator);
 
         PowerMock.replayAll();
-        assertEquals(zipFileIterator, new GpxFileIterAndZipFileIterFactory(null, aborter,
-                importFolderProvider).fromFile("foo.gpx"));
+        assertEquals(zipFileIterator,
+                new GpxFileIterAndZipFileIterFactory(null, aborter, null).fromFile("foo.gpx"));
         PowerMock.verifyAll();
     }
 
@@ -77,7 +77,7 @@ public class GpxFileIterAndZipFileIterFactoryTest {
 
         PowerMock.replayAll();
         assertEquals(zipFileIterator, new GpxFileIterAndZipFileIterFactory(zipInputFileTester,
-                aborter, importFolderProvider).fromFile("foo.zip"));
+                aborter, null).fromFile("foo.zip"));
         PowerMock.verifyAll();
     }
 

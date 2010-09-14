@@ -17,7 +17,6 @@ package com.google.code.geobeagle.activity.main.fieldnotes;
 import static org.junit.Assert.assertEquals;
 
 import com.google.code.geobeagle.R;
-import com.google.code.geobeagle.activity.main.fieldnotes.FieldnoteLogger.OnClickCancel;
 import com.google.code.geobeagle.activity.main.fieldnotes.FieldnoteLogger.OnClickOk;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.Toaster;
 
@@ -107,7 +106,7 @@ public class FieldNoteSenderTest {
         dialog.setTitle(R.string.log_cache_to_file);
 
         PowerMock.replayAll();
-        new DialogHelperFile(context, "fieldnotes.txt").configureDialogText(dialog, fieldNoteCaveat);
+        new DialogHelperFile(context, null).configureDialogText(dialog, fieldNoteCaveat);
         PowerMock.verifyAll();
     }
 
@@ -240,7 +239,8 @@ public class FieldNoteSenderTest {
         outputStreamWriter.close();
 
         PowerMock.replayAll();
-        new FileLogger(fieldnoteStringsFVsDnf, dateFormat, null, "fieldnotes.log").log("GC123", "easy find", false);
+        new FileLogger(fieldnoteStringsFVsDnf, dateFormat, null, null).log("GC123", "easy find",
+                false);
         PowerMock.verifyAll();
     }
 
@@ -255,18 +255,8 @@ public class FieldNoteSenderTest {
         toaster.showToast();
 
         PowerMock.replayAll();
-        new FileLogger(fieldnoteStringsFVsDnf, null, toaster, "fieldnotes.log").log("GC123",
+        new FileLogger(fieldnoteStringsFVsDnf, null, null, null).log("GC123",
                 "easy find", false);
-        PowerMock.verifyAll();
-    }
-
-    @Test
-    public void testOnClickCancel() {
-        Dialog dialog = PowerMock.createMock(Dialog.class);
-        dialog.dismiss();
-
-        PowerMock.replayAll();
-        new OnClickCancel().onClick(dialog, 0);
         PowerMock.verifyAll();
     }
 

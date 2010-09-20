@@ -181,6 +181,7 @@ public class GeocacheViewerTest extends GeoBeagleTest {
         expect(geocache.getTerrain()).andReturn(5);
         expect(geocache.getAvailable()).andReturn(true);
         expect(geocache.getArchived()).andReturn(false);
+        gcContainer.setVisibility(View.VISIBLE);
         gcContainer.setImage(6);
         gcDifficulty.setImage(8);
         gcTerrain.setImage(5);
@@ -188,8 +189,8 @@ public class GeocacheViewerTest extends GeoBeagleTest {
         name.set("a cache", true, false);
 
         PowerMock.replayAll();
-        new GeocacheViewer(radar, activity, name, gcTypeImageView, gcDifficulty, gcTerrain, gcContainer,
- iconOverlayFactory, mapViewBitmapCopier, iconRenderer, null)
+        new GeocacheViewer(radar, activity, name, gcTypeImageView, gcDifficulty, gcTerrain,
+                gcContainer, iconOverlayFactory, mapViewBitmapCopier, iconRenderer, null)
                 .set(geocache);
         PowerMock.verifyAll();
     }

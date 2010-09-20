@@ -18,77 +18,76 @@ import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
 public class HtmlWriterTest {
+    private StringWriterWrapper writer;
+
+    @Before
+    public void setUp() {
+        writer = createMock(StringWriterWrapper.class);
+    }
+
     @Test
     public void testClose() throws IOException {
-        final WriterWrapper writer = createMock(WriterWrapper.class);
-
         writer.close();
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(null);
+        HtmlWriter htmlWriter = new HtmlWriter(writer);
         htmlWriter.close();
         verify(writer);
     }
 
     @Test
     public void testOpen() throws IOException {
-        final WriterWrapper writer = createMock(WriterWrapper.class);
-
         writer.open("/path/to/file");
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(null);
+        HtmlWriter htmlWriter = new HtmlWriter(writer);
         htmlWriter.open("/path/to/file");
         verify(writer);
     }
 
     @Test
     public void testWrite() throws IOException {
-        final WriterWrapper writer = createMock(WriterWrapper.class);
-
         writer.write("some text<br/>\n");
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(null);
+        HtmlWriter htmlWriter = new HtmlWriter(writer);
         htmlWriter.writeln("some text");
         verify(writer);
     }
 
     @Test
     public void testWriteFooter() throws IOException {
-        final WriterWrapper writer = createMock(WriterWrapper.class);
         writer.write("  </body>\n");
         writer.write("</html>\n");
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(null);
+        HtmlWriter htmlWriter = new HtmlWriter(writer);
         htmlWriter.writeFooter();
         verify(writer);
     }
 
     @Test
     public void testWriteHeader() throws IOException {
-        final WriterWrapper writer = createMock(WriterWrapper.class);
         writer.write(HtmlWriter.HEADER);
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(null);
+        HtmlWriter htmlWriter = new HtmlWriter(writer);
         htmlWriter.writeHeader();
         verify(writer);
     }
 
     @Test
     public void testWriteSeparator() throws IOException {
-        final WriterWrapper writer = createMock(WriterWrapper.class);
         writer.write("<hr/>\n");
 
         replay(writer);
-        HtmlWriter htmlWriter = new HtmlWriter(null);
+        HtmlWriter htmlWriter = new HtmlWriter(writer);
         htmlWriter.writeSeparator();
         verify(writer);
     }

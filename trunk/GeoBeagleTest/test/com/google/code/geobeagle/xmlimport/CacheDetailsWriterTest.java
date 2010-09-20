@@ -73,9 +73,13 @@ public class CacheDetailsWriterTest extends GeoBeagleTest {
                 ":(", ":o)", "|)", "?"
         });
         expect(patternProvider.get()).andReturn(pattern).anyTimes();
-        htmlWriter.writeln("sad " + Emotifier.EMOTICON_PREFIX + "(" + Emotifier.ICON_SUFFIX
+        htmlWriter.writeln("<b>null null by null</b>");
+        htmlWriter.writeln("<b>null null by null</b>");
+        htmlWriter.writeln("<b>null null by null</b>");
+
+        htmlWriter.writeln("sad " + Emotifier.EMOTICON_PREFIX + "3A28" + Emotifier.ICON_SUFFIX
                 + " face");
-        htmlWriter.writeln("clown " + Emotifier.EMOTICON_PREFIX + "o)" + Emotifier.ICON_SUFFIX
+        htmlWriter.writeln("clown " + Emotifier.EMOTICON_PREFIX + "3Ao29" + Emotifier.ICON_SUFFIX
                 + " face");
         htmlWriter.writeln("not a smiley []");
 
@@ -93,6 +97,7 @@ public class CacheDetailsWriterTest extends GeoBeagleTest {
         HtmlWriter htmlWriter = createMock(HtmlWriter.class);
 
         htmlWriter.open(null);
+        htmlWriter.writeHeader();
         htmlWriter.writeln("<font color=grey>Location:</font> 37 00.000, 122 00.000");
 
         replayAll();

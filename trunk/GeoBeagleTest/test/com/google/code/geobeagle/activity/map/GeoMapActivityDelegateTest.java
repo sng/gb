@@ -94,7 +94,7 @@ public class GeoMapActivityDelegateTest {
         EasyMock.expect(menuActions.onCreateOptionsMenu(menu)).andReturn(true);
 
         PowerMock.replayAll();
-        assertTrue(new GeoMapActivityDelegate(null, null).onCreateOptionsMenu(menu));
+        assertTrue(new GeoMapActivityDelegate(null, menuActions).onCreateOptionsMenu(menu));
         PowerMock.verifyAll();
     }
 
@@ -113,7 +113,8 @@ public class GeoMapActivityDelegateTest {
         EasyMock.expect(menuItem.setTitle(R.string.satellite_view)).andReturn(menuItem);
 
         PowerMock.replayAll();
-        final GeoMapActivityDelegate geoMapActivityDelegate = new GeoMapActivityDelegate(null, null);
+        final GeoMapActivityDelegate geoMapActivityDelegate = new GeoMapActivityDelegate(mapView,
+                null);
         geoMapActivityDelegate.onMenuOpened(menu);
         geoMapActivityDelegate.onMenuOpened(menu);
         PowerMock.verifyAll();
@@ -128,7 +129,7 @@ public class GeoMapActivityDelegateTest {
         EasyMock.expect(menuActions.act(12)).andReturn(true);
 
         PowerMock.replayAll();
-        new GeoMapActivityDelegate(null, null).onOptionsItemSelected(menuItem);
+        new GeoMapActivityDelegate(null, menuActions).onOptionsItemSelected(menuItem);
         PowerMock.verifyAll();
     }
 }

@@ -15,7 +15,6 @@
 package com.google.code.geobeagle.cachelist;
 
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.powermock.api.easymock.PowerMock.createMock;
 import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
@@ -23,51 +22,58 @@ import static org.powermock.api.easymock.PowerMock.verifyAll;
 import com.google.code.geobeagle.activity.cachelist.GeoBeagleTest;
 import com.google.code.geobeagle.activity.cachelist.GpxImporterFactory;
 import com.google.code.geobeagle.activity.cachelist.actions.menu.MenuActionSyncGpx;
-import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
 import com.google.code.geobeagle.bcaching.ImportBCachingWorker;
-import com.google.code.geobeagle.database.CacheWriter;
-import com.google.code.geobeagle.database.GpxWriter;
 import com.google.code.geobeagle.xmlimport.GpxImporter;
 import com.google.inject.Provider;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 public class MenuActionSyncGpxTest extends GeoBeagleTest {
+    private Provider<ImportBCachingWorker> importBCachingWorkerProvider;
+    private GpxImporterFactory gpxImporterFactory;
+    private GpxImporter gpxImporter;
+    private ImportBCachingWorker importBCachingWorker;
+    private MenuActionSyncGpx menuActionSyncGpx;
+
+    @Before
     @SuppressWarnings("unchecked")
+    public void setUp() {
+        importBCachingWorkerProvider = createMock(Provider.class);
+        gpxImporterFactory = createMock(GpxImporterFactory.class);
+        gpxImporter = createMock(GpxImporter.class);
+        importBCachingWorker = createMock(ImportBCachingWorker.class);
+        menuActionSyncGpx = new MenuActionSyncGpx(importBCachingWorkerProvider, gpxImporterFactory);
+    }
+
     @Test
     public void testAct() {
-        GpxImporter gpxImporter = createMock(GpxImporter.class);
-        CacheListRefresh cacheListRefresh = createMock(CacheListRefresh.class);
-        GpxImporterFactory gpxImporterFactory = createMock(GpxImporterFactory.class);
-        CacheWriter cacheWriter = createMock(CacheWriter.class);
-        Provider<ImportBCachingWorker> importBCachingWorkerProvider = createMock(Provider.class);
-        Provider<GpxWriter> gpxWriterProvider = createMock(Provider.class);
-        Provider<CacheWriter> dbFrontendProvider = createMock(Provider.class);
-        ImportBCachingWorker importBCachingWorker = createMock(ImportBCachingWorker.class);
-        GpxWriter gpxWriter = createMock(GpxWriter.class);
-
-        expect(gpxWriterProvider.get()).andReturn(gpxWriter);
-        expect(dbFrontendProvider.get()).andReturn(cacheWriter);
         expect(importBCachingWorkerProvider.get()).andReturn(importBCachingWorker);
         expect(gpxImporterFactory.create()).andReturn(gpxImporter);
         gpxImporter.importGpxs();
 
         replayAll();
-        final MenuActionSyncGpx menuActionSyncGpx = new MenuActionSyncGpx(
-null);
         menuActionSyncGpx.act();
         verifyAll();
     }
 
     @Test
     public void testAbort() {
-        expectLastCall().times(2);
+        expect(importBCachingWorkerProvider.get()).andReturn(importBCachingWorker);
+        expect(gpxImporterFactory.create()).andReturn(gpxImporter);
+        gpxImporter.importGpxs();
+
+        expect(gpxImporterFactory.create()).andReturn(gpxImporter).anyTimes();
+        expect(importBCachingWorkerProvider.get()).andReturn(importBCachingWorker).anyTimes();
+        gpxImporter.abort();
+        importBCachingWorker.abort();
 
         replayAll();
-        new MenuActionSyncGpx(null).abort();
+        menuActionSyncGpx.act();
+        menuActionSyncGpx.abort();
         verifyAll();
     }
 }

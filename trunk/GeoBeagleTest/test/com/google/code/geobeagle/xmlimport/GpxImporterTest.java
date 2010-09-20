@@ -15,6 +15,7 @@ import com.google.code.geobeagle.xmlimport.gpx.IGpxReader;
 import com.google.code.geobeagle.xmlimport.gpx.gpx.GpxFileOpener;
 import com.google.code.geobeagle.xmlimport.gpx.zip.ZipFileOpener;
 import com.google.code.geobeagle.xmlimport.gpx.zip.ZipFileOpener.ZipFileIter;
+import com.google.inject.Provider;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,20 +72,23 @@ public class GpxImporterTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testImportGpxs() {
         CacheListRefresh cacheListRefresh = PowerMock.createMock(CacheListRefresh.class);
+        Provider<CacheListRefresh> cacheListRefreshProvider = PowerMock.createMock(Provider.class);
         GpxLoader gpxLoader = PowerMock.createMock(GpxLoader.class);
         ImportThreadWrapper importThreadWrapper = PowerMock.createMock(ImportThreadWrapper.class);
         GeocacheListPresenter geocacheListPresenter = PowerMock
                 .createMock(GeocacheListPresenter.class);
 
+        expect(cacheListRefreshProvider.get()).andReturn(cacheListRefresh);
         geocacheListPresenter.onPause();
         importThreadWrapper.open(cacheListRefresh, gpxLoader, null, null, null);
         importThreadWrapper.start();
 
         PowerMock.replayAll();
         new GpxImporter(geocacheListPresenter, gpxLoader, null, importThreadWrapper, null, null,
-                null, null, null, null).importGpxs();
+                null, null, cacheListRefreshProvider, null).importGpxs();
         PowerMock.verifyAll();
     }
 }

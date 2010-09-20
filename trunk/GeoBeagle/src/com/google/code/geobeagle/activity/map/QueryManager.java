@@ -75,6 +75,7 @@ class QueryManager {
             mDbFrontend = dbFrontend;
         }
 
+        @Override
         public ArrayList<Geocache> load(int latMin, int lonMin, int latMax, int lonMax,
                 WhereFactoryFixedArea where, int[] newBounds) {
             Log.d("GeoBeagle", "LoaderImpl.load: " + latMin + ", " + lonMin + ", " + latMax + ", "
@@ -104,6 +105,7 @@ class QueryManager {
             mLoader = loaderImpl;
         }
 
+        @Override
         public ArrayList<Geocache> load(int latMin, int lonMin, int latMax, int lonMax,
                 WhereFactoryFixedArea where, int[] newBounds) {
             Log.d("GeoBeagle", "PeggedLoader.load: " + latMin + ", " + lonMin + ", " + latMax

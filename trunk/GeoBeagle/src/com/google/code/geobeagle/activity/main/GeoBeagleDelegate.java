@@ -97,16 +97,19 @@ public class GeoBeagleDelegate {
         private final ShakeListener shakeListener;
         private final RadarView radarView;
         private final SharedPreferences sharedPreferences;
+        private final CompassListener compassListener;
 
         @Inject
         GeoBeagleSensors(SensorManager sensorManager,
                 ShakeListener shakeListener,
                 RadarView radarView,
-                SharedPreferences sharedPreferences) {
+                SharedPreferences sharedPreferences,
+                CompassListener compassListener) {
             this.sensorManager = sensorManager;
             this.shakeListener = shakeListener;
             this.radarView = radarView;
             this.sharedPreferences = sharedPreferences;
+            this.compassListener = compassListener;
         }
 
         public void registerShakeListener() {
@@ -121,18 +124,20 @@ public class GeoBeagleDelegate {
             radarView.setUseImperial(sharedPreferences.getBoolean("imperial", false));
             sensorManager.registerListener(radarView, SensorManager.SENSOR_ORIENTATION,
                     SensorManager.SENSOR_DELAY_UI);
+            sensorManager.registerListener(compassListener, SensorManager.SENSOR_ORIENTATION,
+                    SensorManager.SENSOR_DELAY_UI);
         }
 
         public void unregisterSensors() {
             sensorManager.unregisterListener(radarView);
             sensorManager.unregisterListener(shakeListener);
+            sensorManager.unregisterListener(compassListener);
         }
     }
 
     static int ACTIVITY_REQUEST_TAKE_PICTURE = 1;
     private final ActivitySaver mActivitySaver;
     private final AppLifecycleManager mAppLifecycleManager;
-    private final CompassListener mCompassListener;
     private final Provider<DbFrontend> mDbFrontendProvider;
     private Geocache mGeocache;
     private final GeocacheFactory mGeocacheFactory;
@@ -141,7 +146,6 @@ public class GeoBeagleDelegate {
     private final IncomingIntentHandler mIncomingIntentHandler;
     private final GeoBeagleActivityMenuActions mMenuActions;
     private final GeoBeagle mParent;
-    private final SensorManager mSensorManager;
     private final CheckDetailsButton mCheckDetailsButton;
     private final GeoBeagleEnvironment mGeoBeagleEnvironment;
     private final WebPageMenuEnabler mWebPageMenuEnabler;
@@ -150,7 +154,6 @@ public class GeoBeagleDelegate {
 
     public GeoBeagleDelegate(ActivitySaver activitySaver,
             AppLifecycleManager appLifecycleManager,
-            CompassListener compassListener,
             Activity parent,
             GeocacheFactory geocacheFactory,
             GeocacheViewer geocacheViewer,
@@ -158,7 +161,6 @@ public class GeoBeagleDelegate {
             GeoBeagleActivityMenuActions menuActions,
             GeocacheFromParcelFactory geocacheFromParcelFactory,
             Provider<DbFrontend> dbFrontendProvider,
-            SensorManager sensorManager,
             CheckDetailsButton checkDetailsButton,
             WebPageMenuEnabler webPageMenuEnabler,
             GeoBeagleEnvironment geoBeagleEnvironment,
@@ -168,8 +170,6 @@ public class GeoBeagleDelegate {
         mActivitySaver = activitySaver;
         mAppLifecycleManager = appLifecycleManager;
         mMenuActions = menuActions;
-        mCompassListener = compassListener;
-        mSensorManager = sensorManager;
         mGeocacheViewer = geocacheViewer;
         mGeocacheFactory = geocacheFactory;
         mIncomingIntentHandler = incomingIntentHandler;
@@ -188,8 +188,6 @@ public class GeoBeagleDelegate {
         mActivitySaver = injector.getInstance(ActivitySaver.class);
         mAppLifecycleManager = injector.getInstance(AppLifecycleManager.class);
         mMenuActions = injector.getInstance(GeoBeagleActivityMenuActions.class);
-        mCompassListener = injector.getInstance(CompassListener.class);
-        mSensorManager = injector.getInstance(SensorManager.class);
         mGeocacheViewer = injector.getInstance(GeocacheViewer.class);
         mGeocacheFactory = injector.getInstance(GeocacheFactory.class);
         mIncomingIntentHandler = injector.getInstance(IncomingIntentHandler.class);
@@ -236,7 +234,6 @@ public class GeoBeagleDelegate {
         mAppLifecycleManager.onPause();
         mGeoBeagleSensors.unregisterSensors();
         mActivitySaver.save(ActivityType.VIEW_CACHE, mGeocache);
-        mSensorManager.unregisterListener(mCompassListener);
         mDbFrontendProvider.get().closeDatabase();
     }
 
@@ -249,8 +246,6 @@ public class GeoBeagleDelegate {
 
     public void onResume() {
         mAppLifecycleManager.onResume();
-        mSensorManager.registerListener(mCompassListener, SensorManager.SENSOR_ORIENTATION,
-                SensorManager.SENSOR_DELAY_UI);
         mGeoBeagleSensors.registerShakeListener();
         mGeoBeagleSensors.registerSensors();
         mGeocache = mIncomingIntentHandler.maybeGetGeocacheFromIntent(mParent.getIntent(),

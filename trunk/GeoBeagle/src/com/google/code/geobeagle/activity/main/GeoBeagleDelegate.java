@@ -35,9 +35,14 @@ import com.google.inject.Provider;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -46,8 +51,47 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.io.File;
+import java.util.List;
 
 public class GeoBeagleDelegate {
+    static class ForceThresholdStrategy {
+        public boolean exceedsThreshold(float[] values) {
+            double totalForce = 0.0f;
+            totalForce += Math.pow(values[SensorManager.DATA_X] / SensorManager.GRAVITY_EARTH, 2.0);
+            totalForce += Math.pow(values[SensorManager.DATA_Y] / SensorManager.GRAVITY_EARTH, 2.0);
+            totalForce += Math.pow(values[SensorManager.DATA_Z] / SensorManager.GRAVITY_EARTH, 2.0);
+            totalForce = Math.sqrt(totalForce);
+            double abs = Math.abs(1.0 - totalForce);
+            return abs > 0.1;
+        }
+    }
+
+    static class ShakeListener implements SensorEventListener {
+        private final PowerManager pm;
+        private final ForceThresholdStrategy forceThresholdStrategy;
+
+        @Inject
+        ShakeListener(PowerManager pm, ForceThresholdStrategy forceThresholdStrategy) {
+            this.pm = pm;
+            this.forceThresholdStrategy = forceThresholdStrategy;
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if (forceThresholdStrategy.exceedsThreshold(event.values)) {
+                WakeLock wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
+                        | PowerManager.ON_AFTER_RELEASE, "accel");
+                wakeLock.acquire(5000);
+                Log.d("GeoBeagle", "shaked; wakelocking: " + event.values[0] + ", "
+                        + event.values[1] + ", " + event.values[2]);
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    }
+
     static int ACTIVITY_REQUEST_TAKE_PICTURE = 1;
     private final ActivitySaver mActivitySaver;
     private final AppLifecycleManager mAppLifecycleManager;
@@ -67,6 +111,7 @@ public class GeoBeagleDelegate {
     private final GeoBeagleEnvironment mGeoBeagleEnvironment;
     private final WebPageMenuEnabler mWebPageMenuEnabler;
     private final LocationSaver mLocationSaver;
+    private final ShakeListener mShakeListener;
 
     public GeoBeagleDelegate(ActivitySaver activitySaver,
             AppLifecycleManager appLifecycleManager,
@@ -84,7 +129,8 @@ public class GeoBeagleDelegate {
             CheckDetailsButton checkDetailsButton,
             WebPageMenuEnabler webPageMenuEnabler,
             GeoBeagleEnvironment geoBeagleEnvironment,
-            LocationSaver locationSaver) {
+            LocationSaver locationSaver,
+            ShakeListener shakeListener) {
         mParent = (GeoBeagle)parent;
         mActivitySaver = activitySaver;
         mAppLifecycleManager = appLifecycleManager;
@@ -102,6 +148,7 @@ public class GeoBeagleDelegate {
         mCheckDetailsButton = checkDetailsButton;
         mWebPageMenuEnabler = webPageMenuEnabler;
         mLocationSaver = locationSaver;
+        mShakeListener = shakeListener;
     }
 
     @Inject
@@ -123,6 +170,7 @@ public class GeoBeagleDelegate {
         mCheckDetailsButton = injector.getInstance(CheckDetailsButton.class);
         mWebPageMenuEnabler = injector.getInstance(WebPageMenuEnabler.class);
         mLocationSaver = injector.getInstance(LocationSaver.class);
+        mShakeListener = injector.getInstance(ShakeListener.class);
     }
 
     public Geocache getGeocache() {
@@ -178,6 +226,9 @@ public class GeoBeagleDelegate {
         mSensorManager.registerListener(mRadarView, SensorManager.SENSOR_ORIENTATION,
                 SensorManager.SENSOR_DELAY_UI);
         mSensorManager.registerListener(mCompassListener, SensorManager.SENSOR_ORIENTATION,
+                SensorManager.SENSOR_DELAY_UI);
+        List<Sensor> sensorList = mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
+        mSensorManager.registerListener(mShakeListener, sensorList.get(0),
                 SensorManager.SENSOR_DELAY_UI);
         mGeocache = mIncomingIntentHandler.maybeGetGeocacheFromIntent(mParent.getIntent(),
                 mGeocache, mLocationSaver);

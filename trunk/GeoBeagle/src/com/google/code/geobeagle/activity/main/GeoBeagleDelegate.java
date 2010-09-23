@@ -96,6 +96,7 @@ public class GeoBeagleDelegate {
         private final SensorManager sensorManager;
         private final ShakeListener shakeListener;
 
+        @Inject
         GeoBeagleSensors(SensorManager sensorManager, ShakeListener shakeListener) {
             this.sensorManager = sensorManager;
             this.shakeListener = shakeListener;

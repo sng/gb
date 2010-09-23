@@ -103,8 +103,9 @@ public class GeoBeagleDelegate {
 
         public void registerSensors() {
             List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
-            sensorManager.registerListener(shakeListener, sensorList.get(0),
-                    SensorManager.SENSOR_DELAY_UI);
+            if (sensorList.size() > 0)
+                sensorManager.registerListener(shakeListener, sensorList.get(0),
+                        SensorManager.SENSOR_DELAY_UI);
         }
 
         public void unregisterSensors() {

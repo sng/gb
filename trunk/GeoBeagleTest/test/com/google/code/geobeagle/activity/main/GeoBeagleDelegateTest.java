@@ -106,6 +106,18 @@ public class GeoBeagleDelegateTest extends GeoBeagleTest {
     }
 
     @Test
+    public void testGeoBeagleSensorsRegisterNoAccelerometer() {
+        List<Sensor> sensorList = new ArrayList<Sensor>();
+
+        EasyMock.expect(sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER)).andReturn(
+                sensorList);
+        PowerMock.replayAll();
+
+        new GeoBeagleSensors(sensorManager, shakeListener).registerSensors();
+        PowerMock.verifyAll();
+    }
+
+    @Test
     public void testGeoBeagleSensorsUnregister() {
         sensorManager.unregisterListener(shakeListener);
         PowerMock.replayAll();

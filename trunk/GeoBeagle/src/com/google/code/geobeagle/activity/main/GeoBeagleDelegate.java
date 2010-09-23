@@ -92,31 +92,57 @@ public class GeoBeagleDelegate {
         }
     }
 
-    static class GeoBeagleSensors {
+    static class ShakeWaker {
+
+        static final String SHAKE_WAKE = "shake-wake";
+        private final SharedPreferences sharedPreferences;
         private final SensorManager sensorManager;
         private final ShakeListener shakeListener;
+
+        @Inject
+        ShakeWaker(SharedPreferences sharedPreferences,
+                SensorManager sensorManager,
+                ShakeListener shakeListener) {
+            this.sharedPreferences = sharedPreferences;
+            this.sensorManager = sensorManager;
+            this.shakeListener = shakeListener;
+        }
+
+        public void register() {
+            boolean shakeWake = sharedPreferences.getBoolean(SHAKE_WAKE, false);
+            if (!shakeWake)
+                return;
+            List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
+            if (sensorList.size() <= 0)
+                return;
+                sensorManager.registerListener(shakeListener, sensorList.get(0),
+                        SensorManager.SENSOR_DELAY_UI);
+        }
+
+        void unregister() {
+            sensorManager.unregisterListener(shakeListener);
+        }
+
+    }
+
+    static class GeoBeagleSensors {
+        private final SensorManager sensorManager;
         private final RadarView radarView;
         private final SharedPreferences sharedPreferences;
         private final CompassListener compassListener;
+        private final ShakeWaker shakeWaker;
 
         @Inject
         GeoBeagleSensors(SensorManager sensorManager,
-                ShakeListener shakeListener,
                 RadarView radarView,
                 SharedPreferences sharedPreferences,
-                CompassListener compassListener) {
+                CompassListener compassListener,
+                ShakeWaker shakeWaker) {
             this.sensorManager = sensorManager;
-            this.shakeListener = shakeListener;
             this.radarView = radarView;
             this.sharedPreferences = sharedPreferences;
             this.compassListener = compassListener;
-        }
-
-        public void registerShakeListener() {
-            List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
-            if (sensorList.size() > 0)
-                sensorManager.registerListener(shakeListener, sensorList.get(0),
-                        SensorManager.SENSOR_DELAY_UI);
+            this.shakeWaker = shakeWaker;
         }
 
         public void registerSensors() {
@@ -126,12 +152,14 @@ public class GeoBeagleDelegate {
                     SensorManager.SENSOR_DELAY_UI);
             sensorManager.registerListener(compassListener, SensorManager.SENSOR_ORIENTATION,
                     SensorManager.SENSOR_DELAY_UI);
+            shakeWaker.register();
+
         }
 
         public void unregisterSensors() {
             sensorManager.unregisterListener(radarView);
-            sensorManager.unregisterListener(shakeListener);
             sensorManager.unregisterListener(compassListener);
+            shakeWaker.unregister();
         }
     }
 
@@ -246,7 +274,6 @@ public class GeoBeagleDelegate {
 
     public void onResume() {
         mAppLifecycleManager.onResume();
-        mGeoBeagleSensors.registerShakeListener();
         mGeoBeagleSensors.registerSensors();
         mGeocache = mIncomingIntentHandler.maybeGetGeocacheFromIntent(mParent.getIntent(),
                 mGeocache, mLocationSaver);

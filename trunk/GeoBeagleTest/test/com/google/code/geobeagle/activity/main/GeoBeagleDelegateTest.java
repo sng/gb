@@ -28,6 +28,7 @@ import com.google.code.geobeagle.activity.ActivitySaver;
 import com.google.code.geobeagle.activity.ActivityType;
 import com.google.code.geobeagle.activity.cachelist.GeoBeagleTest;
 import com.google.code.geobeagle.activity.cachelist.GeocacheListController;
+import com.google.code.geobeagle.activity.main.GeoBeagleDelegate.GeoBeagleSensors;
 import com.google.code.geobeagle.activity.main.GeoBeagleDelegate.ShakeListener;
 import com.google.code.geobeagle.activity.main.fieldnotes.FieldnoteLogger;
 import com.google.code.geobeagle.activity.main.fieldnotes.FieldnoteStringsFVsDnf;
@@ -41,6 +42,7 @@ import com.google.code.geobeagle.xmlimport.GeoBeagleEnvironment;
 import com.google.inject.Provider;
 
 import org.easymock.EasyMock;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -75,6 +77,43 @@ import java.util.List;
 @RunWith(PowerMockRunner.class)
 public class GeoBeagleDelegateTest extends GeoBeagleTest {
 
+    private GeoBeagleSensors geoBeagleSensors;
+    private SensorManager sensorManager;
+    private ShakeListener shakeListener;
+
+    @Before
+    public void setUp() {
+        geoBeagleSensors = PowerMock.createMock(GeoBeagleSensors.class);
+        sensorManager = PowerMock.createMock(SensorManager.class);
+        shakeListener = PowerMock.createMock(ShakeListener.class);
+    }
+
+    @Test
+    public void testGeoBeagleSensorsRegister() {
+        Sensor accelerometer = PowerMock.createMock(Sensor.class);
+        List<Sensor> sensorList = new ArrayList<Sensor>();
+
+        sensorList.add(accelerometer);
+        EasyMock.expect(sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER)).andReturn(
+                sensorList);
+        EasyMock.expect(
+                sensorManager.registerListener(shakeListener, accelerometer,
+                        SensorManager.SENSOR_DELAY_UI)).andReturn(true);
+        PowerMock.replayAll();
+
+        new GeoBeagleSensors(sensorManager, shakeListener).registerSensors();
+        PowerMock.verifyAll();
+    }
+
+    @Test
+    public void testGeoBeagleSensorsUnregister() {
+        sensorManager.unregisterListener(shakeListener);
+        PowerMock.replayAll();
+
+        new GeoBeagleSensors(sensorManager, shakeListener).unregisterSensors();
+        PowerMock.verifyAll();
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void onResume() throws Exception {
@@ -94,20 +133,12 @@ public class GeoBeagleDelegateTest extends GeoBeagleTest {
         PowerMock.mockStatic(DatabaseDI.class);
         Provider<DbFrontend> dbFrontEndProvider = PowerMock.createMock(Provider.class);
         CheckDetailsButton checkDetailsButton = PowerMock.createMock(CheckDetailsButton.class);
-        ShakeListener shakeListener = PowerMock.createMock(ShakeListener.class);
-        List<Sensor> sensorList = new ArrayList<Sensor>();
-        Sensor accelerometer = PowerMock.createMock(Sensor.class);
 
         radarView.handleUnknownLocation();
         EasyMock.expect(sharedPreferences.getBoolean("imperial", false)).andReturn(true);
         radarView.setUseImperial(true);
         EasyMock.expect(
                 sensorManager.registerListener(radarView, SensorManager.SENSOR_ORIENTATION,
-                        SensorManager.SENSOR_DELAY_UI)).andReturn(true);
-        sensorList.add(accelerometer);
-        EasyMock.expect(sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER)).andReturn(
-                sensorList);
-        EasyMock.expect(sensorManager.registerListener(shakeListener, accelerometer,
                         SensorManager.SENSOR_DELAY_UI)).andReturn(true);
         EasyMock.expect(
                 sensorManager.registerListener(compassListener, SensorManager.SENSOR_ORIENTATION,
@@ -119,12 +150,13 @@ public class GeoBeagleDelegateTest extends GeoBeagleTest {
                 .andReturn(geocache);
         geocacheViewer.set(geocache);
         checkDetailsButton.check(geocache);
-
+        geoBeagleSensors.registerSensors();
         PowerMock.replayAll();
+
         GeoBeagleDelegate geoBeagleDelegate = new GeoBeagleDelegate(null, appLifecycleManager,
                 compassListener, geobeagle, null, geocacheViewer, incomingIntentHandler, null,
                 null, dbFrontEndProvider, radarView, sensorManager, sharedPreferences,
-                checkDetailsButton, webPageButtonEnabler, null, locationSaver, shakeListener);
+                checkDetailsButton, webPageButtonEnabler, null, locationSaver, geoBeagleSensors);
         geoBeagleDelegate.setGeocache(geocache);
         geoBeagleDelegate.onResume();
         PowerMock.verifyAll();
@@ -278,6 +310,7 @@ public class GeoBeagleDelegateTest extends GeoBeagleTest {
         DbFrontend dbFrontend = PowerMock.createMock(DbFrontend.class);
         Provider<DbFrontend> dbFrontEndProvider = PowerMock.createMock(Provider.class);
 
+        geoBeagleSensors.unregisterSensors();
         appLifecycleManager.onPause();
         activitySaver.save(ActivityType.VIEW_CACHE, geocache);
         sensorManager.unregisterListener(radarView);
@@ -288,7 +321,8 @@ public class GeoBeagleDelegateTest extends GeoBeagleTest {
         PowerMock.replayAll();
         final GeoBeagleDelegate geoBeagleDelegate = new GeoBeagleDelegate(activitySaver,
                 appLifecycleManager, compassListener, null, null, null, null, null, null,
-                dbFrontEndProvider, radarView, sensorManager, null, null, null, null, null, null);
+                dbFrontEndProvider, radarView, sensorManager, null, null, null, null, null,
+                geoBeagleSensors);
         geoBeagleDelegate.setGeocache(geocache);
         geoBeagleDelegate.onPause();
         PowerMock.verifyAll();

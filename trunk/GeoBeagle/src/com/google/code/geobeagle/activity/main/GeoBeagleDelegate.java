@@ -92,6 +92,26 @@ public class GeoBeagleDelegate {
         }
     }
 
+    static class GeoBeagleSensors {
+        private final SensorManager sensorManager;
+        private final ShakeListener shakeListener;
+
+        GeoBeagleSensors(SensorManager sensorManager, ShakeListener shakeListener) {
+            this.sensorManager = sensorManager;
+            this.shakeListener = shakeListener;
+        }
+
+        public void registerSensors() {
+            List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
+            sensorManager.registerListener(shakeListener, sensorList.get(0),
+                    SensorManager.SENSOR_DELAY_UI);
+        }
+
+        public void unregisterSensors() {
+            sensorManager.unregisterListener(shakeListener);
+        }
+    }
+
     static int ACTIVITY_REQUEST_TAKE_PICTURE = 1;
     private final ActivitySaver mActivitySaver;
     private final AppLifecycleManager mAppLifecycleManager;
@@ -111,7 +131,7 @@ public class GeoBeagleDelegate {
     private final GeoBeagleEnvironment mGeoBeagleEnvironment;
     private final WebPageMenuEnabler mWebPageMenuEnabler;
     private final LocationSaver mLocationSaver;
-    private final ShakeListener mShakeListener;
+    private final GeoBeagleSensors mGeoBeagleSensors;
 
     public GeoBeagleDelegate(ActivitySaver activitySaver,
             AppLifecycleManager appLifecycleManager,
@@ -130,7 +150,7 @@ public class GeoBeagleDelegate {
             WebPageMenuEnabler webPageMenuEnabler,
             GeoBeagleEnvironment geoBeagleEnvironment,
             LocationSaver locationSaver,
-            ShakeListener shakeListener) {
+            GeoBeagleSensors geoBeagleSensors) {
         mParent = (GeoBeagle)parent;
         mActivitySaver = activitySaver;
         mAppLifecycleManager = appLifecycleManager;
@@ -148,7 +168,7 @@ public class GeoBeagleDelegate {
         mCheckDetailsButton = checkDetailsButton;
         mWebPageMenuEnabler = webPageMenuEnabler;
         mLocationSaver = locationSaver;
-        mShakeListener = shakeListener;
+        mGeoBeagleSensors = geoBeagleSensors;
     }
 
     @Inject
@@ -170,7 +190,7 @@ public class GeoBeagleDelegate {
         mCheckDetailsButton = injector.getInstance(CheckDetailsButton.class);
         mWebPageMenuEnabler = injector.getInstance(WebPageMenuEnabler.class);
         mLocationSaver = injector.getInstance(LocationSaver.class);
-        mShakeListener = injector.getInstance(ShakeListener.class);
+        mGeoBeagleSensors = injector.getInstance(GeoBeagleSensors.class);
     }
 
     public Geocache getGeocache() {
@@ -205,6 +225,7 @@ public class GeoBeagleDelegate {
 
     public void onPause() {
         mAppLifecycleManager.onPause();
+        mGeoBeagleSensors.unregisterSensors();
         mActivitySaver.save(ActivityType.VIEW_CACHE, mGeocache);
         mSensorManager.unregisterListener(mRadarView);
         mSensorManager.unregisterListener(mCompassListener);
@@ -227,9 +248,7 @@ public class GeoBeagleDelegate {
                 SensorManager.SENSOR_DELAY_UI);
         mSensorManager.registerListener(mCompassListener, SensorManager.SENSOR_ORIENTATION,
                 SensorManager.SENSOR_DELAY_UI);
-        List<Sensor> sensorList = mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
-        mSensorManager.registerListener(mShakeListener, sensorList.get(0),
-                SensorManager.SENSOR_DELAY_UI);
+        mGeoBeagleSensors.registerSensors();
         mGeocache = mIncomingIntentHandler.maybeGetGeocacheFromIntent(mParent.getIntent(),
                 mGeocache, mLocationSaver);
 

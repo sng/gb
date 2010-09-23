@@ -27,6 +27,7 @@ import com.google.code.geobeagle.activity.main.view.GeocacheViewer;
 import com.google.code.geobeagle.activity.main.view.WebPageMenuEnabler;
 import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.database.LocationSaver;
+import com.google.code.geobeagle.shakewaker.ShakeWaker;
 import com.google.code.geobeagle.xmlimport.GeoBeagleEnvironment;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -35,14 +36,9 @@ import com.google.inject.Provider;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -51,80 +47,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.io.File;
-import java.util.List;
 
 public class GeoBeagleDelegate {
-    static class ForceThresholdStrategy {
-        public boolean exceedsThreshold(float[] values) {
-            double totalForce = 0.0f;
-            totalForce += Math.pow(values[SensorManager.DATA_X] / SensorManager.GRAVITY_EARTH, 2.0);
-            totalForce += Math.pow(values[SensorManager.DATA_Y] / SensorManager.GRAVITY_EARTH, 2.0);
-            totalForce += Math.pow(values[SensorManager.DATA_Z] / SensorManager.GRAVITY_EARTH, 2.0);
-            totalForce = Math.sqrt(totalForce);
-            double abs = Math.abs(1.0 - totalForce);
-            return abs > 0.1;
-        }
-    }
-
-    static class ShakeListener implements SensorEventListener {
-        private final PowerManager pm;
-        private final ForceThresholdStrategy forceThresholdStrategy;
-
-        @Inject
-        ShakeListener(PowerManager pm, ForceThresholdStrategy forceThresholdStrategy) {
-            this.pm = pm;
-            this.forceThresholdStrategy = forceThresholdStrategy;
-        }
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            if (forceThresholdStrategy.exceedsThreshold(event.values)) {
-                WakeLock wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
-                        | PowerManager.ON_AFTER_RELEASE, "accel");
-                wakeLock.acquire(5000);
-                Log.d("GeoBeagle", "shaked; wakelocking: " + event.values[0] + ", "
-                        + event.values[1] + ", " + event.values[2]);
-            }
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-    }
-
-    static class ShakeWaker {
-
-        static final String SHAKE_WAKE = "shake-wake";
-        private final SharedPreferences sharedPreferences;
-        private final SensorManager sensorManager;
-        private final ShakeListener shakeListener;
-
-        @Inject
-        ShakeWaker(SharedPreferences sharedPreferences,
-                SensorManager sensorManager,
-                ShakeListener shakeListener) {
-            this.sharedPreferences = sharedPreferences;
-            this.sensorManager = sensorManager;
-            this.shakeListener = shakeListener;
-        }
-
-        public void register() {
-            boolean shakeWake = sharedPreferences.getBoolean(SHAKE_WAKE, false);
-            if (!shakeWake)
-                return;
-            List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
-            if (sensorList.size() <= 0)
-                return;
-                sensorManager.registerListener(shakeListener, sensorList.get(0),
-                        SensorManager.SENSOR_DELAY_UI);
-        }
-
-        void unregister() {
-            sensorManager.unregisterListener(shakeListener);
-        }
-
-    }
-
     static class GeoBeagleSensors {
         private final SensorManager sensorManager;
         private final RadarView radarView;

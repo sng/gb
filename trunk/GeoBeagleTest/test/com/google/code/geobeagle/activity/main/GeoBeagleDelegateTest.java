@@ -29,8 +29,6 @@ import com.google.code.geobeagle.activity.ActivityType;
 import com.google.code.geobeagle.activity.cachelist.GeoBeagleTest;
 import com.google.code.geobeagle.activity.cachelist.GeocacheListController;
 import com.google.code.geobeagle.activity.main.GeoBeagleDelegate.GeoBeagleSensors;
-import com.google.code.geobeagle.activity.main.GeoBeagleDelegate.ShakeListener;
-import com.google.code.geobeagle.activity.main.GeoBeagleDelegate.ShakeWaker;
 import com.google.code.geobeagle.activity.main.fieldnotes.FieldnoteLogger;
 import com.google.code.geobeagle.activity.main.fieldnotes.FieldnoteStringsFVsDnf;
 import com.google.code.geobeagle.activity.main.view.CheckDetailsButton;
@@ -39,6 +37,7 @@ import com.google.code.geobeagle.activity.main.view.WebPageMenuEnabler;
 import com.google.code.geobeagle.database.DatabaseDI;
 import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.database.LocationSaver;
+import com.google.code.geobeagle.shakewaker.ShakeWaker;
 import com.google.code.geobeagle.xmlimport.GeoBeagleEnvironment;
 import com.google.inject.Provider;
 
@@ -53,7 +52,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.net.UrlQuerySanitizer;
@@ -66,8 +64,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 @PrepareForTest( {
         KeyEvent.class, DateFormat.class, Intent.class, Bundle.class,
@@ -80,7 +76,6 @@ public class GeoBeagleDelegateTest extends GeoBeagleTest {
 
     private GeoBeagleSensors geoBeagleSensors;
     private SensorManager sensorManager;
-    private ShakeListener shakeListener;
     private RadarView radarView;
     private SharedPreferences sharedPreferences;
     private CompassListener compassListener;
@@ -91,7 +86,6 @@ public class GeoBeagleDelegateTest extends GeoBeagleTest {
     public void setUp() {
         geoBeagleSensors = PowerMock.createMock(GeoBeagleSensors.class);
         sensorManager = PowerMock.createMock(SensorManager.class);
-        shakeListener = PowerMock.createMock(ShakeListener.class);
         radarView = PowerMock.createMock(RadarView.class);
         sharedPreferences = PowerMock.createMock(SharedPreferences.class);
         compassListener = PowerMock.createMock(CompassListener.class);
@@ -99,59 +93,6 @@ public class GeoBeagleDelegateTest extends GeoBeagleTest {
         shakeWaker = PowerMock.createMock(ShakeWaker.class);
     }
 
-    @Test
-    public void testShakeWakerRegister() {
-        Sensor accelerometer = PowerMock.createMock(Sensor.class);
-        List<Sensor> sensorList = new ArrayList<Sensor>();
-
-        sensorList.add(accelerometer);
-        EasyMock.expect(sharedPreferences.getBoolean(ShakeWaker.SHAKE_WAKE, false)).andReturn(true);
-        EasyMock.expect(sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER)).andReturn(
-                sensorList);
-        EasyMock.expect(
-                sensorManager.registerListener(shakeListener, accelerometer,
-                        SensorManager.SENSOR_DELAY_UI)).andReturn(true);
-        PowerMock.replayAll();
-
-        new ShakeWaker(sharedPreferences, sensorManager, shakeListener).register();
-        PowerMock.verifyAll();
-    }
-
-    @Test
-    public void testShakeWakerRegisterNoPreferenceSet() {
-        Sensor accelerometer = PowerMock.createMock(Sensor.class);
-        List<Sensor> sensorList = new ArrayList<Sensor>();
-
-        sensorList.add(accelerometer);
-        EasyMock.expect(sharedPreferences.getBoolean(ShakeWaker.SHAKE_WAKE, false))
-                .andReturn(false);
-        PowerMock.replayAll();
-
-        new ShakeWaker(sharedPreferences, sensorManager, shakeListener).register();
-        PowerMock.verifyAll();
-    }
-
-    @Test
-    public void testShakeWakerUnregister() {
-        sensorManager.unregisterListener(shakeListener);
-        PowerMock.replayAll();
-
-        new ShakeWaker(null, sensorManager, shakeListener).unregister();
-        PowerMock.verifyAll();
-    }
-
-    @Test
-    public void testShakeWakerRegisterNoAccelerometer() {
-        List<Sensor> sensorList = new ArrayList<Sensor>();
-
-        EasyMock.expect(sharedPreferences.getBoolean(ShakeWaker.SHAKE_WAKE, false)).andReturn(true);
-        EasyMock.expect(sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER)).andReturn(
-                sensorList);
-        PowerMock.replayAll();
-
-        new ShakeWaker(sharedPreferences, sensorManager, shakeListener).register();
-        PowerMock.verifyAll();
-    }
 
     @Test
     public void testGeoBeagleSensorsRegisterSensors() {

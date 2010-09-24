@@ -15,7 +15,7 @@
 package com.google.code.geobeagle.cachedetails;
 
 import com.google.code.geobeagle.R;
-import com.google.inject.Inject;
+import com.google.code.geobeagle.shakewaker.ShakeWaker;
 
 import roboguice.activity.GuiceActivity;
 
@@ -24,8 +24,8 @@ import android.webkit.WebView;
 
 public class DetailsActivity extends GuiceActivity {
 
-    @Inject
     private DetailsWebView detailsWebView;
+    private ShakeWaker shakeWaker;
     public static final String INTENT_EXTRA_GEOCACHE_SOURCE = "geocache_source";
     public static final String INTENT_EXTRA_GEOCACHE_ID = "geocache_id";
     public static final String INTENT_EXTRA_GEOCACHE_NAME = "geocache_name";
@@ -34,8 +34,22 @@ public class DetailsActivity extends GuiceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details);
-
+        shakeWaker = getInjector().getInstance(ShakeWaker.class);
         setTitle(detailsWebView.loadDetails((WebView)findViewById(R.id.cache_details), getIntent()));
+    }
+
+    public DetailsActivity(ShakeWaker shakeWaker) {
+        this.shakeWaker = shakeWaker;
+    }
+
+    @Override
+    public void onPause() {
+        shakeWaker.unregister();
+    }
+
+    @Override
+    public void onResume() {
+        shakeWaker.register();
     }
 
 }

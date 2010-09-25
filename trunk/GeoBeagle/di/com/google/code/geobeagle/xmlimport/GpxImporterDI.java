@@ -335,11 +335,9 @@ public class GpxImporterDI {
             MessageHandlerInterface messageHandler, CachePersisterFacadeFactory cachePersisterFacadeFactory,
             CacheWriter cacheWriter,
             GpxWriter gpxWriter,
-            Provider<Context> contextProvider,
-            GeoBeagleEnvironment geoBeagleEnvironment,
-            XmlWriter xmlWriter,
-            Provider<CacheListRefresh> cacheListRefreshProvider, Injector injector) {
-        final PowerManager powerManager = (PowerManager)contextProvider.get()
+            Injector injector) {
+        Context context = injector.getInstance(Context.class);
+        final PowerManager powerManager = (PowerManager)context
                 .getSystemService(Context.POWER_SERVICE);
         final WakeLock wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
                 "Importing");
@@ -360,7 +358,9 @@ public class GpxImporterDI {
         final EventHandlerComposite eventHandlerComposite = new EventHandlerComposite(Arrays
                 .asList(xmlWriter, eventHandlerGpx));
 
-        return new GpxImporter(geocacheListPresenter, gpxLoader, context, importThreadWrapper,
+        return new GpxImporter(geocacheListPresenter, gpxLoader,
+                injector.getProvider(Context.class),
+                importThreadWrapper,
                 messageHandler, toastFactory, eventHandlerComposite, errorDisplayer,
                 injector.getProvider(CacheListRefresh.class), injector);
     }

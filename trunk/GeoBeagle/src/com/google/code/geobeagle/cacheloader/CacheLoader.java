@@ -18,7 +18,7 @@ import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.cachedetails.FilePathStrategy;
 import com.google.code.geobeagle.cachedetails.StringWriterWrapper;
 import com.google.code.geobeagle.cachedetails.reader.DetailsReader;
-import com.google.code.geobeagle.xmlimport.ICachePersisterFacade;
+import com.google.code.geobeagle.xmlimport.CachePersisterFacade;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class CacheLoader {
 
     public CacheLoader(FilePathStrategy filePathStrategy,
             DetailsOpener detailsOpener,
-            ICachePersisterFacade cacheTagsReader,
+            CachePersisterFacade cacheTagsReader,
             StringWriterWrapper stringWriterWrapper) {
         this.filePathStrategy = filePathStrategy;
         this.detailsOpener = detailsOpener;
@@ -39,7 +39,7 @@ public class CacheLoader {
 
     private final FilePathStrategy filePathStrategy;
     private final DetailsOpener detailsOpener;
-    private final ICachePersisterFacade cacheTagsReader;
+    private final CachePersisterFacade cacheTagsReader;
 
     public String load(CharSequence sourceName, CharSequence cacheId) throws CacheLoaderException {
         try {

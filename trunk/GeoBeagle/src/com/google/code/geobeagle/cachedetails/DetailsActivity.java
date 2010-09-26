@@ -16,6 +16,7 @@ package com.google.code.geobeagle.cachedetails;
 
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.shakewaker.ShakeWaker;
+import com.google.inject.Injector;
 
 import roboguice.activity.GuiceActivity;
 
@@ -34,21 +35,21 @@ public class DetailsActivity extends GuiceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details);
-        shakeWaker = getInjector().getInstance(ShakeWaker.class);
+        Injector injector = getInjector();
+        shakeWaker = injector.getInstance(ShakeWaker.class);
+        detailsWebView = injector.getInstance(DetailsWebView.class);
         setTitle(detailsWebView.loadDetails((WebView)findViewById(R.id.cache_details), getIntent()));
-    }
-
-    public DetailsActivity(ShakeWaker shakeWaker) {
-        this.shakeWaker = shakeWaker;
     }
 
     @Override
     public void onPause() {
+        super.onPause();
         shakeWaker.unregister();
     }
 
     @Override
     public void onResume() {
+        super.onResume();
         shakeWaker.register();
     }
 

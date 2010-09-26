@@ -81,4 +81,6 @@ public interface ICachePersisterFacade {
     public void wptTime(String trimmedText) throws IOException;
 
     public void logFinder(String text);
+
+    public void url(String text);
 }

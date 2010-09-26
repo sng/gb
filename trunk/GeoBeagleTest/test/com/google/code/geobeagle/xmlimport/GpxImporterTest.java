@@ -23,7 +23,6 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -59,14 +58,15 @@ public class GpxImporterTest {
         ImportThreadWrapper importThreadWrapper = PowerMock.createMock(ImportThreadWrapper.class);
         MessageHandlerInterface messageHandler = PowerMock.createMock(MessageHandler.class);
         ToastFactory toastFactory = PowerMock.createMock(ToastFactory.class);
-        ListActivity listActivity = PowerMock.createMock(ListActivity.class);
         Provider<Context> contextProvider = PowerMock.createMock(Provider.class);
+        Context context = PowerMock.createMock(Context.class);
 
         gpxLoader.abort();
         expect(importThreadWrapper.isAlive()).andReturn(true);
         messageHandler.abortLoad();
         importThreadWrapper.join();
-        toastFactory.showToast(listActivity, R.string.import_canceled, Toast.LENGTH_SHORT);
+        expect(contextProvider.get()).andReturn(context);
+        toastFactory.showToast(context, R.string.import_canceled, Toast.LENGTH_SHORT);
 
         PowerMock.replayAll();
         new GpxImporter(null, gpxLoader, contextProvider, importThreadWrapper, messageHandler,

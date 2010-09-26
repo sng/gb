@@ -12,9 +12,11 @@
  ** limitations under the License.
  */
 
-package com.google.code.geobeagle.cachedetails;
+package com.google.code.geobeagle.cacheloader;
 
 import com.google.code.geobeagle.R;
+import com.google.code.geobeagle.cachedetails.FileDataVersionChecker;
+import com.google.code.geobeagle.cachedetails.StringWriterWrapper;
 import com.google.code.geobeagle.cachedetails.reader.DetailsReader;
 import com.google.code.geobeagle.cachedetails.reader.DetailsReaderError;
 import com.google.code.geobeagle.cachedetails.reader.DetailsReaderImpl;
@@ -55,7 +57,7 @@ public class DetailsOpener {
         this.stringWriterWrapper = stringWriterWrapper;
     }
 
-    DetailsReader open(File file) {
+    public DetailsReader open(File file) {
         String state = Environment.getExternalStorageState();
         if (!Environment.MEDIA_MOUNTED.equals(state)) {
             return new DetailsReaderError(activity, R.string.error_cant_read_sdroot, state);

@@ -12,7 +12,7 @@
  ** limitations under the License.
  */
 
-package com.google.code.geobeagle.cachedetails;
+package com.google.code.geobeagle.cacheloader;
 
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
@@ -24,6 +24,9 @@ import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import com.google.code.geobeagle.R;
+import com.google.code.geobeagle.cachedetails.FileDataVersionChecker;
+import com.google.code.geobeagle.cachedetails.FilePathStrategy;
+import com.google.code.geobeagle.cachedetails.StringWriterWrapper;
 import com.google.code.geobeagle.cachedetails.reader.DetailsReader;
 import com.google.code.geobeagle.cachedetails.reader.DetailsReaderError;
 import com.google.code.geobeagle.cachedetails.reader.DetailsReaderImpl;
@@ -185,10 +188,10 @@ public class CacheDetailsLoaderTest {
         expectNew(File.class, "/sdcard/details/foo.gpx/GC123.html").andReturn(file);
         expect(detailsOpener.open(file)).andReturn(detailsReader);
         expect(detailsReader.read(cacheTagsToDetails)).andReturn("cache details");
-
+        stringWriterWrapper.open(null);
         replayAll();
         assertEquals("cache details", new CacheDetailsLoader(detailsOpener, filePathStrategy,
-                cacheTagsToDetails).load("foo.gpx", "GC123"));
+                cacheTagsToDetails, stringWriterWrapper).load("foo.gpx", "GC123"));
         verifyAll();
     }
 }

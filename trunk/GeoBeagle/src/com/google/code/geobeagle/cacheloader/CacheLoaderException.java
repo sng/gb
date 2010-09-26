@@ -11,12 +11,19 @@
  ** See the License for the specific language governing permissions and
  ** limitations under the License.
  */
+package com.google.code.geobeagle.cacheloader;
 
-package com.google.code.geobeagle.activity.main.intents;
+@SuppressWarnings("serial")
+public class CacheLoaderException extends Exception {
 
-import com.google.code.geobeagle.Geocache;
-import com.google.code.geobeagle.cacheloader.CacheLoaderException;
+    private final int error;
 
-interface GeocacheToUri {
-    public String convert(Geocache geocache) throws CacheLoaderException;
+    public CacheLoaderException(int error) {
+        this.error = error;
+    }
+
+    public int getError() {
+        return error;
+    }
+
 }

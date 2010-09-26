@@ -161,4 +161,8 @@ public class CacheTagsToDetails implements ICachePersisterFacade {
     public void logFinder(String text) {
         cacheDetailsWriter.writeLogFinder(text);
     }
+
+    @Override
+    public void url(String text) {
+    }
 }

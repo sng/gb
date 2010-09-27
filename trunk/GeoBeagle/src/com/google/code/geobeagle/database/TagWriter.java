@@ -14,19 +14,22 @@
 
 package com.google.code.geobeagle.database;
 
+import com.google.code.geobeagle.R;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 public class TagWriter {
     private final Filter filter;
     private final TagStore tagStore;
+    private final Context context;
 
-    public TagWriter(
-            Filter filter,
-            TagStore tagStore) {
+    public TagWriter(Filter filter, TagStore tagStore, Context context) {
         this.filter = filter;
+        this.context = context;
         this.tagStore = tagStore;
     }
 
@@ -34,6 +37,7 @@ public class TagWriter {
     public TagWriter(Injector injector) {
         this.filter = injector.getInstance(Filter.class);
         this.tagStore = injector.getInstance(TagStore.class);
+        this.context = injector.getInstance(Context.class);
     }
 
     public void add(CharSequence geocacheId, Tag tag) {
@@ -41,6 +45,8 @@ public class TagWriter {
         tagStore.addTag(geocacheId, tag);
 
         if (!filter.isVisible(tag == Tag.FOUND)) {
+            Toast.makeText(context, R.string.removing_found_cache_from_cache_list,
+                    Toast.LENGTH_LONG).show();
             tagStore.hideCache(geocacheId);
         }
     }

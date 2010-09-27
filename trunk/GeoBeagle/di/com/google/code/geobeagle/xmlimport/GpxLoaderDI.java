@@ -19,17 +19,14 @@ import com.google.code.geobeagle.database.GpxWriter;
 import com.google.code.geobeagle.xmlimport.GpxToCache.Aborter;
 import com.google.inject.Provider;
 
-import java.text.SimpleDateFormat;
-
 public class GpxLoaderDI {
     public static GpxLoader create(ImportCacheActions importCacheActions,
             XmlPullParserWrapper xmlPullParserWrapper, Aborter aborter,
             ErrorDisplayer errorDisplayer,
             Provider<ImportWakeLock> importWakeLockProvider,
             GpxWriter gpxWriter) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
-        FileAlreadyLoadedChecker fileAlreadyLoadedChecker = new FileAlreadyLoadedChecker(gpxWriter,
-                simpleDateFormat);
+        final FileAlreadyLoadedChecker fileAlreadyLoadedChecker = new FileAlreadyLoadedChecker(
+                gpxWriter);
         final GpxToCache gpxToCache = new GpxToCache(xmlPullParserWrapper, aborter,
                 fileAlreadyLoadedChecker);
         return new GpxLoader(importCacheActions, errorDisplayer, gpxToCache, importWakeLockProvider);

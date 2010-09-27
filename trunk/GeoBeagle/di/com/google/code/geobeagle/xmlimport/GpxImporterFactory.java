@@ -25,10 +25,9 @@ import com.google.code.geobeagle.xmlimport.GpxImporterDI.ToastFactory;
 import com.google.code.geobeagle.xmlimport.GpxToCache.Aborter;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 
 import android.content.Context;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 
 public class GpxImporterFactory {
 
@@ -41,11 +40,8 @@ public class GpxImporterFactory {
 
     public GpxImporter create() {
         final ErrorDisplayer errorDisplayer = mInjector.getInstance(ErrorDisplayer.class);
-        final Context context = mInjector.getInstance(Context.class);
-        final PowerManager powerManager = (PowerManager)context
-                .getSystemService(Context.POWER_SERVICE);
-        final WakeLock wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
-                "Importing");
+        final Provider<ImportWakeLock> importWakeLockProvider = mInjector
+                .getProvider(ImportWakeLock.class);
 
         final GeoBeagleEnvironment geoBeagleEnvironment = mInjector
                 .getInstance(GeoBeagleEnvironment.class);
@@ -54,13 +50,13 @@ public class GpxImporterFactory {
         final CacheWriter cacheWriter = mInjector.getInstance(CacheWriter.class);
         final GpxWriter gpxWriter = mInjector.getInstance(GpxWriter.class);
         final ImportCacheActions importCacheActions = cachePersisterFacadeFactory.create(
-                cacheWriter, gpxWriter, wakeLock, geoBeagleEnvironment);
+                cacheWriter, gpxWriter, importWakeLockProvider.get(), geoBeagleEnvironment);
 
         final XmlPullParserWrapper xmlPullParserWrapper = mInjector
                 .getInstance(XmlPullParserWrapper.class);
         final Aborter aborter = mInjector.getInstance(Aborter.class);
         final GpxLoader gpxLoader = GpxLoaderDI.create(importCacheActions, xmlPullParserWrapper,
-                aborter, errorDisplayer, wakeLock, gpxWriter);
+                aborter, errorDisplayer, importWakeLockProvider, gpxWriter);
         final ToastFactory toastFactory = new ToastFactory();
         final MessageHandler messageHandler = mInjector.getInstance(MessageHandler.class);
         final ImportThreadWrapper importThreadWrapper = mInjector

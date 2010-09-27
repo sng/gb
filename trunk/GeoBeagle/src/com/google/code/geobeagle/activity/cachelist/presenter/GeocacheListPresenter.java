@@ -30,6 +30,7 @@ import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
 import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable;
 import com.google.code.geobeagle.location.CombinedLocationListener;
 import com.google.code.geobeagle.location.CombinedLocationManager;
+import com.google.code.geobeagle.shakewaker.ShakeWaker;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
@@ -63,6 +64,7 @@ public class GeocacheListPresenter implements Pausable {
     private final UpdateFlag mUpdateFlag;
     private final Provider<ClearFilterProgressDialog> mProgressDialogProvider;
     private final FilterCleanliness mFilterCleanliness;
+    private final ShakeWaker mShakeWaker;
 
     public GeocacheListPresenter(CombinedLocationListener combinedLocationListener,
             CombinedLocationManager combinedLocationManager,
@@ -79,13 +81,15 @@ public class GeocacheListPresenter implements Pausable {
             UpdateFilterWorker updateFilterWorker,
             UpdateFlag updateFlag,
             Provider<ClearFilterProgressDialog> progressDialogProvider,
-            FilterCleanliness filterCleanliness) {
+            FilterCleanliness filterCleanliness,
+            ShakeWaker shakeWaker) {
         mCombinedLocationListener = combinedLocationListener;
         mCombinedLocationManager = combinedLocationManager;
         mCacheListCompassListenerProvider = cacheListCompassListenerProvider;
         mGeocacheListAdapter = geocacheListAdapter;
         mGeocacheVectors = geocacheVectors;
         mInflatedGpsStatusWidget = inflatedGpsStatusWidget;
+        mShakeWaker = shakeWaker;
         mListActivity = (ListActivity)listActivity;
         mLocationControlBuffered = locationControlBuffered;
         mUpdateGpsWidgetRunnable = updateGpsWidgetRunnable;
@@ -106,13 +110,13 @@ public class GeocacheListPresenter implements Pausable {
         mGeocacheListAdapter = injector.getInstance(GeocacheListAdapter.class);
         mGeocacheVectors = injector.getInstance(GeocacheVectors.class);
         mInflatedGpsStatusWidget = injector.getInstance(InflatedGpsStatusWidget.class);
+        mShakeWaker = injector.getInstance(ShakeWaker.class);
         mListActivity = (ListActivity)injector.getInstance(Activity.class);
         mLocationControlBuffered = injector.getInstance(LocationControlBuffered.class);
         mUpdateGpsWidgetRunnable = injector.getInstance(UpdateGpsWidgetRunnable.class);
         mSensorManagerWrapper = injector.getInstance(SensorManagerWrapper.class);
         mScrollListener = injector.getInstance(ScrollListener.class);
         mGpsStatusListener = injector.getInstance(GpsStatusListener.class);
-        mSharedPreferences = injector.getInstance(SharedPreferences.class);
         mUpdateFilterWorker = injector.getInstance(UpdateFilterWorker.class);
         mUpdateFlag = injector.getInstance(UpdateFlag.class);
         mProgressDialogProvider = injector.getProvider(ClearFilterProgressDialog.class);
@@ -137,6 +141,7 @@ public class GeocacheListPresenter implements Pausable {
     public void onPause() {
         mCombinedLocationManager.removeUpdates();
         mSensorManagerWrapper.unregisterListener();
+        mShakeWaker.unregister();
     }
 
     public void onResume(CacheListRefresh cacheListRefresh) {
@@ -163,6 +168,7 @@ public class GeocacheListPresenter implements Pausable {
         mUpdateGpsWidgetRunnable.run();
         mSensorManagerWrapper.registerListener(mCompassListener, SensorManager.SENSOR_ORIENTATION,
                 SensorManager.SENSOR_DELAY_UI);
+        mShakeWaker.register();
         Log.d("GeoBeagle", "GeocacheListPresenter onResume done");
     }
 }

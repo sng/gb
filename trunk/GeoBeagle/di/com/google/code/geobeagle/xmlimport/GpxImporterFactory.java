@@ -14,11 +14,14 @@
 
 package com.google.code.geobeagle.xmlimport;
 
+import com.google.code.geobeagle.CacheTypeFactory;
 import com.google.code.geobeagle.ErrorDisplayer;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter;
 import com.google.code.geobeagle.database.CacheWriter;
+import com.google.code.geobeagle.database.ClearCachesFromSource;
 import com.google.code.geobeagle.database.GpxWriter;
+import com.google.code.geobeagle.database.TagWriter;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.ImportThreadWrapper;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.ToastFactory;
@@ -49,8 +52,15 @@ public class GpxImporterFactory {
                 .getInstance(CachePersisterFacadeFactory.class);
         final CacheWriter cacheWriter = mInjector.getInstance(CacheWriter.class);
         final GpxWriter gpxWriter = mInjector.getInstance(GpxWriter.class);
+        final Provider<MessageHandler> messageHandlerProvider = mInjector
+                .getProvider(MessageHandler.class);
+        final TagWriter tagWriter = mInjector.getInstance(TagWriter.class);
+        final ClearCachesFromSource clearCachesFromSource = mInjector
+                .getInstance(ClearCachesFromSource.class);
+        final CacheTypeFactory cacheTypeFactory = mInjector.getInstance(CacheTypeFactory.class);
         final ImportCacheActions importCacheActions = cachePersisterFacadeFactory.create(
-                cacheWriter, gpxWriter, importWakeLockProvider.get(), geoBeagleEnvironment);
+                cacheWriter, gpxWriter, importWakeLockProvider.get(), geoBeagleEnvironment,
+                messageHandlerProvider, tagWriter, clearCachesFromSource, cacheTypeFactory);
 
         final XmlPullParserWrapper xmlPullParserWrapper = mInjector
                 .getInstance(XmlPullParserWrapper.class);

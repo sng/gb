@@ -21,7 +21,6 @@ import com.google.code.geobeagle.xmlimport.GpxImporterDI.ImportThreadWrapper;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.ToastFactory;
 import com.google.code.geobeagle.xmlimport.GpxLoader.GpxLoaderFromFile;
-import com.google.code.geobeagle.xmlimport.ImportCacheActions.ImportCacheActionsFromFile;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
@@ -39,21 +38,9 @@ public class GpxImporterFactory {
 
     public GpxImporter create() {
         final ErrorDisplayer errorDisplayer = mInjector.getInstance(ErrorDisplayer.class);
-        final Provider<ImportWakeLock> importWakeLockProvider = mInjector
-                .getProvider(ImportWakeLock.class);
 
-        final GeoBeagleEnvironment geoBeagleEnvironment = mInjector
-                .getInstance(GeoBeagleEnvironment.class);
         final MessageHandler messageHandler = mInjector.getInstance(MessageHandler.class);
-        final CacheTagSqlWriter cacheTagSqlWriter = mInjector.getInstance(CacheTagSqlWriter.class);
-        final ImportWakeLock importWakeLock = importWakeLockProvider.get();
-        final ImportCacheActionsFromFile importCacheActions = new ImportCacheActionsFromFile(
-                cacheTagSqlWriter, messageHandler, importWakeLock, geoBeagleEnvironment);
-
-        final GpxToCache gpxToCache = mInjector.getInstance(GpxToCache.class);
-
-        final GpxLoaderFromFile gpxLoader = new GpxLoaderFromFile(importCacheActions,
-                errorDisplayer, gpxToCache, importWakeLockProvider);
+        final GpxLoaderFromFile gpxLoader = mInjector.getInstance(GpxLoaderFromFile.class);
         final ToastFactory toastFactory = new ToastFactory();
         final ImportThreadWrapper importThreadWrapper = mInjector
                 .getInstance(ImportThreadWrapper.class);

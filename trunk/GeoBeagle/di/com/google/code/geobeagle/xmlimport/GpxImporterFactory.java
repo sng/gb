@@ -42,17 +42,16 @@ public class GpxImporterFactory {
 
         final GeoBeagleEnvironment geoBeagleEnvironment = mInjector
                 .getInstance(GeoBeagleEnvironment.class);
-        final Provider<MessageHandler> messageHandlerProvider = mInjector
-                .getProvider(MessageHandler.class);
+        final MessageHandler messageHandler = mInjector.getInstance(MessageHandler.class);
         final CacheTagSqlWriter cacheTagSqlWriter = mInjector.getInstance(CacheTagSqlWriter.class);
         final ImportCacheActions importCacheActions = new ImportCacheActions(cacheTagSqlWriter,
-                messageHandlerProvider.get(), importWakeLockProvider.get(), geoBeagleEnvironment);
+                messageHandler, importWakeLockProvider.get(), geoBeagleEnvironment);
 
         final GpxToCache gpxToCache = mInjector.getInstance(GpxToCache.class);
+
         final GpxLoader gpxLoader = new GpxLoader(importCacheActions, errorDisplayer, gpxToCache,
                 importWakeLockProvider);
         final ToastFactory toastFactory = new ToastFactory();
-        final MessageHandler messageHandler = mInjector.getInstance(MessageHandler.class);
         final ImportThreadWrapper importThreadWrapper = mInjector
                 .getInstance(ImportThreadWrapper.class);
 

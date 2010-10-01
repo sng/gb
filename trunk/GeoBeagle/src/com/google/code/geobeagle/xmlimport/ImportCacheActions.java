@@ -15,6 +15,8 @@
 package com.google.code.geobeagle.xmlimport;
 
 import com.google.code.geobeagle.GeocacheFactory.Source;
+import com.google.code.geobeagle.bcaching.MessageHandlerAdapter;
+import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
 import com.google.inject.Inject;
 
 import roboguice.inject.ContextScoped;
@@ -23,7 +25,28 @@ import java.io.File;
 import java.io.IOException;
 
 @ContextScoped
-public class ImportCacheActions extends CachePersisterFacade {
+public abstract class ImportCacheActions extends CachePersisterFacade {
+    static class ImportCacheActionsFromFile extends ImportCacheActions {
+        @Inject
+        ImportCacheActionsFromFile(CacheTagSqlWriter cacheTagSqlWriter,
+                MessageHandler messageHandler,
+                ImportWakeLock importWakeLock,
+                GeoBeagleEnvironment geoBeagleEnvironment) {
+            super(cacheTagSqlWriter, messageHandler, importWakeLock, geoBeagleEnvironment);
+        }
+
+    }
+
+    static class ImportCacheActionsFromBCaching extends ImportCacheActions {
+        @Inject
+        ImportCacheActionsFromBCaching(CacheTagSqlWriter cacheTagSqlWriter,
+                MessageHandlerAdapter messageHandler,
+                ImportWakeLock importWakeLock,
+                GeoBeagleEnvironment geoBeagleEnvironment) {
+            super(cacheTagSqlWriter, messageHandler, importWakeLock, geoBeagleEnvironment);
+        }
+
+    }
     private String mCacheName = "";
     private final CacheTagSqlWriter mCacheTagWriter;
     private final MessageHandlerInterface mMessageHandler;

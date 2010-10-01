@@ -23,6 +23,7 @@ import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresen
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.ImportThreadWrapper;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
 import com.google.code.geobeagle.xmlimport.GpxImporterDI.ToastFactory;
+import com.google.code.geobeagle.xmlimport.GpxLoader.GpxLoaderFromFile;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
@@ -31,7 +32,6 @@ import android.content.Context;
 import android.widget.Toast;
 
 public class GpxImporter implements Abortable {
-
     private final ErrorDisplayer mErrorDisplayer;
     private final EventHandler mEventHandlerComposite;
     private final GpxLoader mGpxLoader;
@@ -45,7 +45,7 @@ public class GpxImporter implements Abortable {
 
     @Inject
     GpxImporter(GeocacheListPresenter geocacheListPresenter,
-            GpxLoader gpxLoader,
+            GpxLoaderFromFile gpxLoader,
             Provider<Context> contextProvider,
             ImportThreadWrapper importThreadWrapper,
             MessageHandler messageHandler,

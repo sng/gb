@@ -17,6 +17,8 @@ package com.google.code.geobeagle.xmlimport;
 import com.google.code.geobeagle.ErrorDisplayer;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.xmlimport.GpxToCache.CancelException;
+import com.google.code.geobeagle.xmlimport.ImportCacheActions.ImportCacheActionsFromBCaching;
+import com.google.code.geobeagle.xmlimport.ImportCacheActions.ImportCacheActionsFromFile;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -29,12 +31,32 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 
-public class GpxLoader {
+public abstract class GpxLoader {
     private final ImportCacheActions mCachePersisterFacade;
     private final ErrorDisplayer mErrorDisplayer;
     private final GpxToCache mGpxToCache;
     private final Provider<ImportWakeLock> mImportWakeLockProvider;
     public static final int WAKELOCK_DURATION = 15000;
+
+    public static class GpxLoaderFromFile extends GpxLoader {
+        @Inject
+        public GpxLoaderFromFile(ImportCacheActionsFromFile importCacheActions,
+                ErrorDisplayer errorDisplayer,
+                GpxToCache gpxToCache,
+                Provider<ImportWakeLock> importWakeLockProvider) {
+            super(importCacheActions, errorDisplayer, gpxToCache, importWakeLockProvider);
+        }
+    }
+
+    public static class GpxLoaderFromBCaching extends GpxLoader {
+        @Inject
+        public GpxLoaderFromBCaching(ImportCacheActionsFromBCaching importCacheActions,
+                ErrorDisplayer errorDisplayer,
+                GpxToCache gpxToCache,
+                Provider<ImportWakeLock> importWakeLockProvider) {
+            super(importCacheActions, errorDisplayer, gpxToCache, importWakeLockProvider);
+        }
+    }
 
     @Inject
     public GpxLoader(ImportCacheActions importCacheActions,

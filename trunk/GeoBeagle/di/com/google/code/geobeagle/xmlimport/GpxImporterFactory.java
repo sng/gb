@@ -60,9 +60,11 @@ public class GpxImporterFactory {
                 .getInstance(EventHandlerComposite.class);
         final GeocacheListPresenter geocacheListPresenter = mInjector
                 .getInstance(GeocacheListPresenter.class);
-        return new GpxImporter(geocacheListPresenter, gpxLoader,
-                mInjector.getProvider(Context.class), importThreadWrapper, messageHandler,
-                toastFactory, eventHandlerComposite, errorDisplayer,
-                mInjector.getProvider(CacheListRefresh.class), mInjector);
+        final Provider<Context> contextProvider = mInjector.getProvider(Context.class);
+        final Provider<CacheListRefresh> cacheListRefreshProvider = mInjector
+                .getProvider(CacheListRefresh.class);
+        return new GpxImporter(geocacheListPresenter, gpxLoader, contextProvider,
+                importThreadWrapper, messageHandler, toastFactory, eventHandlerComposite,
+                errorDisplayer, cacheListRefreshProvider, mInjector);
     }
 }

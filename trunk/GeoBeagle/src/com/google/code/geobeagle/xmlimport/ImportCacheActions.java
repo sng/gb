@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 
 @ContextScoped
-public abstract class ImportCacheActions extends CachePersisterFacade {
+public class ImportCacheActions extends CachePersisterFacade {
     static class ImportCacheActionsFromFile extends ImportCacheActions {
         @Inject
         ImportCacheActionsFromFile(CacheTagSqlWriter cacheTagSqlWriter,

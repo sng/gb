@@ -31,7 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 
-public abstract class GpxLoader {
+public class GpxLoader {
     private final ImportCacheActions mCachePersisterFacade;
     private final ErrorDisplayer mErrorDisplayer;
     private final GpxToCache mGpxToCache;

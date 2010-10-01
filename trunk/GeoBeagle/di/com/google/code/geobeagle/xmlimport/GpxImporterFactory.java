@@ -14,18 +14,8 @@
 
 package com.google.code.geobeagle.xmlimport;
 
-import com.google.code.geobeagle.ErrorDisplayer;
-import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
-import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter;
-import com.google.code.geobeagle.xmlimport.GpxImporterDI.ImportThreadWrapper;
-import com.google.code.geobeagle.xmlimport.GpxImporterDI.MessageHandler;
-import com.google.code.geobeagle.xmlimport.GpxImporterDI.ToastFactory;
-import com.google.code.geobeagle.xmlimport.GpxLoader.GpxLoaderFromFile;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Provider;
-
-import android.content.Context;
 
 public class GpxImporterFactory {
 
@@ -37,23 +27,6 @@ public class GpxImporterFactory {
     }
 
     public GpxImporter create() {
-        final ErrorDisplayer errorDisplayer = mInjector.getInstance(ErrorDisplayer.class);
-
-        final MessageHandler messageHandler = mInjector.getInstance(MessageHandler.class);
-        final GpxLoaderFromFile gpxLoader = mInjector.getInstance(GpxLoaderFromFile.class);
-        final ToastFactory toastFactory = new ToastFactory();
-        final ImportThreadWrapper importThreadWrapper = mInjector
-                .getInstance(ImportThreadWrapper.class);
-
-        final EventHandlerComposite eventHandlerComposite = mInjector
-                .getInstance(EventHandlerComposite.class);
-        final GeocacheListPresenter geocacheListPresenter = mInjector
-                .getInstance(GeocacheListPresenter.class);
-        final Provider<Context> contextProvider = mInjector.getProvider(Context.class);
-        final Provider<CacheListRefresh> cacheListRefreshProvider = mInjector
-                .getProvider(CacheListRefresh.class);
-        return new GpxImporter(geocacheListPresenter, gpxLoader, contextProvider,
-                importThreadWrapper, messageHandler, toastFactory, eventHandlerComposite,
-                errorDisplayer, cacheListRefreshProvider, mInjector);
+        return mInjector.getInstance(GpxImporter.class);
     }
 }

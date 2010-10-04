@@ -41,11 +41,11 @@ public class TagWriter {
         this.context = injector.getInstance(Context.class);
     }
 
-    public void add(CharSequence geocacheId, Tag tag) {
+    public void add(CharSequence geocacheId, Tag tag, boolean interactive) {
         Log.d("GeoBeagle", "TagWriter: " + geocacheId + ", " + tag);
         tagStore.addTag(geocacheId, tag);
 
-        if (!filter.showBasedOnFoundState(tag == Tag.FOUND)) {
+        if (interactive && !filter.showBasedOnFoundState(tag == Tag.FOUND)) {
             Toast.makeText(context, R.string.removing_found_cache_from_cache_list,
                     Toast.LENGTH_LONG).show();
             tagStore.hideCache(geocacheId);

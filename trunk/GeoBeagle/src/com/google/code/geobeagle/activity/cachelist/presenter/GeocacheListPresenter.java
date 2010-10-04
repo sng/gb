@@ -140,8 +140,7 @@ public class GeocacheListPresenter implements Pausable {
 
     public void onResume(CacheListRefresh cacheListRefresh) {
         if (mFilterCleanliness.isDirty()) {
-            mUpdateFilterMediator.showClearFilterProgress();
-            mUpdateFilterMediator.startFiltering();
+            mUpdateFilterMediator.startFiltering("Resetting filter");
             mUpdateFilterWorker.start();
         }
 

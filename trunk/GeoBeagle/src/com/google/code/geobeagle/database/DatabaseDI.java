@@ -15,6 +15,7 @@
 package com.google.code.geobeagle.database;
 
 import com.google.code.geobeagle.GeocacheFactory;
+import com.google.code.geobeagle.activity.cachelist.SearchWhereFactory;
 import com.google.code.geobeagle.database.WhereFactoryNearestCaches.BoundingBox;
 import com.google.code.geobeagle.database.WhereFactoryNearestCaches.Search;
 import com.google.code.geobeagle.database.WhereFactoryNearestCaches.SearchDown;
@@ -208,17 +209,20 @@ public class DatabaseDI {
     static public class SearchFactory {
         private final WhereStringFactory whereStringFactory;
         private final Provider<ISQLiteDatabase> sqliteWrapperProvider;
+        private final SearchWhereFactory searchWhereFactory;
 
         @Inject
         SearchFactory(WhereStringFactory whereStringFactory,
-                Provider<ISQLiteDatabase> sqliteWrapperProvider) {
+                Provider<ISQLiteDatabase> sqliteWrapperProvider,
+                SearchWhereFactory searchWhereFactory) {
             this.whereStringFactory = whereStringFactory;
             this.sqliteWrapperProvider = sqliteWrapperProvider;
+            this.searchWhereFactory = searchWhereFactory;
         }
 
         public Search createSearch(double latitude, double longitude, float min, float max) {
             BoundingBox boundingBox = new BoundingBox(latitude, longitude,
-                    sqliteWrapperProvider.get(), whereStringFactory);
+                    sqliteWrapperProvider.get(), whereStringFactory, searchWhereFactory);
             SearchDown searchDown = new SearchDown(boundingBox, min);
             SearchUp searchUp = new SearchUp(boundingBox, max);
             return new WhereFactoryNearestCaches.Search(boundingBox, searchDown, searchUp);

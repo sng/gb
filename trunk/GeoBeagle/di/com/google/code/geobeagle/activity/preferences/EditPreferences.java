@@ -16,10 +16,13 @@ package com.google.code.geobeagle.activity.preferences;
 
 import com.google.code.geobeagle.R;
 
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
+import roboguice.activity.GuicePreferenceActivity;
 
-public class EditPreferences extends PreferenceActivity {
+import android.os.Bundle;
+import android.preference.Preference;
+
+public class EditPreferences extends GuicePreferenceActivity {
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

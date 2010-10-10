@@ -31,6 +31,7 @@ import com.google.code.geobeagle.gpsstatuswidget.UpdateGpsWidgetRunnable;
 import com.google.code.geobeagle.location.CombinedLocationListener;
 import com.google.code.geobeagle.location.CombinedLocationManager;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 import android.app.Activity;
@@ -65,7 +66,6 @@ public class GeocacheListPresenter implements Pausable {
     private final Provider<ClearFilterProgressDialog> mProgressDialogProvider;
     private final FilterCleanliness mFilterCleanliness;
 
-    @Inject
     public GeocacheListPresenter(CombinedLocationListener combinedLocationListener,
             CombinedLocationManager combinedLocationManager,
             Provider<CacheListCompassListener> cacheListCompassListenerProvider,
@@ -100,6 +100,27 @@ public class GeocacheListPresenter implements Pausable {
         mUpdateFlag = updateFlag;
         mProgressDialogProvider = progressDialogProvider;
         mFilterCleanliness = filterCleanliness;
+    }
+
+    @Inject
+    public GeocacheListPresenter(Injector injector) {
+        mCombinedLocationListener = injector.getInstance(CombinedLocationListener.class);
+        mCombinedLocationManager = injector.getInstance(CombinedLocationManager.class);
+        mCacheListCompassListenerProvider = injector.getProvider(CacheListCompassListener.class);
+        mGeocacheListAdapter = injector.getInstance(GeocacheListAdapter.class);
+        mGeocacheVectors = injector.getInstance(GeocacheVectors.class);
+        mInflatedGpsStatusWidget = injector.getInstance(InflatedGpsStatusWidget.class);
+        mListActivity = (ListActivity)injector.getInstance(Activity.class);
+        mLocationControlBuffered = injector.getInstance(LocationControlBuffered.class);
+        mUpdateGpsWidgetRunnable = injector.getInstance(UpdateGpsWidgetRunnable.class);
+        mSensorManagerWrapper = injector.getInstance(SensorManagerWrapper.class);
+        mScrollListener = injector.getInstance(ScrollListener.class);
+        mGpsStatusListener = injector.getInstance(GpsStatusListener.class);
+        mSharedPreferences = injector.getInstance(SharedPreferences.class);
+        mUpdateFilterWorker = injector.getInstance(UpdateFilterWorker.class);
+        mUpdateFlag = injector.getInstance(UpdateFlag.class);
+        mProgressDialogProvider = injector.getProvider(ClearFilterProgressDialog.class);
+        mFilterCleanliness = injector.getInstance(FilterCleanliness.class);
     }
 
     public void onCreate() {

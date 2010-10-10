@@ -58,6 +58,9 @@ class ConstructorInjectorStore {
       throws ErrorsException {
         depth++;
         Log.d("Guice", "CREATECONSTRUCTOR: " + depth + " :" + type.toString());
+        if (depth > 5) {
+            throw new RuntimeException("Exceeded Stack Depth for Cupcake");
+        }
     int numErrorsBefore = errors.size();
 
     InjectionPoint injectionPoint;

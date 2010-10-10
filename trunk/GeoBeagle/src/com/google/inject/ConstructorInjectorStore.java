@@ -19,9 +19,9 @@ package com.google.inject;
 import com.google.inject.internal.Errors;
 import com.google.inject.internal.ErrorsException;
 import com.google.inject.internal.FailableCache;
-import com.google.inject.internal.ImmutableList;
-import static com.google.inject.internal.Iterables.concat;
 import com.google.inject.spi.InjectionPoint;
+
+import android.util.Log;
 
 /**
  * Constructor injectors by type.
@@ -33,12 +33,14 @@ class ConstructorInjectorStore {
 
   private final FailableCache<TypeLiteral<?>, ConstructorInjector<?>>  cache
       = new FailableCache<TypeLiteral<?>, ConstructorInjector<?>> () {
+    @Override
     @SuppressWarnings("unchecked")
     protected ConstructorInjector<?> create(TypeLiteral<?> type, Errors errors)
         throws ErrorsException {
       return createConstructor(type, errors);
     }
   };
+    private int depth;
 
   ConstructorInjectorStore(InjectorImpl injector) {
     this.injector = injector;
@@ -54,6 +56,8 @@ class ConstructorInjectorStore {
 
   private <T> ConstructorInjector<T> createConstructor(TypeLiteral<T> type, Errors errors)
       throws ErrorsException {
+        depth++;
+        Log.d("Guice", "CREATECONSTRUCTOR: " + depth + " :" + type.toString());
     int numErrorsBefore = errors.size();
 
     InjectionPoint injectionPoint;
@@ -68,19 +72,19 @@ class ConstructorInjectorStore {
         = injector.getParametersInjectors(injectionPoint.getDependencies(), errors);
     MembersInjectorImpl<T> membersInjector = injector.membersInjectorStore.get(type, errors);
 
-    
 
 
 
 
 
 
-    
+
+
     ConstructionProxyFactory<T> factory = new DefaultConstructionProxyFactory<T>(injectionPoint);
-    
+
 
     errors.throwIfNewErrors(numErrorsBefore);
-
+        depth--;
     return new ConstructorInjector<T>(membersInjector.getInjectionPoints(), factory.create(),
         constructorParameterInjectors, membersInjector);
   }

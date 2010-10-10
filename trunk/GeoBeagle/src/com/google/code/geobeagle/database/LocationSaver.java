@@ -33,13 +33,15 @@ public class LocationSaver {
     }
 
     public void saveLocation(Geocache geocache) {
-        final CharSequence id = geocache.getId();
+        CharSequence id = geocache.getId();
         CacheWriter cacheWriter = cacheWriterProvider.get();
         cacheWriter.startWriting();
-        cacheWriter.insertAndUpdateCache(id, geocache.getName(), geocache.getLatitude(), geocache
-                .getLongitude(), geocache.getSourceType(), geocache.getSourceName(), geocache
-                .getCacheType(), geocache.getDifficulty(), geocache.getTerrain(), geocache
-                .getContainer(), geocache.getAvailable(), geocache.getArchived());
+        boolean found = tagWriter.hasTag(id, Tag.FOUND);
+        boolean visible = filter.isVisible(found);
+        cacheWriter.insertAndUpdateCache(id, geocache.getName(), geocache.getLatitude(),
+                geocache.getLongitude(), geocache.getSourceType(), geocache.getSourceName(),
+                geocache.getCacheType(), geocache.getDifficulty(), geocache.getTerrain(),
+                geocache.getContainer(), geocache.getAvailable(), geocache.getArchived(), visible);
         cacheWriter.stopWriting();
     }
 }

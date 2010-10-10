@@ -23,6 +23,7 @@ import com.google.code.geobeagle.database.WhereFactoryNearestCaches.SearchUp;
 import com.google.code.geobeagle.database.WhereFactoryNearestCaches.WhereStringFactory;
 import com.google.code.geobeagle.preferences.PreferencesUpgrader;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 import android.content.ContentValues;
@@ -211,13 +212,19 @@ public class DatabaseDI {
         private final Provider<ISQLiteDatabase> sqliteWrapperProvider;
         private final SearchWhereFactory searchWhereFactory;
 
-        @Inject
         SearchFactory(WhereStringFactory whereStringFactory,
                 Provider<ISQLiteDatabase> sqliteWrapperProvider,
                 SearchWhereFactory searchWhereFactory) {
             this.whereStringFactory = whereStringFactory;
             this.sqliteWrapperProvider = sqliteWrapperProvider;
             this.searchWhereFactory = searchWhereFactory;
+        }
+
+        @Inject
+        SearchFactory(Injector injector) {
+            this.whereStringFactory = injector.getInstance(WhereStringFactory.class);
+            this.sqliteWrapperProvider = injector.getProvider(ISQLiteDatabase.class);
+            this.searchWhereFactory = injector.getInstance(SearchWhereFactory.class);
         }
 
         public Search createSearch(double latitude, double longitude, float min, float max) {

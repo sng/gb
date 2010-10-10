@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 
 public class EditPreferences extends GuicePreferenceActivity {
+    public static final String SHOW_FOUND_CACHES = "show-found-caches";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

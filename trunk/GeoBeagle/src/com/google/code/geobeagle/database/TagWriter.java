@@ -15,6 +15,7 @@
 package com.google.code.geobeagle.database;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 import android.util.Log;
 
@@ -22,12 +23,17 @@ public class TagWriter {
     private final Filter filter;
     private final TagStore tagStore;
 
-    @Inject
     public TagWriter(
             Filter filter,
             TagStore tagStore) {
         this.filter = filter;
         this.tagStore = tagStore;
+    }
+
+    @Inject
+    public TagWriter(Injector injector) {
+        this.filter = injector.getInstance(Filter.class);
+        this.tagStore = injector.getInstance(TagStore.class);
     }
 
     public void add(CharSequence geocacheId, Tag tag) {

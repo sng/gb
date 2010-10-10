@@ -20,10 +20,16 @@ import com.google.inject.Provider;
 
 public class LocationSaver {
     private final Provider<CacheWriter> cacheWriterProvider;
+    private final TagWriter tagWriter;
+    private final Filter filter;
 
     @Inject
-    public LocationSaver(Provider<CacheWriter> cacheWriterProvider) {
+    public LocationSaver(Provider<CacheWriter> cacheWriterProvider,
+            TagWriter tagWriter,
+            Filter filter) {
         this.cacheWriterProvider = cacheWriterProvider;
+        this.tagWriter = tagWriter;
+        this.filter = filter;
     }
 
     public void saveLocation(Geocache geocache) {

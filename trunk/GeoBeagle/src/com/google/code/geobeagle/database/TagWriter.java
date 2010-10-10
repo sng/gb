@@ -15,45 +15,32 @@
 package com.google.code.geobeagle.database;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.ProvisionException;
 
 import android.util.Log;
 
 public class TagWriter {
-
-    private final Provider<ISQLiteDatabase> databaseProvider;
+    private final Filter filter;
+    private final TagStore tagStore;
 
     @Inject
-    public TagWriter(Provider<ISQLiteDatabase> databaseProvider) {
-        this.databaseProvider = databaseProvider;
+    public TagWriter(
+            Filter filter,
+            TagStore tagStore) {
+        this.filter = filter;
+        this.tagStore = tagStore;
     }
 
     public void add(CharSequence geocacheId, Tag tag) {
         Log.d("GeoBeagle", "TagWriter: " + geocacheId + ", " + tag);
-        ISQLiteDatabase database = databaseProvider.get();
-        database.delete("TAGS", "Cache", (String)geocacheId);
-        database.insert("TAGS", new String[] {
-                "Cache", "Id"
-        }, new Object[] {
-                geocacheId, tag.ordinal()
-        });
+        tagStore.addTag(geocacheId, tag);
+
+        if (!filter.isVisible(tag == Tag.FOUND)) {
+            tagStore.hideCache(geocacheId);
+        }
     }
 
     public boolean hasTag(CharSequence geocacheId, Tag tag) {
-        ISQLiteDatabase mDatabase = null;
-        try {
-            mDatabase = databaseProvider.get();
-        } catch (ProvisionException e) {
-            Log.e("GeoBeagle", "Provision exception");
-            return false;
-        }
-        boolean hasValue = mDatabase.hasValue("TAGS", new String[] {
-                "Cache", "Id"
-        }, new String[] {
-                geocacheId.toString(), String.valueOf(tag.ordinal())
-        });
-        return hasValue;
+        return tagStore.hasTag(geocacheId, tag);
     }
 
 }

@@ -29,12 +29,15 @@ public class CacheWriter {
     };
     private final DbToGeocacheAdapter dbToGeocacheAdapter;
     private final Provider<ISQLiteDatabase> sqliteProvider;
+    private final Filter filter;
 
     @Inject
     CacheWriter(Provider<ISQLiteDatabase> writableDatabaseProvider,
-            DbToGeocacheAdapter dbToGeocacheAdapter) {
-        this.sqliteProvider = writableDatabaseProvider;
+            DbToGeocacheAdapter dbToGeocacheAdapter,
+            Filter filter) {
+        sqliteProvider = writableDatabaseProvider;
         this.dbToGeocacheAdapter = dbToGeocacheAdapter;
+        this.filter = filter;
     }
 
 

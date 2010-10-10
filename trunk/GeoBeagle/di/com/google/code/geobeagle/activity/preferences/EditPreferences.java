@@ -20,6 +20,7 @@ import roboguice.activity.GuicePreferenceActivity;
 
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 
 public class EditPreferences extends GuicePreferenceActivity {
     public static final String SHOW_FOUND_CACHES = "show-found-caches";
@@ -29,5 +30,9 @@ public class EditPreferences extends GuicePreferenceActivity {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preferences);
+        Preference preference = findPreference(SHOW_FOUND_CACHES);
+        OnPreferenceChangeListener onPreferenceChangeListener = getInjector().getInstance(
+                FilterSettingsChangeListener.class);
+        preference.setOnPreferenceChangeListener(onPreferenceChangeListener);
     }
 }

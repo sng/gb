@@ -14,8 +14,6 @@
 
 package com.google.code.geobeagle.xmlimport;
 
-import com.google.inject.Inject;
-
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.IOException;
@@ -38,36 +36,36 @@ public class EventHelper {
     }
 
     private final XmlPathBuilder mXmlPathBuilder;
+    private final EventHandler mEventHandler;
 
-    @Inject
-    public EventHelper(XmlPathBuilder xmlPathBuilder) {
+    public EventHelper(XmlPathBuilder xmlPathBuilder, EventHandler eventHandler) {
         mXmlPathBuilder = xmlPathBuilder;
+        mEventHandler = eventHandler;
     }
 
     public boolean handleEvent(int eventType,
-            EventHandler eventHandler,
             XmlPullParser mXmlPullParser) throws IOException {
         switch (eventType) {
             case XmlPullParser.START_TAG: {
                 final String name = mXmlPullParser.getName();
                 mXmlPathBuilder.startTag(name);
-                eventHandler.startTag(name, mXmlPathBuilder.getPath());
+                mEventHandler.startTag(name, mXmlPathBuilder.getPath());
                 break;
             }
             case XmlPullParser.END_TAG: {
                 final String name = mXmlPullParser.getName();
-                eventHandler.endTag(name, mXmlPathBuilder.getPath());
+                mEventHandler.endTag(name, mXmlPathBuilder.getPath());
                 mXmlPathBuilder.endTag(name);
                 break;
             }
             case XmlPullParser.TEXT:
-                return eventHandler.text(mXmlPathBuilder.getPath(), mXmlPullParser.getText());
+                return mEventHandler.text(mXmlPathBuilder.getPath(), mXmlPullParser.getText());
         }
         return true;
     }
 
-    public void open(String filename, EventHandler eventHandler) throws IOException {
-        eventHandler.open(filename);
+    public void open(String filename) throws IOException {
+        mEventHandler.open(filename);
     }
 
 }

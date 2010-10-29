@@ -15,27 +15,27 @@
 package com.google.code.geobeagle.cacheloader;
 
 import com.google.code.geobeagle.cachedetails.FilePathStrategy;
-import com.google.code.geobeagle.xmlimport.CacheTagHandler;
+import com.google.code.geobeagle.xmlimport.EventHelperGpx;
 
 import java.io.File;
 
 public class CacheLoader {
 
+    private final DetailsOpener detailsOpener;
+    private final EventHelperGpx eventHelper;
+    private final FilePathStrategy filePathStrategy;
+
     public CacheLoader(FilePathStrategy filePathStrategy,
             DetailsOpener detailsOpener,
-            CacheTagHandler cacheTagHandler) {
+            EventHelperGpx eventHelper) {
         this.filePathStrategy = filePathStrategy;
         this.detailsOpener = detailsOpener;
-        this.cacheTagHandler = cacheTagHandler;
+        this.eventHelper = eventHelper;
     }
-
-    private final FilePathStrategy filePathStrategy;
-    private final DetailsOpener detailsOpener;
-    private final CacheTagHandler cacheTagHandler;
 
     public String load(CharSequence sourceName, CharSequence cacheId) throws CacheLoaderException {
         String path = filePathStrategy.getPath(sourceName, cacheId.toString(), "gpx");
         File file = new File(path);
-        return detailsOpener.open(file, cacheId, cacheTagHandler).read();
+        return detailsOpener.open(file, cacheId, eventHelper).read();
     }
 }

@@ -12,17 +12,11 @@
  ** limitations under the License.
  */
 
-package com.google.code.geobeagle.cacheloader;
+package com.google.code.geobeagle.xmlimport;
 
-import com.google.code.geobeagle.cachedetails.FilePathStrategy;
-import com.google.code.geobeagle.xmlimport.EventHelperGpxCacheDetails;
-import com.google.inject.Inject;
 
-public class CacheDetailsLoader extends CacheLoader {
-    @Inject
-    CacheDetailsLoader(DetailsOpener detailsOpener,
-            FilePathStrategy filePathStrategy,
-            EventHelperGpxCacheDetails eventHelperGpxCacheDetails) {
-        super(filePathStrategy, detailsOpener, eventHelperGpxCacheDetails);
+public class EventHelperGpx extends EventHelper {
+    public EventHelperGpx(XmlPathBuilder xmlPathBuilder, EventHandlerGpx eventHandlerGpx) {
+        super(xmlPathBuilder, eventHandlerGpx);
     }
 }

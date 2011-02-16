@@ -130,9 +130,7 @@ public class GpxToCache {
     private int loadFile(SyncCollectingParameter syncCollectingParameter,
             String source,
             String filename,
-            Reader reader)
-            throws XmlPullParserException,
-            IOException, CancelException {
+            Reader reader) throws XmlPullParserException, IOException, CancelException {
         eventDispatcher.setInput(reader);
 
         // Just use the filename, not the whole path.
@@ -151,7 +149,6 @@ public class GpxToCache {
                     .next()) {
                 // Log.d("GeoBeagle", "event: " + eventType);
                 if (abortState.isAborted()) {
-                    Log.d("GeoBeagle", "GpxToCache isAborted: " + abortState.isAborted());
                     throw new CancelException();
                 }
                 // File already loaded.

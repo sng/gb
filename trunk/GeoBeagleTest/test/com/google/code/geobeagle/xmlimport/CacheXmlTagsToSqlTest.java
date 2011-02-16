@@ -36,7 +36,7 @@ import java.io.IOException;
     CacheXmlTagsToSql.class
 })
 @RunWith(PowerMockRunner.class)
-public class CachePersisterFacadeTest {
+public class CacheXmlTagsToSqlTest {
 
     private CacheTagSqlWriter mCacheTagWriter;
     private MessageHandlerInterface mMessageHandler;
@@ -112,11 +112,10 @@ public class CachePersisterFacadeTest {
 
     @Test
     public void testGpxTime() {
-        expect(mCacheTagWriter.gpxTime("today")).andReturn(true);
+        expect(mCacheTagWriter.gpxTime("today", null)).andReturn(true);
 
         PowerMock.replayAll();
-        assertTrue(new CacheXmlTagsToSql(mCacheTagWriter, null, null, null)
-                .gpxTime("today"));
+        assertTrue(new CacheXmlTagsToSql(mCacheTagWriter, null, null, null).gpxTime(null, "today"));
         PowerMock.verifyAll();
     }
 
@@ -232,7 +231,6 @@ public class CachePersisterFacadeTest {
 
         mCacheTagWriter.id("GC123");
         mMessageHandler.updateWaypointId("GC123");
-        wakeLock.acquire(GpxLoader.WAKELOCK_DURATION);
 
         PowerMock.replayAll();
         CacheXmlTagsToSql cacheXmlTagsToSql = new CacheXmlTagsToSql(mCacheTagWriter, mMessageHandler,

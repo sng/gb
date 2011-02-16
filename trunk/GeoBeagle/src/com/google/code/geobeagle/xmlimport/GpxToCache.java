@@ -107,11 +107,12 @@ public class GpxToCache {
         cacheXmlTagsToSql.end();
     }
 
-    public int load(String path, Reader reader) throws CancelException {
+    public int load(SyncCollectingParameter syncCollectingParameter, String path, Reader reader)
+            throws CancelException {
         try {
             String filename = new File(path).getName();
             importWakeLockProvider.get().acquire(WAKELOCK_DURATION);
-            return loadFile(path, filename, reader);
+            return loadFile(syncCollectingParameter, path, filename, reader);
         } catch (SQLiteException e) {
             errorDisplayer.displayError(R.string.error_writing_cache, path + ": " + e.getMessage());
         } catch (XmlPullParserException e) {
@@ -126,7 +127,10 @@ public class GpxToCache {
         throw new CancelException();
     }
 
-    private int loadFile(String source, String filename, Reader reader)
+    private int loadFile(SyncCollectingParameter syncCollectingParameter,
+            String source,
+            String filename,
+            Reader reader)
             throws XmlPullParserException,
             IOException, CancelException {
         eventDispatcher.setInput(reader);
@@ -136,7 +140,7 @@ public class GpxToCache {
         boolean markAsComplete = false;
         try {
             Log.d("GeoBeagle", this + ": GpxToCache: load");
-            if (fileAlreadyLoadedChecker.isAlreadyLoaded(source)) {
+            if (fileAlreadyLoadedChecker.isAlreadyLoaded(syncCollectingParameter, source)) {
                 return -1;
             }
 
@@ -151,13 +155,13 @@ public class GpxToCache {
                     throw new CancelException();
                 }
                 // File already loaded.
-                if (!eventDispatcher.handleEvent(eventType)) {
+                if (!eventDispatcher.handleEvent(syncCollectingParameter, eventType)) {
                     return -1;
                 }
             }
 
             // Pick up END_DOCUMENT event as well.
-            eventDispatcher.handleEvent(eventType);
+            eventDispatcher.handleEvent(syncCollectingParameter, eventType);
             markAsComplete = true;
         } finally {
             cacheXmlTagsToSql.close(markAsComplete);

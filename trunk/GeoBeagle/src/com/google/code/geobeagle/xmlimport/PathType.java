@@ -70,9 +70,9 @@ enum PathType {
     },
     GPX_TIME {
         @Override
-        public boolean text(String text, CacheXmlTagHandler cacheXmlTagHandler)
+        public boolean text(SyncCollectingParameter syncCollectingParameter, String text, CacheXmlTagHandler cacheXmlTagHandler)
                 throws IOException {
-            return cacheXmlTagHandler.gpxTime(text);
+            return cacheXmlTagHandler.gpxTime(syncCollectingParameter, text);
         }
     },
     HINT {
@@ -273,6 +273,13 @@ enum PathType {
 
     @SuppressWarnings("unused")
     public void endTag(CacheXmlTagHandler cacheXmlTagHandler) throws IOException {
+    }
+
+    @SuppressWarnings("unused")
+    public boolean text(SyncCollectingParameter syncCollectingParameter,
+            String text,
+            CacheXmlTagHandler cacheXmlTagHandler) throws IOException {
+        return text(text, cacheXmlTagHandler);
     }
 
     @SuppressWarnings("unused")

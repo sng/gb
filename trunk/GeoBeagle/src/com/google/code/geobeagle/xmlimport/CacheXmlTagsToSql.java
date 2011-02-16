@@ -99,8 +99,8 @@ public class CacheXmlTagsToSql extends CacheXmlTagHandler {
     }
 
     @Override
-    public boolean gpxTime(String gpxTime) {
-        return mCacheTagSqlWriter.gpxTime(gpxTime);
+    public boolean gpxTime(SyncCollectingParameter syncCollectingParameter, String gpxTime) {
+        return mCacheTagSqlWriter.gpxTime(gpxTime, syncCollectingParameter);
     }
 
     @Override

@@ -99,13 +99,14 @@ public class CacheTagSqlWriter {
 
     /**
      * @param gpxTime
+     * @param syncCollectingParameter
      * @return true if we should load this gpx; false if the gpx is already
      *         loaded.
      */
-    public boolean gpxTime(String gpxTime) {
+    public boolean gpxTime(String gpxTime, SyncCollectingParameter syncCollectingParameter) {
         String sqlDate = isoTimeToSql(gpxTime);
         Log.d("GeoBeagle", this + ": CacheTagSqlWriter:gpxTime: " + mGpxName);
-        if (mGpxWriter.isGpxAlreadyLoaded(mGpxName, sqlDate)) {
+        if (mGpxWriter.isGpxAlreadyLoaded(syncCollectingParameter, mGpxName, sqlDate)) {
             return false;
         }
         mClearCachesFromSource.clearCaches(mGpxName);

@@ -85,7 +85,8 @@ public class EventDispatcher {
         return xmlPullParser.getEventType();
     }
 
-    public boolean handleEvent(int eventType) throws IOException {
+    public boolean handleEvent(SyncCollectingParameter syncCollectingParameter, int eventType)
+            throws IOException {
         switch (eventType) {
             case XmlPullParser.START_TAG: {
                 String name = xmlPullParser.getName();
@@ -100,7 +101,8 @@ public class EventDispatcher {
                 break;
             }
             case XmlPullParser.TEXT:
-                return eventHandler.text(xmlPathBuilder.getPath(), xmlPullParser.getText());
+                return eventHandler.text(syncCollectingParameter, xmlPathBuilder.getPath(),
+                        xmlPullParser.getText());
         }
         return true;
     }

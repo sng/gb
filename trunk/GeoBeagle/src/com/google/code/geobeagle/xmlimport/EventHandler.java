@@ -24,7 +24,8 @@ public interface EventHandler {
 
     void startTag(String name, String mFullPath) throws IOException;
 
-    boolean text(String fullPath, String text) throws IOException;
+    boolean text(SyncCollectingParameter syncCollectingParameter, String fullPath, String text)
+            throws IOException;
 
     void start(XmlPullParser xmlPullParser);
 }

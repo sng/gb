@@ -49,7 +49,7 @@ public class DetailsXmlToStringTest {
         eventDispatcher.setInput(reader);
         eventDispatcher.open();
         expect(eventDispatcher.getEventType()).andReturn(XmlPullParser.END_DOCUMENT);
-        expect(eventDispatcher.handleEvent(XmlPullParser.END_DOCUMENT)).andReturn(true);
+        expect(eventDispatcher.handleEvent(null, XmlPullParser.END_DOCUMENT)).andReturn(true);
         expect(eventDispatcher.getString()).andReturn("DETAILS");
 
         replayAll();
@@ -62,10 +62,10 @@ public class DetailsXmlToStringTest {
         eventDispatcher.setInput(reader);
         eventDispatcher.open();
         expect(eventDispatcher.getEventType()).andReturn(XmlPullParser.START_DOCUMENT);
-        expect(eventDispatcher.handleEvent(XmlPullParser.START_DOCUMENT)).andReturn(true);
+        expect(eventDispatcher.handleEvent(null, XmlPullParser.START_DOCUMENT)).andReturn(true);
 
         expect(eventDispatcher.next()).andReturn(XmlPullParser.END_DOCUMENT);
-        expect(eventDispatcher.handleEvent(XmlPullParser.END_DOCUMENT)).andReturn(true);
+        expect(eventDispatcher.handleEvent(null, XmlPullParser.END_DOCUMENT)).andReturn(true);
 
         expect(eventDispatcher.getString()).andReturn("DETAILS");
 

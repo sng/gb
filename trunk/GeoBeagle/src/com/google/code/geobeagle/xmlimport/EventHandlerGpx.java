@@ -41,9 +41,11 @@ public class EventHandlerGpx implements EventHandler {
     }
 
     @Override
-    public boolean text(String fullPath, String text)
+    public boolean text(SyncCollectingParameter syncCollectingParameter,
+            String fullPath,
+            String text)
             throws IOException {
-        return GpxPath.fromString(fullPath).text(text, cacheXmlTagHandler);
+        return GpxPath.fromString(fullPath).text(syncCollectingParameter, text, cacheXmlTagHandler);
     }
 
     @Override

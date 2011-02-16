@@ -121,10 +121,12 @@ public enum GpxPath {
         pathType.startTag(xmlPullParser, cacheXmlTagHandler);
     }
 
-    public boolean text(String text, CacheXmlTagHandler cacheXmlTagHandler) throws IOException {
+    public boolean text(SyncCollectingParameter syncCollectingParameter,
+            String text,
+            CacheXmlTagHandler cacheXmlTagHandler) throws IOException {
         String trimmedText = text.trim();
         if (trimmedText.length() <= 0)
             return true;
-        return pathType.text(trimmedText, cacheXmlTagHandler);
+        return pathType.text(syncCollectingParameter, trimmedText, cacheXmlTagHandler);
     }
 }

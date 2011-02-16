@@ -52,7 +52,7 @@ public class CacheImporter {
         params.put("ids", csvIds);
 
         BufferedReader bufferedReader = bufferedReaderFactory.create(params);
-        gpxToCache.load("BCaching.com", bufferedReader);
+        gpxToCache.load(null, "BCaching.com", bufferedReader);
     }
 
 }

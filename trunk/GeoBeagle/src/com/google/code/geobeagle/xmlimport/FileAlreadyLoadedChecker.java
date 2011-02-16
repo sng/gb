@@ -39,7 +39,7 @@ public class FileAlreadyLoadedChecker {
         mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ");
     }
 
-    boolean isAlreadyLoaded(String source) {
+    boolean isAlreadyLoaded(SyncCollectingParameter syncCollectingParameter, String source) {
         int len = source.length();
         String extension = source.substring(Math.max(0, len - 4), len).toLowerCase();
 
@@ -51,7 +51,7 @@ public class FileAlreadyLoadedChecker {
         String sqlDate = mSimpleDateFormat.format(lastModified);
         Log.d("GeoBeagle", "GET NAME: " + sqlDate + ", " + source + ", " + lastModified);
 
-        if (mGpxWriter.isGpxAlreadyLoaded(file.getName(), sqlDate)) {
+        if (mGpxWriter.isGpxAlreadyLoaded(syncCollectingParameter, file.getName(), sqlDate)) {
             return true;
         }
         return false;

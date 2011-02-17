@@ -35,11 +35,11 @@ class DetailsXmlToString {
         int eventType;
         for (eventType = eventDispatcher.getEventType(); eventType != XmlPullParser.END_DOCUMENT; eventType = eventDispatcher
                 .next()) {
-            eventDispatcher.handleEvent(null, eventType);
+            eventDispatcher.handleEvent(eventType);
         }
 
         // Pick up END_DOCUMENT event as well.
-        eventDispatcher.handleEvent(null, eventType);
+        eventDispatcher.handleEvent(eventType);
 
         return eventDispatcher.getString();
     }

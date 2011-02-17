@@ -152,13 +152,13 @@ public class GpxToCache {
                     throw new CancelException();
                 }
                 // File already loaded.
-                if (!eventDispatcher.handleEvent(syncCollectingParameter, eventType)) {
+                if (!eventDispatcher.handleEvent(eventType)) {
                     return -1;
                 }
             }
 
             // Pick up END_DOCUMENT event as well.
-            eventDispatcher.handleEvent(syncCollectingParameter, eventType);
+            eventDispatcher.handleEvent(eventType);
             markAsComplete = true;
         } finally {
             cacheXmlTagsToSql.close(markAsComplete);

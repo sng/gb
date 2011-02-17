@@ -57,12 +57,10 @@ public class EventHandlerSqlAndFileWriter implements EventHandler {
     }
 
     @Override
-    public boolean text(SyncCollectingParameter syncCollectingParameter,
-            String fullPath,
-            String text) throws IOException {
+    public boolean text(String fullPath, String text) throws IOException {
         boolean ret = true;
         for (EventHandler eventHandler : eventHandlers) {
-            ret &= eventHandler.text(syncCollectingParameter, fullPath, text);
+            ret &= eventHandler.text(fullPath, text);
         }
         return ret;
     }

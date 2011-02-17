@@ -112,10 +112,10 @@ public class CacheXmlTagsToSqlTest {
 
     @Test
     public void testGpxTime() {
-        expect(mCacheTagWriter.gpxTime("today", null)).andReturn(true);
+        expect(mCacheTagWriter.gpxTime("today")).andReturn(true);
 
         PowerMock.replayAll();
-        assertTrue(new CacheXmlTagsToSql(mCacheTagWriter, null, null, null).gpxTime(null, "today"));
+        assertTrue(new CacheXmlTagsToSql(mCacheTagWriter, null, null, null).gpxTime("today"));
         PowerMock.verifyAll();
     }
 

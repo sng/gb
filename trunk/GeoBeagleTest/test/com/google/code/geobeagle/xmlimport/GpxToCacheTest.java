@@ -98,7 +98,7 @@ public class GpxToCacheTest extends GeoBeagleTest {
         xmlWriter.open("foo.gpx");
         eventDispatcher.open();
         expect(eventDispatcher.getEventType()).andReturn(XmlPullParser.END_DOCUMENT);
-        expect(eventDispatcher.handleEvent(null, XmlPullParser.END_DOCUMENT)).andReturn(true);
+        expect(eventDispatcher.handleEvent(XmlPullParser.END_DOCUMENT)).andReturn(true);
         cacheXmlTagsToSql.close(true);
         expect(cacheXmlTagsToSql.getNumberOfCachesLoad()).andReturn(0);
 
@@ -119,11 +119,11 @@ public class GpxToCacheTest extends GeoBeagleTest {
         xmlWriter.open("foo.gpx");
         eventDispatcher.open();
         expect(eventDispatcher.getEventType()).andReturn(XmlPullParser.START_DOCUMENT);
-        expect(eventDispatcher.handleEvent(null, XmlPullParser.START_DOCUMENT)).andReturn(true);
+        expect(eventDispatcher.handleEvent(XmlPullParser.START_DOCUMENT)).andReturn(true);
         expect(abortState.isAborted()).andReturn(false);
 
         expect(eventDispatcher.next()).andReturn(XmlPullParser.END_DOCUMENT);
-        expect(eventDispatcher.handleEvent(null, XmlPullParser.END_DOCUMENT)).andReturn(true);
+        expect(eventDispatcher.handleEvent(XmlPullParser.END_DOCUMENT)).andReturn(true);
         cacheXmlTagsToSql.close(true);
         expect(cacheXmlTagsToSql.getNumberOfCachesLoad()).andReturn(12);
 
@@ -160,18 +160,18 @@ public class GpxToCacheTest extends GeoBeagleTest {
         xmlWriter.open("foo.gpx");
         eventDispatcher.open();
         expect(eventDispatcher.getEventType()).andReturn(XmlPullParser.START_DOCUMENT);
-        expect(eventDispatcher.handleEvent(null, XmlPullParser.START_DOCUMENT)).andReturn(true);
+        expect(eventDispatcher.handleEvent(XmlPullParser.START_DOCUMENT)).andReturn(true);
         expect(abortState.isAborted()).andReturn(false);
 
         expect(eventDispatcher.next()).andReturn(XmlPullParser.START_TAG);
-        expect(eventDispatcher.handleEvent(null, XmlPullParser.START_TAG)).andReturn(true);
+        expect(eventDispatcher.handleEvent(XmlPullParser.START_TAG)).andReturn(true);
         expect(abortState.isAborted()).andReturn(false);
 
         expect(eventDispatcher.next()).andReturn(XmlPullParser.START_TAG);
-        expect(eventDispatcher.handleEvent(null, XmlPullParser.START_TAG)).andReturn(true);
+        expect(eventDispatcher.handleEvent(XmlPullParser.START_TAG)).andReturn(true);
         expect(abortState.isAborted()).andReturn(false);
         expect(eventDispatcher.next()).andReturn(XmlPullParser.END_DOCUMENT);
-        expect(eventDispatcher.handleEvent(null, XmlPullParser.END_DOCUMENT)).andReturn(true);
+        expect(eventDispatcher.handleEvent(XmlPullParser.END_DOCUMENT)).andReturn(true);
         cacheXmlTagsToSql.close(true);
         expect(cacheXmlTagsToSql.getNumberOfCachesLoad()).andReturn(12);
 

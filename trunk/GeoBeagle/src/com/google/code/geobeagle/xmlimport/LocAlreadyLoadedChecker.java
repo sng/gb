@@ -50,7 +50,7 @@ public class LocAlreadyLoadedChecker {
         String sqlDate = simpleDateFormat.format(lastModified);
         Log.d("GeoBeagle", "GET NAME: " + sqlDate + ", " + source + ", " + lastModified);
 
-        if (gpxWriter.isGpxAlreadyLoaded(syncCollectingParameter, file.getName(), sqlDate)) {
+        if (gpxWriter.isGpxAlreadyLoaded(file.getName(), sqlDate)) {
             return true;
         }
         return false;

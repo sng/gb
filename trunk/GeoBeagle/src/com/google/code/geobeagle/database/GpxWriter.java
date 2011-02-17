@@ -47,9 +47,7 @@ public class GpxWriter {
      * @param gpxTimeString
      * @return
      */
-    public boolean isGpxAlreadyLoaded(SyncCollectingParameter scp,
-            String gpxName,
-            String gpxTimeString) {
+    public boolean isGpxAlreadyLoaded(String gpxName, String gpxTimeString) {
         syncCollectingParameter.Log("loading: " + gpxName);
         Cursor cursor = null;
         ISQLiteDatabase sqliteDatabase;

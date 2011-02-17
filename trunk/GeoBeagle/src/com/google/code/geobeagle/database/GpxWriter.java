@@ -29,11 +29,14 @@ public class GpxWriter {
     private final Provider<ISQLiteDatabase> sqliteProvider;
     private final String[] queryArgs = new String[1];
     private final SimpleDateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final SyncCollectingParameter syncCollectingParameter;
 
     @Inject
-    GpxWriter(Provider<ISQLiteDatabase> sqliteProvider) {
+    GpxWriter(Provider<ISQLiteDatabase> sqliteProvider,
+            SyncCollectingParameter syncCollectingParameter) {
         this.sqliteProvider = sqliteProvider;
         this.gpxTime = "2000-01-01 01:00:00.000";
+        this.syncCollectingParameter = syncCollectingParameter;
     }
 
     /**
@@ -44,7 +47,7 @@ public class GpxWriter {
      * @param gpxTimeString
      * @return
      */
-    public boolean isGpxAlreadyLoaded(SyncCollectingParameter syncCollectingParameter,
+    public boolean isGpxAlreadyLoaded(SyncCollectingParameter scp,
             String gpxName,
             String gpxTimeString) {
         syncCollectingParameter.Log("loading: " + gpxName);

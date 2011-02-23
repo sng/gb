@@ -65,6 +65,7 @@ public class EventHandlerSqlAndFileWriter implements EventHandler {
         return ret;
     }
 
+
     @Override
     public void start(XmlPullParser xmlPullParser) {
         for (EventHandler eventHandler : eventHandlers) {

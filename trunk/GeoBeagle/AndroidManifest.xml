@@ -9,11 +9,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.google.code.geobeagle" android:versionName="1.3.8"
 	android:versionCode="197">
-	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="9"/>
+	<uses-sdk android:minSdkVersion="11" />
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:name=".GeoBeagleApplication" android:debuggable="false">
 		<uses-library android:name="com.google.android.maps" />
-
 		<activity android:name=".activity.main.CompassActivity"
 			android:label="@string/app_name">
 			<intent-filter>
@@ -26,7 +25,7 @@
 		</activity>
 
 		<activity android:name=".activity.cachelist.CacheListActivity"
-			android:label="@string/app_name" android:configChanges="orientation|keyboardHidden">
+			android:label="@string/app_name" android:configChanges="keyboardHidden">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -47,6 +46,27 @@
 				android:resource="@xml/searchable" />
 		</activity>
 
+		<activity android:name=".activity.cachelist.CacheListActivityHoneycomb"
+			android:label="@string/app_name" android:configChanges="keyboardHidden">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+			<intent-filter>
+				<category android:name="android.intent.category.DEFAULT" />
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<data android:mimeType="application/octet-stream"
+					android:pathPattern=".*\\.gpx" />
+				<data android:mimeType="application/octet-stream"
+					android:pathPattern=".*\\.loc" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.SEARCH" />
+			</intent-filter>
+			<meta-data android:name="android.app.searchable"
+				android:resource="@xml/searchable" />
+		</activity>
 		<activity android:name=".activity.searchonline.SearchOnlineActivity"
 			android:label="@string/app_name" />
 

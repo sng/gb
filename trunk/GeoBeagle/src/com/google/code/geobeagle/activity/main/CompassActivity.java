@@ -101,6 +101,9 @@ public class CompassActivity extends GuiceActivity {
             setIntent((Intent)getLastNonConfigurationInstance());
         }
         final ErrorDisplayer errorDisplayer = injector.getInstance(ErrorDisplayer.class);
+        // Intent geoMapActivityIntent = new Intent();
+        // geoMapActivityIntent.setClassName("com.google.code.geobeagle",
+        // "com.google.code.geobeagle.activity.map.GeoMapActivity.class");
         final Intent geoMapActivityIntent = new Intent(this, GeoMapActivity.class);
         final OnClickListenerIntentStarter onClickListenerMapPage = new OnClickListenerIntentStarter(
                 new IntentStarterGeo(this, geoMapActivityIntent), errorDisplayer);

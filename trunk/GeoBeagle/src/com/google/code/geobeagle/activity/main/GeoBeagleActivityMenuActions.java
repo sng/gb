@@ -17,6 +17,7 @@ package com.google.code.geobeagle.activity.main;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.actions.MenuActionBase;
 import com.google.code.geobeagle.actions.MenuActionCacheList;
+import com.google.code.geobeagle.actions.MenuActionCacheListHoneycomb;
 import com.google.code.geobeagle.actions.MenuActionEditGeocache;
 import com.google.code.geobeagle.actions.MenuActionSettings;
 import com.google.code.geobeagle.actions.MenuActions;
@@ -37,6 +38,8 @@ class GeoBeagleActivityMenuActions extends MenuActions {
         add(new MenuActionBase(R.string.menu_settings,
                 injector.getInstance(MenuActionSettings.class)));
         add(new MenuActionBase(R.string.web_page, injector.getInstance(MenuActionWebPage.class)));
+        add(new MenuActionBase(R.string.menu_cache_list_hc,
+                injector.getInstance(MenuActionCacheListHoneycomb.class)));
     }
 
 }

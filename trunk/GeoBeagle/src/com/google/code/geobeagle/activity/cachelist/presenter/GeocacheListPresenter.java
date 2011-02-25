@@ -35,6 +35,7 @@ import com.google.inject.Provider;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ListFragment;
 import android.hardware.SensorManager;
 import android.location.LocationListener;
 import android.util.Log;
@@ -51,7 +52,7 @@ public class GeocacheListPresenter implements Pausable {
     private final GeocacheListAdapter mGeocacheListAdapter;
     private final GeocacheVectors mGeocacheVectors;
     private final InflatedGpsStatusWidget mInflatedGpsStatusWidget;
-    private final ListActivity mListActivity;
+    private final Activity mListActivity;
     private final LocationControlBuffered mLocationControlBuffered;
     private final SensorManagerWrapper mSensorManagerWrapper;
     private final UpdateGpsWidgetRunnable mUpdateGpsWidgetRunnable;
@@ -88,7 +89,7 @@ public class GeocacheListPresenter implements Pausable {
         mGeocacheVectors = geocacheVectors;
         mInflatedGpsStatusWidget = inflatedGpsStatusWidget;
         mShakeWaker = shakeWaker;
-        mListActivity = (ListActivity)listActivity;
+        mListActivity = listActivity;
         mLocationControlBuffered = locationControlBuffered;
         mUpdateGpsWidgetRunnable = updateGpsWidgetRunnable;
         mSensorManagerWrapper = sensorManagerWrapper;
@@ -102,11 +103,27 @@ public class GeocacheListPresenter implements Pausable {
 
     public void onCreate() {
         mListActivity.setContentView(R.layout.cache_list);
-        final ListView listView = mListActivity.getListView();
+        ListActivity listActivity = (ListActivity)mListActivity;
+        final ListView listView = listActivity.getListView();
         NoCachesView noCachesView = (NoCachesView)listView.getEmptyView();
         noCachesView.setSearchTarget(mSearchTarget);
         listView.addHeaderView((View)mInflatedGpsStatusWidget.getTag());
-        mListActivity.setListAdapter(mGeocacheListAdapter);
+        listActivity.setListAdapter(mGeocacheListAdapter);
+        listView.setOnCreateContextMenuListener(new CacheListOnCreateContextMenuListener(
+                mGeocacheVectors));
+        listView.setOnScrollListener(mScrollListener);
+
+        // final List<Sensor> sensorList =
+        // mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
+        // mCompassSensor = sensorList.get(0);
+    }
+
+    public void onCreateFragment(ListFragment listFragment) {
+        ListView listView = listFragment.getListView();
+        NoCachesView noCachesView = (NoCachesView)listView.getEmptyView();
+        noCachesView.setSearchTarget(mSearchTarget);
+        listView.addHeaderView((View)mInflatedGpsStatusWidget.getTag());
+        listFragment.setListAdapter(mGeocacheListAdapter);
         listView.setOnCreateContextMenuListener(new CacheListOnCreateContextMenuListener(
                 mGeocacheVectors));
         listView.setOnScrollListener(mScrollListener);

@@ -18,6 +18,7 @@ import com.google.code.geobeagle.activity.ActivitySaver;
 import com.google.code.geobeagle.activity.ActivityType;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter;
+import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenterHoneycomb;
 import com.google.code.geobeagle.database.DbFrontend;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -25,6 +26,7 @@ import com.google.inject.Provider;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -81,13 +83,18 @@ public class CacheListDelegate {
         mDbFrontendProvider = dbFrontendProvider;
         mActivityVisible = activityVisible;
     }
-    
+
     @Inject
     public CacheListDelegate(Injector injector) {
         mActivitySaver = injector.getInstance(ActivitySaver.class);
         mCacheListRefresh = injector.getInstance(CacheListRefresh.class);
         mController = injector.getInstance(GeocacheListController.class);
-        mPresenter = injector.getInstance(GeocacheListPresenter.class);
+        int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
+        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
+            mPresenter = injector.getInstance(GeocacheListPresenterHoneycomb.class);
+        } else {
+            mPresenter = injector.getInstance(GeocacheListPresenter.class);
+        }
         mImportIntentManager = injector.getInstance(ImportIntentManager.class);
         mDbFrontendProvider = injector.getProvider(DbFrontend.class);
         mActivityVisible = injector.getInstance(ActivityVisible.class);
@@ -97,8 +104,8 @@ public class CacheListDelegate {
         return mController.onContextItemSelected(menuItem);
     }
 
-    public void onCreate() {
-        mPresenter.onCreate();
+    public void onCreate(CacheListActivity cacheListActivity) {
+        mPresenter.onCreate(cacheListActivity);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

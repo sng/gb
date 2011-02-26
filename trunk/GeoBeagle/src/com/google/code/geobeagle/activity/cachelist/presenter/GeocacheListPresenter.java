@@ -33,9 +33,6 @@ import com.google.code.geobeagle.shakewaker.ShakeWaker;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-import android.app.Activity;
-import android.app.ListActivity;
-import android.app.ListFragment;
 import android.hardware.SensorManager;
 import android.location.LocationListener;
 import android.util.Log;
@@ -49,20 +46,19 @@ public class GeocacheListPresenter implements Pausable {
     private final LocationListener mCombinedLocationListener;
     private final CombinedLocationManager mCombinedLocationManager;
     private final Provider<CacheListCompassListener> mCacheListCompassListenerProvider;
-    private final GeocacheListAdapter mGeocacheListAdapter;
-    private final GeocacheVectors mGeocacheVectors;
-    private final InflatedGpsStatusWidget mInflatedGpsStatusWidget;
-    private final Activity mListActivity;
+    protected final GeocacheListAdapter mGeocacheListAdapter;
+    protected final GeocacheVectors mGeocacheVectors;
+    protected final InflatedGpsStatusWidget mInflatedGpsStatusWidget;
     private final LocationControlBuffered mLocationControlBuffered;
     private final SensorManagerWrapper mSensorManagerWrapper;
     private final UpdateGpsWidgetRunnable mUpdateGpsWidgetRunnable;
-    private final CacheListViewScrollListener mScrollListener;
+    protected final CacheListViewScrollListener mScrollListener;
     private final GpsStatusListener mGpsStatusListener;
     private final UpdateFilterWorker mUpdateFilterWorker;
     private final FilterCleanliness mFilterCleanliness;
     private final ShakeWaker mShakeWaker;
     private final UpdateFilterMediator mUpdateFilterMediator;
-    private final SearchTarget mSearchTarget;
+    final SearchTarget mSearchTarget;
 
     @Inject
     public GeocacheListPresenter(CombinedLocationListener combinedLocationListener,
@@ -71,7 +67,6 @@ public class GeocacheListPresenter implements Pausable {
             GeocacheListAdapter geocacheListAdapter,
             GeocacheVectors geocacheVectors,
             InflatedGpsStatusWidget inflatedGpsStatusWidget,
-            Activity listActivity,
             LocationControlBuffered locationControlBuffered,
             SensorManagerWrapper sensorManagerWrapper,
             UpdateGpsWidgetRunnable updateGpsWidgetRunnable,
@@ -89,7 +84,6 @@ public class GeocacheListPresenter implements Pausable {
         mGeocacheVectors = geocacheVectors;
         mInflatedGpsStatusWidget = inflatedGpsStatusWidget;
         mShakeWaker = shakeWaker;
-        mListActivity = listActivity;
         mLocationControlBuffered = locationControlBuffered;
         mUpdateGpsWidgetRunnable = updateGpsWidgetRunnable;
         mSensorManagerWrapper = sensorManagerWrapper;
@@ -101,36 +95,17 @@ public class GeocacheListPresenter implements Pausable {
         mSearchTarget = searchTarget;
     }
 
-    public void onCreate() {
-        mListActivity.setContentView(R.layout.cache_list);
-        ListActivity listActivity = (ListActivity)mListActivity;
-        final ListView listView = listActivity.getListView();
+    public void onCreate(ListFragtivity listFragitivity) {
+        Log.d("GeoBeagle", "GeocacheListPresenter::onCreate");
+        listFragitivity.setContentView(R.layout.cache_list);
+        ListView listView = listFragitivity.getListView();
         NoCachesView noCachesView = (NoCachesView)listView.getEmptyView();
         noCachesView.setSearchTarget(mSearchTarget);
         listView.addHeaderView((View)mInflatedGpsStatusWidget.getTag());
-        listActivity.setListAdapter(mGeocacheListAdapter);
+        listFragitivity.setListAdapter(mGeocacheListAdapter);
         listView.setOnCreateContextMenuListener(new CacheListOnCreateContextMenuListener(
                 mGeocacheVectors));
         listView.setOnScrollListener(mScrollListener);
-
-        // final List<Sensor> sensorList =
-        // mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
-        // mCompassSensor = sensorList.get(0);
-    }
-
-    public void onCreateFragment(ListFragment listFragment) {
-        ListView listView = listFragment.getListView();
-        NoCachesView noCachesView = (NoCachesView)listView.getEmptyView();
-        noCachesView.setSearchTarget(mSearchTarget);
-        listView.addHeaderView((View)mInflatedGpsStatusWidget.getTag());
-        listFragment.setListAdapter(mGeocacheListAdapter);
-        listView.setOnCreateContextMenuListener(new CacheListOnCreateContextMenuListener(
-                mGeocacheVectors));
-        listView.setOnScrollListener(mScrollListener);
-
-        // final List<Sensor> sensorList =
-        // mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
-        // mCompassSensor = sensorList.get(0);
     }
 
     @Override
@@ -164,4 +139,5 @@ public class GeocacheListPresenter implements Pausable {
         mShakeWaker.register();
         Log.d("GeoBeagle", "GeocacheListPresenter onResume done");
     }
+
 }

@@ -40,7 +40,7 @@ class GeoBeagleActivityMenuActions extends MenuActions {
                 injector.getInstance(MenuActionSettings.class)));
         add(new MenuActionBase(R.string.web_page, injector.getInstance(MenuActionWebPage.class)));
         int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
-        if (sdkVersion > Build.VERSION_CODES.HONEYCOMB) {
+        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
             add(new MenuActionBase(R.string.menu_cache_list_hc,
                     injector.getInstance(MenuActionCacheListHoneycomb.class)));
         }

@@ -20,6 +20,7 @@ import com.google.code.geobeagle.SuggestionProvider;
 import com.google.code.geobeagle.activity.ActivityRestorer;
 import com.google.code.geobeagle.activity.ActivityType;
 import com.google.code.geobeagle.activity.cachelist.actions.context.delete.ContextActionDeleteDialogHelper;
+import com.google.code.geobeagle.activity.cachelist.presenter.ListFragtivity;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
 import com.google.inject.Injector;
@@ -40,7 +41,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
 
-public class CacheListActivity extends GuiceListActivity {
+public class CacheListActivity extends GuiceListActivity implements ListFragtivity {
     private CacheListDelegate mCacheListDelegate;
 
     @Override
@@ -63,8 +64,7 @@ public class CacheListActivity extends GuiceListActivity {
         inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
 
         mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
-
-        mCacheListDelegate.onCreate();
+        mCacheListDelegate.onCreate(this);
         Intent intent = getIntent();
 
         if (!Intent.ACTION_SEARCH.equals(intent.getAction())) {

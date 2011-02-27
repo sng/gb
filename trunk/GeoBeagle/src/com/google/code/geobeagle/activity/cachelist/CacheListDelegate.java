@@ -16,6 +16,7 @@ package com.google.code.geobeagle.activity.cachelist;
 
 import com.google.code.geobeagle.activity.ActivitySaver;
 import com.google.code.geobeagle.activity.ActivityType;
+import com.google.code.geobeagle.activity.cachelist.CacheListActivityHoneycomb.CacheListFragment;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter;
 import com.google.code.geobeagle.database.DbFrontend;
@@ -81,7 +82,7 @@ public class CacheListDelegate {
         mDbFrontendProvider = dbFrontendProvider;
         mActivityVisible = activityVisible;
     }
-    
+
     @Inject
     public CacheListDelegate(Injector injector) {
         mActivitySaver = injector.getInstance(ActivitySaver.class);
@@ -101,6 +102,9 @@ public class CacheListDelegate {
         mPresenter.onCreate();
     }
 
+    public void onCreateFragment(CacheListFragment cacheListFragment) {
+        mPresenter.onCreateFragment(cacheListFragment);
+    }
     public boolean onCreateOptionsMenu(Menu menu) {
         return mController.onCreateOptionsMenu(menu);
     }

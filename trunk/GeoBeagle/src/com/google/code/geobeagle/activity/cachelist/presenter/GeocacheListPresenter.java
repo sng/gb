@@ -33,6 +33,7 @@ import com.google.code.geobeagle.shakewaker.ShakeWaker;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.hardware.SensorManager;
 import android.location.LocationListener;
@@ -69,7 +70,7 @@ public class GeocacheListPresenter implements Pausable {
             GeocacheListAdapter geocacheListAdapter,
             GeocacheVectors geocacheVectors,
             InflatedGpsStatusWidget inflatedGpsStatusWidget,
-            ListActivity listActivity,
+            Activity listActivity,
             LocationControlBuffered locationControlBuffered,
             SensorManagerWrapper sensorManagerWrapper,
             UpdateGpsWidgetRunnable updateGpsWidgetRunnable,
@@ -87,7 +88,7 @@ public class GeocacheListPresenter implements Pausable {
         mGeocacheVectors = geocacheVectors;
         mInflatedGpsStatusWidget = inflatedGpsStatusWidget;
         mShakeWaker = shakeWaker;
-        mListActivity = listActivity;
+        mListActivity = (ListActivity)listActivity;
         mLocationControlBuffered = locationControlBuffered;
         mUpdateGpsWidgetRunnable = updateGpsWidgetRunnable;
         mSensorManagerWrapper = sensorManagerWrapper;

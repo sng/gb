@@ -30,6 +30,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.util.Log;
@@ -46,6 +47,12 @@ public class CacheListActivity extends GuiceListActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         return mCacheListDelegate.onContextItemSelected(item) || super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setContentView(R.layout.cache_list);
     }
 
     @Override

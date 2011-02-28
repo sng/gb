@@ -45,14 +45,39 @@ public class CacheListActivity extends GuiceListActivity {
     private CacheListDelegate mCacheListDelegate;
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setContentView(R.layout.cache_list);
+    }
+
+    @Override
     public boolean onContextItemSelected(MenuItem item) {
         return mCacheListDelegate.onContextItemSelected(item) || super.onContextItemSelected(item);
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setContentView(R.layout.cache_list);
+    public Dialog onCreateDialog(int idDialog) {
+        // idDialog must be CACHE_LIST_DIALOG_CONFIRM_DELETE.
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View confirmDeleteCacheView = LayoutInflater.from(this).inflate(
+                R.layout.confirm_delete_cache, null);
+
+        builder.setNegativeButton(R.string.confirm_delete_negative, new OnClickCancelListener());
+        builder.setView(confirmDeleteCacheView);
+
+        return getInjector().getInstance(ContextActionDeleteDialogHelper.class).onCreateDialog(
+                builder);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        return mCacheListDelegate.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return mCacheListDelegate.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -82,34 +107,9 @@ public class CacheListActivity extends GuiceListActivity {
     }
 
     @Override
-    public Dialog onCreateDialog(int idDialog) {
-        // idDialog must be CACHE_LIST_DIALOG_CONFIRM_DELETE.
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final View confirmDeleteCacheView = LayoutInflater.from(this).inflate(
-                R.layout.confirm_delete_cache, null);
-
-        builder.setNegativeButton(R.string.confirm_delete_negative, new OnClickCancelListener());
-        builder.setView(confirmDeleteCacheView);
-
-        return getInjector().getInstance(ContextActionDeleteDialogHelper.class).onCreateDialog(
-                builder);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        return mCacheListDelegate.onCreateOptionsMenu(menu);
-    }
-
-    @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         mCacheListDelegate.onListItemClick(position);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return mCacheListDelegate.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override

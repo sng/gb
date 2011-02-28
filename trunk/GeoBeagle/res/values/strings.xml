@@ -117,7 +117,6 @@
 	</array>
 	<string name="menu_choose_filter">Choose filter</string>
 	<string name="menu_cache_list">Cache List</string>
-	<string name="menu_cache_list_hc">Cache List (Honeycomb)</string>
 	<string name="menu_search_online">Search Online</string>
 	<string name="menu_settings">Settings</string>
 	<string name="menu_edit_geocache">Edit</string>

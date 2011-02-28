@@ -32,7 +32,8 @@ public class GeocacheListAdapter extends BaseAdapter {
 
     @Inject
     public GeocacheListAdapter(GeocacheVectors geocacheVectors,
-            GeocacheSummaryRowInflater geocacheSummaryRowInflater, ActivityVisible activityVisible) {
+            GeocacheSummaryRowInflater geocacheSummaryRowInflater,
+            ActivityVisible activityVisible) {
         mGeocacheVectors = geocacheVectors;
         mGeocacheSummaryRowInflater = geocacheSummaryRowInflater;
         mActivityVisible = activityVisible;

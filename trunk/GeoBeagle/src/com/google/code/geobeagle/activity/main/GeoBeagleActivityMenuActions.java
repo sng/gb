@@ -38,4 +38,5 @@ class GeoBeagleActivityMenuActions extends MenuActions {
                 injector.getInstance(MenuActionSettings.class)));
         add(new MenuActionBase(R.string.web_page, injector.getInstance(MenuActionWebPage.class)));
     }
+
 }

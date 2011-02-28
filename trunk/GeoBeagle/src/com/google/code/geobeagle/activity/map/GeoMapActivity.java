@@ -122,7 +122,7 @@ public class GeoMapActivity extends GuiceMapActivity {
 
     @Override
     protected boolean isRouteDisplayed() {
-        // TODO Auto-generated method stub
+        // This application doesn't use routes
         return false;
     }
 }

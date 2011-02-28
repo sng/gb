@@ -52,6 +52,8 @@ public class CombinedLocationManager {
     public void requestLocationUpdates(int minTime,
             int minDistance,
             LocationListener locationListener) {
+        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime,
+                minDistance, locationListener);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance,
                 locationListener);
         mLocationListeners.add(locationListener);

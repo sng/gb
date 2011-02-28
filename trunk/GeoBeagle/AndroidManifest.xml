@@ -13,6 +13,7 @@
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:name=".GeoBeagleApplication" android:debuggable="false">
 		<uses-library android:name="com.google.android.maps" />
+
 		<activity android:name=".activity.main.CompassActivity"
 			android:label="@string/app_name">
 			<intent-filter>

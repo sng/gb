@@ -162,4 +162,5 @@ public class CacheListActivity extends GuiceListActivity {
         Log.d("GeoBeagle", "CacheListActivity onResume");
         mCacheListDelegate.onResume();
     }
+
 }

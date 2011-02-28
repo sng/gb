@@ -137,8 +137,6 @@ public class GeocacheListPresenter implements Pausable {
 
         mCombinedLocationManager.addGpsStatusListener(mGpsStatusListener);
 
-        // mSensorManager.registerListener(mCompassListener, mCompassSensor,
-        // SensorManager.SENSOR_DELAY_UI);
         mUpdateGpsWidgetRunnable.run();
         mSensorManagerWrapper.registerListener(mCompassListener, SensorManager.SENSOR_ORIENTATION,
                 SensorManager.SENSOR_DELAY_UI);

@@ -14,88 +14,146 @@
 
 package com.google.code.geobeagle.activity.cachelist;
 
+import com.google.code.geobeagle.OnClickCancelListener;
 import com.google.code.geobeagle.R;
+import com.google.code.geobeagle.SuggestionProvider;
+import com.google.code.geobeagle.activity.ActivityRestorer;
+import com.google.code.geobeagle.activity.ActivityType;
+import com.google.code.geobeagle.activity.cachelist.actions.context.delete.ContextActionDeleteDialogHelper;
+import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
+import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
 import com.google.inject.Injector;
 
-import roboguice.activity.GuiceActivity;
+import roboguice.activity.GuiceListActivity;
 
-import android.app.Activity;
-import android.app.ListFragment;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ListView;
 
-public class CacheListActivityHoneycomb extends GuiceActivity {
-    public static class CacheListFragment extends ListFragment {
-
-        private CacheListDelegate mCacheListDelegate;
-
-        @Override
-        public void onActivityCreated(Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-            mCacheListDelegate.onCreateFragment(this);
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            CacheListActivityHoneycomb cacheListActivity = (CacheListActivityHoneycomb)activity;
-            Injector injector = cacheListActivity.getInjector();
-            mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater,
-                ViewGroup container,
-                Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.cache_list, container, false);
-        }
-
-        @Override
-        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-            super.onCreateOptionsMenu(menu, inflater);
-            mCacheListDelegate.onCreateOptionsMenu(menu);
-        }
-
-        @Override
-        public void onListItemClick(ListView l, View v, int position, long id) {
-            super.onListItemClick(l, v, position, id);
-            mCacheListDelegate.onListItemClick(position);
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            return mCacheListDelegate.onOptionsItemSelected(item)
-                    || super.onOptionsItemSelected(item);
-        }
-
-        @Override
-        public void onPause() {
-            mCacheListDelegate.onPause();
-            super.onPause();
-        }
-
-        @Override
-        public void onResume() {
-            super.onResume();
-            mCacheListDelegate.onResume();
-        }
-    }
+public class CacheListActivityHoneycomb extends GuiceListActivity {
+    private CacheListDelegate mCacheListDelegate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            CacheListFragment cacheListFragment = new CacheListFragment();
-            cacheListFragment.setArguments(getIntent().getExtras());
-            getFragmentManager().beginTransaction().add(android.R.id.content, cacheListFragment)
-                    .commit();
+        Log.d("GeoBeagle", "CacheListActivityHoneycomb::onCreate");
+        CacheListFragment cacheListFragment = new CacheListFragment();
+        cacheListFragment.setArguments(getIntent().getExtras());
+        getFragmentManager().beginTransaction().add(android.R.id.content, cacheListFragment)
+                .commit();
+
+        requestWindowFeature(Window.FEATURE_PROGRESS);
+
+        final Injector injector = this.getInjector();
+
+        final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
+                .getInstance(InflatedGpsStatusWidget.class);
+        final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector
+                .getInstance(GpsStatusWidgetDelegate.class);
+        inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
+
+        mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
+
+        mCacheListDelegate.onCreate();
+        Intent intent = getIntent();
+
+        if (!Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            injector.getInstance(ActivityRestorer.class).restore(getIntent().getFlags(),
+                    ActivityType.CACHE_LIST);
         }
+        Log.d("GeoBeagle", "Done creating CacheListActivity");
     }
 
+    public CacheListDelegate getCacheListDelegate() {
+        return mCacheListDelegate;
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        return mCacheListDelegate.onContextItemSelected(item) || super.onContextItemSelected(item);
+    }
+
+    @Override
+    public Dialog onCreateDialog(int idDialog) {
+        // idDialog must be CACHE_LIST_DIALOG_CONFIRM_DELETE.
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View confirmDeleteCacheView = LayoutInflater.from(this).inflate(
+                R.layout.confirm_delete_cache, null);
+
+        builder.setNegativeButton(R.string.confirm_delete_negative, new OnClickCancelListener());
+        builder.setView(confirmDeleteCacheView);
+
+        return getInjector().getInstance(ContextActionDeleteDialogHelper.class).onCreateDialog(
+                builder);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        boolean result = super.onCreateOptionsMenu(menu);
+        return result;
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        mCacheListDelegate.onListItemClick(position);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("GeoBeagle", "CacheListActivityHoneycomb::onOptionsItemSelected: " + item);
+
+        return mCacheListDelegate.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("GeoBeagle", "CacheListActivity onPause");
+        /*
+         * cacheListDelegate closes the database, it must be called before
+         * super.onPause because the guice activity onPause nukes the database
+         * object from the guice map.
+         */
+        mCacheListDelegate.onPause();
+        super.onPause();
+        Log.d("GeoBeagle", "CacheListActivity onPauseComplete");
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        getInjector().getInstance(ContextActionDeleteDialogHelper.class).onPrepareDialog(dialog);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Intent intent = getIntent();
+        Injector injector = this.getInjector();
+
+        SearchTarget searchTarget = injector.getInstance(SearchTarget.class);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            searchTarget.setTarget(query);
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
+
+        } else {
+            searchTarget.setTarget(null);
+        }
+        Log.d("GeoBeagle", "CacheListActivity onResume");
+        mCacheListDelegate.onResume();
+    }
 }

@@ -35,6 +35,7 @@ import com.google.inject.Provider;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ListFragment;
 import android.hardware.SensorManager;
 import android.location.LocationListener;
 import android.util.Log;
@@ -48,7 +49,6 @@ public class GeocacheListPresenter implements Pausable {
     private final LocationListener combinedLocationListener;
     private final CombinedLocationManager combinedLocationManager;
     private final Provider<CacheListCompassListener> cacheListCompassListenerProvider;
-    private final GeocacheListAdapter geocacheListAdapter;
     private final GeocacheVectors geocacheVectors;
     private final InflatedGpsStatusWidget inflatedGpsStatusWidget;
     private final ListActivity listActivity;
@@ -62,12 +62,13 @@ public class GeocacheListPresenter implements Pausable {
     private final ShakeWaker shakeWaker;
     private final UpdateFilterMediator updateFilterMediator;
     private final SearchTarget searchTarget;
+    private final ListFragtivityOnCreateHandler listFragtivityOnCreateHandler;
 
     @Inject
     public GeocacheListPresenter(CombinedLocationListener combinedLocationListener,
             CombinedLocationManager combinedLocationManager,
+            ListFragtivityOnCreateHandler listFragtivityOnCreateHandler,
             Provider<CacheListCompassListener> cacheListCompassListenerProvider,
-            GeocacheListAdapter geocacheListAdapter,
             GeocacheVectors geocacheVectors,
             InflatedGpsStatusWidget inflatedGpsStatusWidget,
             Activity listActivity,
@@ -84,7 +85,6 @@ public class GeocacheListPresenter implements Pausable {
         this.combinedLocationListener = combinedLocationListener;
         this.combinedLocationManager = combinedLocationManager;
         this.cacheListCompassListenerProvider = cacheListCompassListenerProvider;
-        this.geocacheListAdapter = geocacheListAdapter;
         this.geocacheVectors = geocacheVectors;
         this.inflatedGpsStatusWidget = inflatedGpsStatusWidget;
         this.shakeWaker = shakeWaker;
@@ -98,18 +98,79 @@ public class GeocacheListPresenter implements Pausable {
         this.filterCleanliness = filterCleanliness;
         this.updateFilterMediator = updateFilterMediator;
         this.searchTarget = searchTarget;
+        this.listFragtivityOnCreateHandler = listFragtivityOnCreateHandler;
+    }
+
+    public static interface ListFragtivityOnCreateHandler {
+        void onCreateActivity(ListActivity listActivity,
+                GeocacheListPresenter geocacheListPresenter);
+
+        void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
+                Object listFragmentParam);
+    }
+
+    public static class ListActivityOnCreateHandler implements ListFragtivityOnCreateHandler {
+        private final GeocacheListAdapter geocacheListAdapter;
+
+        @Inject
+        public ListActivityOnCreateHandler(GeocacheListAdapter geocacheListAdapter) {
+            this.geocacheListAdapter = geocacheListAdapter;
+        }
+
+        @Override
+        public void onCreateActivity(ListActivity listActivity,
+                GeocacheListPresenter geocacheListPresenter) {
+            listActivity.setContentView(R.layout.cache_list);
+            ListView listView = listActivity.getListView();
+            geocacheListPresenter.setupListView(listView);
+            listActivity.setListAdapter(geocacheListAdapter);
+        }
+
+        @Override
+        public void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
+                Object listFragmentParam) {
+        }
+    }
+
+    public static class ListFragmentOnCreateHandler implements ListFragtivityOnCreateHandler {
+        private final GeocacheListAdapter geocacheListAdapter;
+
+        @Inject
+        public ListFragmentOnCreateHandler(GeocacheListAdapter geocacheListAdapter) {
+            this.geocacheListAdapter = geocacheListAdapter;
+        }
+
+        @Override
+        public void onCreateActivity(ListActivity listActivity,
+                GeocacheListPresenter geocacheListPresenter) {
+        }
+
+        @Override
+        public void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
+                Object listFragmentParam) {
+            ListFragment listFragment = (ListFragment)listFragmentParam;
+            ListView listView = listFragment.getListView();
+            geocacheListPresenter.setupListView(listView);
+            listFragment.setListAdapter(geocacheListAdapter);
+        }
+
     }
 
     public void onCreate() {
-        listActivity.setContentView(R.layout.cache_list);
-        final ListView listView = listActivity.getListView();
+        listFragtivityOnCreateHandler.onCreateActivity(listActivity, this);
+    }
+
+    public void setupListView(ListView listView) {
         NoCachesView noCachesView = (NoCachesView)listView.getEmptyView();
         noCachesView.setSearchTarget(searchTarget);
         listView.addHeaderView((View)inflatedGpsStatusWidget.getTag());
-        listActivity.setListAdapter(geocacheListAdapter);
         listView.setOnCreateContextMenuListener(new CacheListOnCreateContextMenuListener(
                 geocacheVectors));
         listView.setOnScrollListener(scrollListener);
+    }
+
+    public void onCreateFragment(Object listFragment) {
+        listFragtivityOnCreateHandler.onCreateFragment(this, listFragment);
     }
 
     @Override

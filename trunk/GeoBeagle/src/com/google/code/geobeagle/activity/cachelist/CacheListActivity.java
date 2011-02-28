@@ -31,6 +31,7 @@ import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.util.Log;
@@ -43,6 +44,10 @@ import android.widget.ListView;
 
 public class CacheListActivity extends GuiceListActivity {
     private CacheListDelegate mCacheListDelegate;
+
+    public CacheListDelegate getCacheListDelegate() {
+        return mCacheListDelegate;
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -85,6 +90,11 @@ public class CacheListActivity extends GuiceListActivity {
         super.onCreate(savedInstanceState);
         Log.d("GeoBeagle", "CacheListActivity onCreate");
         requestWindowFeature(Window.FEATURE_PROGRESS);
+
+        int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
+        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
+            new CacheListFragmentBuilder().onCreate(this);
+        }
 
         final Injector injector = this.getInjector();
 

@@ -48,20 +48,20 @@ public class GeocacheListPresenter implements Pausable {
     private final LocationListener mCombinedLocationListener;
     private final CombinedLocationManager mCombinedLocationManager;
     private final Provider<CacheListCompassListener> mCacheListCompassListenerProvider;
-    private final GeocacheListAdapter mGeocacheListAdapter;
-    private final GeocacheVectors mGeocacheVectors;
-    private final InflatedGpsStatusWidget mInflatedGpsStatusWidget;
+    protected final GeocacheListAdapter mGeocacheListAdapter;
+    protected final GeocacheVectors mGeocacheVectors;
+    protected final InflatedGpsStatusWidget mInflatedGpsStatusWidget;
     private final ListActivity mListActivity;
     private final LocationControlBuffered mLocationControlBuffered;
     private final SensorManagerWrapper mSensorManagerWrapper;
     private final UpdateGpsWidgetRunnable mUpdateGpsWidgetRunnable;
-    private final CacheListViewScrollListener mScrollListener;
+    protected final CacheListViewScrollListener mScrollListener;
     private final GpsStatusListener mGpsStatusListener;
     private final UpdateFilterWorker mUpdateFilterWorker;
     private final FilterCleanliness mFilterCleanliness;
     private final ShakeWaker mShakeWaker;
     private final UpdateFilterMediator mUpdateFilterMediator;
-    private final SearchTarget mSearchTarget;
+    protected final SearchTarget mSearchTarget;
 
     @Inject
     public GeocacheListPresenter(CombinedLocationListener combinedLocationListener,
@@ -110,6 +110,9 @@ public class GeocacheListPresenter implements Pausable {
         listView.setOnCreateContextMenuListener(new CacheListOnCreateContextMenuListener(
                 mGeocacheVectors));
         listView.setOnScrollListener(mScrollListener);
+    }
+
+    public void onCreateFragment(@SuppressWarnings("unused") Object listFragment) {
     }
 
     @Override

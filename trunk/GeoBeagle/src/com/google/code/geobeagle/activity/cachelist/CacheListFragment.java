@@ -1,3 +1,16 @@
+/*
+ ** Licensed under the Apache License, Version 2.0 (the "License");
+ ** you may not use this file except in compliance with the License.
+ ** You may obtain a copy of the License at
+ **
+ **     http://www.apache.org/licenses/LICENSE-2.0
+ **
+ ** Unless required by applicable law or agreed to in writing, software
+ ** distributed under the License is distributed on an "AS IS" BASIS,
+ ** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ** See the License for the specific language governing permissions and
+ ** limitations under the License.
+ */
 
 package com.google.code.geobeagle.activity.cachelist;
 
@@ -17,19 +30,9 @@ import android.widget.ListView;
 public class CacheListFragment extends ListFragment {
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getCacheListDelegate().onCreateFragment(this);
-    }
-
-    private CacheListDelegate getCacheListDelegate() {
-        return ((CacheListActivity)getActivity()).getCacheListDelegate();
     }
 
     @Override
@@ -39,8 +42,9 @@ public class CacheListFragment extends ListFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.cache_list, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -48,6 +52,11 @@ public class CacheListFragment extends ListFragment {
         super.onCreateOptionsMenu(menu, inflater);
         Log.d("GeoBeagle", "CacheListFragment::onCreateOptionsMenu");
         getCacheListDelegate().onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.cache_list, container, false);
     }
 
     @Override
@@ -73,5 +82,9 @@ public class CacheListFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         getCacheListDelegate().onResume();
+    }
+
+    private CacheListDelegate getCacheListDelegate() {
+        return ((CacheListActivity)getActivity()).getCacheListDelegate();
     }
 }

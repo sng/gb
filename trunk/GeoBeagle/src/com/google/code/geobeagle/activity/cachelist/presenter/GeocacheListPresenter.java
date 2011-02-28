@@ -33,7 +33,6 @@ import com.google.code.geobeagle.shakewaker.ShakeWaker;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.hardware.SensorManager;
 import android.location.LocationListener;
@@ -51,7 +50,7 @@ public class GeocacheListPresenter implements Pausable {
     protected final GeocacheListAdapter mGeocacheListAdapter;
     protected final GeocacheVectors mGeocacheVectors;
     protected final InflatedGpsStatusWidget mInflatedGpsStatusWidget;
-    private final Activity mListActivity;
+    private final ListActivity mListActivity;
     private final LocationControlBuffered mLocationControlBuffered;
     private final SensorManagerWrapper mSensorManagerWrapper;
     private final UpdateGpsWidgetRunnable mUpdateGpsWidgetRunnable;
@@ -70,7 +69,7 @@ public class GeocacheListPresenter implements Pausable {
             GeocacheListAdapter geocacheListAdapter,
             GeocacheVectors geocacheVectors,
             InflatedGpsStatusWidget inflatedGpsStatusWidget,
-            Activity listActivity,
+            ListActivity listActivity,
             LocationControlBuffered locationControlBuffered,
             SensorManagerWrapper sensorManagerWrapper,
             UpdateGpsWidgetRunnable updateGpsWidgetRunnable,
@@ -102,18 +101,17 @@ public class GeocacheListPresenter implements Pausable {
 
     public void onCreate() {
         mListActivity.setContentView(R.layout.cache_list);
-        ListActivity listActivity = (ListActivity)mListActivity;
-        final ListView listView = listActivity.getListView();
+        final ListView listView = mListActivity.getListView();
         NoCachesView noCachesView = (NoCachesView)listView.getEmptyView();
         noCachesView.setSearchTarget(mSearchTarget);
         listView.addHeaderView((View)mInflatedGpsStatusWidget.getTag());
-        listActivity.setListAdapter(mGeocacheListAdapter);
+        mListActivity.setListAdapter(mGeocacheListAdapter);
         listView.setOnCreateContextMenuListener(new CacheListOnCreateContextMenuListener(
                 mGeocacheVectors));
         listView.setOnScrollListener(mScrollListener);
     }
 
-    public void onCreateFragment(Object listFragment) {
+    public void onCreateFragment(@SuppressWarnings("unused") Object listFragment) {
     }
 
     @Override

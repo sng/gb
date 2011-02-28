@@ -25,7 +25,6 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 import android.app.Activity;
-import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Build;
 import android.view.Menu;
@@ -110,7 +109,7 @@ public class CacheListDelegate {
     }
 
     public void onCreateFragment(Object cacheListFragment) {
-        mPresenter.onCreateFragment((ListFragment)cacheListFragment);
+        mPresenter.onCreateFragment(cacheListFragment);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

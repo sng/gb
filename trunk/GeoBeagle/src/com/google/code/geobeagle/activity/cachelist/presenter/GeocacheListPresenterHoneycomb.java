@@ -31,7 +31,7 @@ import com.google.code.geobeagle.shakewaker.ShakeWaker;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
@@ -47,7 +47,7 @@ public class GeocacheListPresenterHoneycomb extends GeocacheListPresenter {
             GeocacheListAdapter geocacheListAdapter,
             GeocacheVectors geocacheVectors,
             InflatedGpsStatusWidget inflatedGpsStatusWidget,
-            Activity listActivity,
+            ListActivity listActivity,
             LocationControlBuffered locationControlBuffered,
             SensorManagerWrapper sensorManagerWrapper,
             UpdateGpsWidgetRunnable updateGpsWidgetRunnable,
@@ -63,6 +63,10 @@ public class GeocacheListPresenterHoneycomb extends GeocacheListPresenter {
                 locationControlBuffered, sensorManagerWrapper, updateGpsWidgetRunnable,
                 cacheListViewScrollListener, gpsStatusListener, updateFilterWorker,
                 filterCleanliness, shakeWaker, updateFilterMediator, searchTarget);
+    }
+
+    @Override
+    public void onCreate() {
     }
 
     @Override

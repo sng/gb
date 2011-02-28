@@ -71,8 +71,8 @@ public class GeoMapActivity extends GuiceMapActivity {
 
         final Intent intent = getIntent();
         final GeoPoint center = new GeoPoint(
-                (int)(intent.getFloatExtra("latitude", 0) * GeoUtils.MILLION), (int)(intent
-                        .getFloatExtra("longitude", 0) * GeoUtils.MILLION));
+                (int)(intent.getFloatExtra("latitude", 0) * GeoUtils.MILLION),
+                (int)(intent.getFloatExtra("longitude", 0) * GeoUtils.MILLION));
 
         final MapController mapController = mMapView.getController();
         mapController.setCenter(center);

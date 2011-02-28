@@ -30,6 +30,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.util.Log;
@@ -44,15 +45,20 @@ public class CacheListActivityHoneycomb extends GuiceListActivity {
     private CacheListDelegate mCacheListDelegate;
 
     @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        return mCacheListDelegate.onContextItemSelected(item) || super.onContextItemSelected(item);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("GeoBeagle", "CacheListActivityHoneycomb::onCreate");
-        CacheListFragment cacheListFragment = new CacheListFragment();
-        cacheListFragment.setArguments(getIntent().getExtras());
-        getFragmentManager().beginTransaction().add(android.R.id.content, cacheListFragment)
-                .commit();
-
         requestWindowFeature(Window.FEATURE_PROGRESS);
+
+        int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
+        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
+            new FragmentBuilderHoneycomb().onCreate(this);
+        }
 
         final Injector injector = this.getInjector();
 
@@ -79,11 +85,6 @@ public class CacheListActivityHoneycomb extends GuiceListActivity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        return mCacheListDelegate.onContextItemSelected(item) || super.onContextItemSelected(item);
-    }
-
-    @Override
     public Dialog onCreateDialog(int idDialog) {
         // idDialog must be CACHE_LIST_DIALOG_CONFIRM_DELETE.
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -99,8 +100,8 @@ public class CacheListActivityHoneycomb extends GuiceListActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        boolean result = super.onCreateOptionsMenu(menu);
-        return result;
+        super.onCreateOptionsMenu(menu);
+        return mCacheListDelegate.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -111,8 +112,6 @@ public class CacheListActivityHoneycomb extends GuiceListActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("GeoBeagle", "CacheListActivityHoneycomb::onOptionsItemSelected: " + item);
-
         return mCacheListDelegate.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 

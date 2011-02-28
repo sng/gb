@@ -30,6 +30,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.util.Log;
@@ -54,6 +55,11 @@ public class CacheListActivity extends GuiceListActivity {
         Log.d("GeoBeagle", "CacheListActivity onCreate");
         requestWindowFeature(Window.FEATURE_PROGRESS);
 
+        int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
+        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
+            new FragmentBuilderHoneycomb().onCreate(this);
+        }
+
         final Injector injector = this.getInjector();
 
         final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
@@ -72,6 +78,10 @@ public class CacheListActivity extends GuiceListActivity {
                     ActivityType.CACHE_LIST);
         }
         Log.d("GeoBeagle", "Done creating CacheListActivity");
+    }
+
+    public CacheListDelegate getCacheListDelegate() {
+        return mCacheListDelegate;
     }
 
     @Override
@@ -145,5 +155,4 @@ public class CacheListActivity extends GuiceListActivity {
         Log.d("GeoBeagle", "CacheListActivity onResume");
         mCacheListDelegate.onResume();
     }
-
 }

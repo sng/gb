@@ -26,7 +26,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import android.content.res.Resources;
-import android.os.Build;
 
 class GeoBeagleActivityMenuActions extends MenuActions {
     @Inject
@@ -39,11 +38,8 @@ class GeoBeagleActivityMenuActions extends MenuActions {
         add(new MenuActionBase(R.string.menu_settings,
                 injector.getInstance(MenuActionSettings.class)));
         add(new MenuActionBase(R.string.web_page, injector.getInstance(MenuActionWebPage.class)));
-        int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
-        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
-            add(new MenuActionBase(R.string.menu_cache_list_hc,
-                    injector.getInstance(MenuActionCacheListHoneycomb.class)));
-        }
+        add(new MenuActionBase(R.string.menu_cache_list_hc,
+                injector.getInstance(MenuActionCacheListHoneycomb.class)));
     }
 
 }

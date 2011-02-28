@@ -93,7 +93,7 @@ public class CacheListActivity extends GuiceListActivity {
 
         int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
         if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
-            new FragmentBuilderHoneycomb().onCreate(this);
+            new CacheListFragmentBuilder().onCreate(this);
         }
 
         final Injector injector = this.getInjector();

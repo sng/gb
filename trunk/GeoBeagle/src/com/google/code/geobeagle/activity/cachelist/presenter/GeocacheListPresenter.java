@@ -35,6 +35,7 @@ import com.google.inject.Provider;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ListFragment;
 import android.hardware.SensorManager;
 import android.location.LocationListener;
 import android.util.Log;
@@ -45,29 +46,29 @@ public class GeocacheListPresenter implements Pausable {
 
     static final int UPDATE_DELAY = 1000;
 
-    private final LocationListener mCombinedLocationListener;
-    private final CombinedLocationManager mCombinedLocationManager;
-    private final Provider<CacheListCompassListener> mCacheListCompassListenerProvider;
-    protected final GeocacheListAdapter mGeocacheListAdapter;
-    protected final GeocacheVectors mGeocacheVectors;
-    protected final InflatedGpsStatusWidget mInflatedGpsStatusWidget;
-    private final ListActivity mListActivity;
-    private final LocationControlBuffered mLocationControlBuffered;
-    private final SensorManagerWrapper mSensorManagerWrapper;
-    private final UpdateGpsWidgetRunnable mUpdateGpsWidgetRunnable;
-    protected final CacheListViewScrollListener mScrollListener;
-    private final GpsStatusListener mGpsStatusListener;
-    private final UpdateFilterWorker mUpdateFilterWorker;
-    private final FilterCleanliness mFilterCleanliness;
-    private final ShakeWaker mShakeWaker;
-    private final UpdateFilterMediator mUpdateFilterMediator;
-    protected final SearchTarget mSearchTarget;
+    private final LocationListener combinedLocationListener;
+    private final CombinedLocationManager combinedLocationManager;
+    private final Provider<CacheListCompassListener> cacheListCompassListenerProvider;
+    private final GeocacheVectors geocacheVectors;
+    private final InflatedGpsStatusWidget inflatedGpsStatusWidget;
+    private final ListActivity listActivity;
+    private final LocationControlBuffered locationControlBuffered;
+    private final SensorManagerWrapper sensorManagerWrapper;
+    private final UpdateGpsWidgetRunnable updateGpsWidgetRunnable;
+    private final CacheListViewScrollListener scrollListener;
+    private final GpsStatusListener gpsStatusListener;
+    private final UpdateFilterWorker updateFilterWorker;
+    private final FilterCleanliness filterCleanliness;
+    private final ShakeWaker shakeWaker;
+    private final UpdateFilterMediator updateFilterMediator;
+    private final SearchTarget searchTarget;
+    private final ListFragtivityOnCreateHandler listFragtivityOnCreateHandler;
 
     @Inject
     public GeocacheListPresenter(CombinedLocationListener combinedLocationListener,
             CombinedLocationManager combinedLocationManager,
+            ListFragtivityOnCreateHandler listFragtivityOnCreateHandler,
             Provider<CacheListCompassListener> cacheListCompassListenerProvider,
-            GeocacheListAdapter geocacheListAdapter,
             GeocacheVectors geocacheVectors,
             InflatedGpsStatusWidget inflatedGpsStatusWidget,
             Activity listActivity,
@@ -81,71 +82,124 @@ public class GeocacheListPresenter implements Pausable {
             ShakeWaker shakeWaker,
             UpdateFilterMediator updateFilterMediator,
             SearchTarget searchTarget) {
-        mCombinedLocationListener = combinedLocationListener;
-        mCombinedLocationManager = combinedLocationManager;
-        mCacheListCompassListenerProvider = cacheListCompassListenerProvider;
-        mGeocacheListAdapter = geocacheListAdapter;
-        mGeocacheVectors = geocacheVectors;
-        mInflatedGpsStatusWidget = inflatedGpsStatusWidget;
-        mShakeWaker = shakeWaker;
-        mListActivity = (ListActivity)listActivity;
-        mLocationControlBuffered = locationControlBuffered;
-        mUpdateGpsWidgetRunnable = updateGpsWidgetRunnable;
-        mSensorManagerWrapper = sensorManagerWrapper;
-        mScrollListener = cacheListViewScrollListener;
-        mGpsStatusListener = gpsStatusListener;
-        mUpdateFilterWorker = updateFilterWorker;
-        mFilterCleanliness = filterCleanliness;
-        mUpdateFilterMediator = updateFilterMediator;
-        mSearchTarget = searchTarget;
+        this.combinedLocationListener = combinedLocationListener;
+        this.combinedLocationManager = combinedLocationManager;
+        this.cacheListCompassListenerProvider = cacheListCompassListenerProvider;
+        this.geocacheVectors = geocacheVectors;
+        this.inflatedGpsStatusWidget = inflatedGpsStatusWidget;
+        this.shakeWaker = shakeWaker;
+        this.listActivity = (ListActivity)listActivity;
+        this.locationControlBuffered = locationControlBuffered;
+        this.updateGpsWidgetRunnable = updateGpsWidgetRunnable;
+        this.sensorManagerWrapper = sensorManagerWrapper;
+        this.scrollListener = cacheListViewScrollListener;
+        this.gpsStatusListener = gpsStatusListener;
+        this.updateFilterWorker = updateFilterWorker;
+        this.filterCleanliness = filterCleanliness;
+        this.updateFilterMediator = updateFilterMediator;
+        this.searchTarget = searchTarget;
+        this.listFragtivityOnCreateHandler = listFragtivityOnCreateHandler;
+    }
+
+    public static interface ListFragtivityOnCreateHandler {
+        void onCreateActivity(ListActivity listActivity,
+                GeocacheListPresenter geocacheListPresenter);
+
+        void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
+                Object listFragmentParam);
+    }
+
+    public static class ListActivityOnCreateHandler implements ListFragtivityOnCreateHandler {
+        private final GeocacheListAdapter geocacheListAdapter;
+
+        @Inject
+        public ListActivityOnCreateHandler(GeocacheListAdapter geocacheListAdapter) {
+            this.geocacheListAdapter = geocacheListAdapter;
+        }
+
+        @Override
+        public void onCreateActivity(ListActivity listActivity,
+                GeocacheListPresenter geocacheListPresenter) {
+            listActivity.setContentView(R.layout.cache_list);
+            ListView listView = listActivity.getListView();
+            geocacheListPresenter.setupListView(listView);
+            listActivity.setListAdapter(geocacheListAdapter);
+        }
+
+        @Override
+        public void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
+                Object listFragmentParam) {
+        }
+    }
+
+    public static class ListFragmentOnCreateHandler implements ListFragtivityOnCreateHandler {
+        private final GeocacheListAdapter geocacheListAdapter;
+
+        @Inject
+        public ListFragmentOnCreateHandler(GeocacheListAdapter geocacheListAdapter) {
+            this.geocacheListAdapter = geocacheListAdapter;
+        }
+
+        @Override
+        public void onCreateActivity(ListActivity listActivity,
+                GeocacheListPresenter geocacheListPresenter) {
+        }
+
+        @Override
+        public void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
+                Object listFragmentParam) {
+            ListFragment listFragment = (ListFragment)listFragmentParam;
+            ListView listView = listFragment.getListView();
+            geocacheListPresenter.setupListView(listView);
+            listFragment.setListAdapter(geocacheListAdapter);
+        }
+
     }
 
     public void onCreate() {
-        mListActivity.setContentView(R.layout.cache_list);
-        ListView listView = mListActivity.getListView();
-        setupListView(listView);
-        mListActivity.setListAdapter(mGeocacheListAdapter);
+        listFragtivityOnCreateHandler.onCreateActivity(listActivity, this);
     }
 
-    protected void setupListView(ListView listView) {
+    public void setupListView(ListView listView) {
         NoCachesView noCachesView = (NoCachesView)listView.getEmptyView();
-        noCachesView.setSearchTarget(mSearchTarget);
-        listView.addHeaderView((View)mInflatedGpsStatusWidget.getTag());
+        noCachesView.setSearchTarget(searchTarget);
+        listView.addHeaderView((View)inflatedGpsStatusWidget.getTag());
         listView.setOnCreateContextMenuListener(new CacheListOnCreateContextMenuListener(
-                mGeocacheVectors));
-        listView.setOnScrollListener(mScrollListener);
+                geocacheVectors));
+        listView.setOnScrollListener(scrollListener);
     }
 
-    public void onCreateFragment(@SuppressWarnings("unused") Object listFragment) {
+    public void onCreateFragment(Object listFragment) {
+        listFragtivityOnCreateHandler.onCreateFragment(this, listFragment);
     }
 
     @Override
     public void onPause() {
-        mCombinedLocationManager.removeUpdates();
-        mSensorManagerWrapper.unregisterListener();
-        mShakeWaker.unregister();
+        combinedLocationManager.removeUpdates();
+        sensorManagerWrapper.unregisterListener();
+        shakeWaker.unregister();
     }
 
     public void onResume(CacheListRefresh cacheListRefresh) {
-        if (mFilterCleanliness.isDirty()) {
-            mUpdateFilterMediator.startFiltering("Resetting filter");
-            mUpdateFilterWorker.start();
+        if (filterCleanliness.isDirty()) {
+            updateFilterMediator.startFiltering("Resetting filter");
+            updateFilterWorker.start();
         }
 
-        final CacheListRefreshLocationListener cacheListRefreshLocationListener = new CacheListRefreshLocationListener(
+        CacheListRefreshLocationListener cacheListRefreshLocationListener = new CacheListRefreshLocationListener(
                 cacheListRefresh);
-        final CacheListCompassListener mCompassListener = mCacheListCompassListenerProvider.get();
-        mCombinedLocationManager.requestLocationUpdates(UPDATE_DELAY, 0, mLocationControlBuffered);
-        mCombinedLocationManager.requestLocationUpdates(UPDATE_DELAY, 0, mCombinedLocationListener);
-        mCombinedLocationManager.requestLocationUpdates(UPDATE_DELAY, 0,
+        CacheListCompassListener compassListener = cacheListCompassListenerProvider.get();
+        combinedLocationManager.requestLocationUpdates(UPDATE_DELAY, 0, locationControlBuffered);
+        combinedLocationManager.requestLocationUpdates(UPDATE_DELAY, 0, combinedLocationListener);
+        combinedLocationManager.requestLocationUpdates(UPDATE_DELAY, 0,
                 cacheListRefreshLocationListener);
 
-        mCombinedLocationManager.addGpsStatusListener(mGpsStatusListener);
+        combinedLocationManager.addGpsStatusListener(gpsStatusListener);
 
-        mUpdateGpsWidgetRunnable.run();
-        mSensorManagerWrapper.registerListener(mCompassListener, SensorManager.SENSOR_ORIENTATION,
+        updateGpsWidgetRunnable.run();
+        sensorManagerWrapper.registerListener(compassListener, SensorManager.SENSOR_ORIENTATION,
                 SensorManager.SENSOR_DELAY_UI);
-        mShakeWaker.register();
+        shakeWaker.register();
         Log.d("GeoBeagle", "GeocacheListPresenter onResume done");
     }
 }

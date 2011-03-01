@@ -17,7 +17,6 @@ package com.google.code.geobeagle.activity.cachelist.presenter;
 import com.google.code.geobeagle.CacheListCompassListener;
 import com.google.code.geobeagle.LocationControlBuffered;
 import com.google.code.geobeagle.activity.cachelist.CacheListViewScrollListener;
-import com.google.code.geobeagle.activity.cachelist.GeocacheListController.CacheListOnCreateContextMenuListener;
 import com.google.code.geobeagle.activity.cachelist.SearchTarget;
 import com.google.code.geobeagle.activity.cachelist.model.GeocacheVectors;
 import com.google.code.geobeagle.activity.cachelist.presenter.filter.UpdateFilterMediator;
@@ -33,7 +32,6 @@ import com.google.inject.Provider;
 
 import android.app.ListActivity;
 import android.app.ListFragment;
-import android.view.View;
 import android.widget.ListView;
 
 public class GeocacheListPresenterHoneycomb extends GeocacheListPresenter {
@@ -73,12 +71,7 @@ public class GeocacheListPresenterHoneycomb extends GeocacheListPresenter {
     public void onCreateFragment(Object listFragmentA) {
         ListFragment listFragment = (ListFragment)listFragmentA;
         ListView listView = listFragment.getListView();
-        NoCachesView noCachesView = (NoCachesView)listView.getEmptyView();
-        noCachesView.setSearchTarget(mSearchTarget);
-        listView.addHeaderView((View)mInflatedGpsStatusWidget.getTag());
+        setupListView(listView);
         listFragment.setListAdapter(mGeocacheListAdapter);
-        listView.setOnCreateContextMenuListener(new CacheListOnCreateContextMenuListener(
-                mGeocacheVectors));
-        listView.setOnScrollListener(mScrollListener);
     }
 }

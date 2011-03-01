@@ -102,11 +102,15 @@ public class GeocacheListPresenter implements Pausable {
 
     public void onCreate() {
         mListActivity.setContentView(R.layout.cache_list);
-        final ListView listView = mListActivity.getListView();
+        ListView listView = mListActivity.getListView();
+        setupListView(listView);
+        mListActivity.setListAdapter(mGeocacheListAdapter);
+    }
+
+    protected void setupListView(ListView listView) {
         NoCachesView noCachesView = (NoCachesView)listView.getEmptyView();
         noCachesView.setSearchTarget(mSearchTarget);
         listView.addHeaderView((View)mInflatedGpsStatusWidget.getTag());
-        mListActivity.setListAdapter(mGeocacheListAdapter);
         listView.setOnCreateContextMenuListener(new CacheListOnCreateContextMenuListener(
                 mGeocacheVectors));
         listView.setOnScrollListener(mScrollListener);

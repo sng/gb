@@ -15,7 +15,6 @@
 package com.google.code.geobeagle.activity.main;
 
 import com.google.code.geobeagle.CacheType;
-import com.google.code.geobeagle.CompassListener;
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.GeocacheFactory;
 import com.google.code.geobeagle.GeocacheFactory.Source;
@@ -27,7 +26,6 @@ import com.google.code.geobeagle.activity.main.view.GeocacheViewer;
 import com.google.code.geobeagle.activity.main.view.WebPageMenuEnabler;
 import com.google.code.geobeagle.database.DbFrontend;
 import com.google.code.geobeagle.database.LocationSaver;
-import com.google.code.geobeagle.shakewaker.ShakeWaker;
 import com.google.code.geobeagle.xmlimport.GeoBeagleEnvironment;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -35,8 +33,6 @@ import com.google.inject.Provider;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -49,43 +45,6 @@ import android.view.MenuItem;
 import java.io.File;
 
 public class GeoBeagleDelegate {
-    static class GeoBeagleSensors {
-        private final SensorManager sensorManager;
-        private final RadarView radarView;
-        private final SharedPreferences sharedPreferences;
-        private final CompassListener compassListener;
-        private final ShakeWaker shakeWaker;
-
-        @Inject
-        GeoBeagleSensors(SensorManager sensorManager,
-                RadarView radarView,
-                SharedPreferences sharedPreferences,
-                CompassListener compassListener,
-                ShakeWaker shakeWaker) {
-            this.sensorManager = sensorManager;
-            this.radarView = radarView;
-            this.sharedPreferences = sharedPreferences;
-            this.compassListener = compassListener;
-            this.shakeWaker = shakeWaker;
-        }
-
-        public void registerSensors() {
-            radarView.handleUnknownLocation();
-            radarView.setUseImperial(sharedPreferences.getBoolean("imperial", false));
-            sensorManager.registerListener(radarView, SensorManager.SENSOR_ORIENTATION,
-                    SensorManager.SENSOR_DELAY_UI);
-            sensorManager.registerListener(compassListener, SensorManager.SENSOR_ORIENTATION,
-                    SensorManager.SENSOR_DELAY_UI);
-            shakeWaker.register();
-
-        }
-
-        public void unregisterSensors() {
-            sensorManager.unregisterListener(radarView);
-            sensorManager.unregisterListener(compassListener);
-            shakeWaker.unregister();
-        }
-    }
 
     static int ACTIVITY_REQUEST_TAKE_PICTURE = 1;
     private final ActivitySaver mActivitySaver;
@@ -97,7 +56,7 @@ public class GeoBeagleDelegate {
     private final GeocacheViewer mGeocacheViewer;
     private final IncomingIntentHandler mIncomingIntentHandler;
     private final GeoBeagleActivityMenuActions mMenuActions;
-    private final GeoBeagle mParent;
+    private final CompassActivity mParent;
     private final CheckDetailsButton mCheckDetailsButton;
     private final GeoBeagleEnvironment mGeoBeagleEnvironment;
     private final WebPageMenuEnabler mWebPageMenuEnabler;
@@ -118,7 +77,7 @@ public class GeoBeagleDelegate {
             GeoBeagleEnvironment geoBeagleEnvironment,
             LocationSaver locationSaver,
             GeoBeagleSensors geoBeagleSensors) {
-        mParent = (GeoBeagle)parent;
+        mParent = (CompassActivity)parent;
         mActivitySaver = activitySaver;
         mAppLifecycleManager = appLifecycleManager;
         mMenuActions = menuActions;
@@ -136,7 +95,7 @@ public class GeoBeagleDelegate {
 
     @Inject
     public GeoBeagleDelegate(Injector injector) {
-        mParent = (GeoBeagle)injector.getInstance(Activity.class);
+        mParent = (CompassActivity)injector.getInstance(Activity.class);
         mActivitySaver = injector.getInstance(ActivitySaver.class);
         mAppLifecycleManager = injector.getInstance(AppLifecycleManager.class);
         mMenuActions = injector.getInstance(GeoBeagleActivityMenuActions.class);
@@ -191,9 +150,6 @@ public class GeoBeagleDelegate {
 
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         mGeocache = mGeocacheFromParcelFactory.createFromBundle(savedInstanceState);
-        // Is this really needed???
-        // mWritableDatabase =
-        // mGeoBeagleSqliteOpenHelper.getWritableSqliteWrapper();
     }
 
     public void onResume() {

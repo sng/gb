@@ -81,7 +81,7 @@ public class CacheListDelegate {
         mDbFrontendProvider = dbFrontendProvider;
         mActivityVisible = activityVisible;
     }
-    
+
     @Inject
     public CacheListDelegate(Injector injector) {
         mActivitySaver = injector.getInstance(ActivitySaver.class);
@@ -99,6 +99,10 @@ public class CacheListDelegate {
 
     public void onCreate() {
         mPresenter.onCreate();
+    }
+
+    public void onCreateFragment(Object cacheListFragment) {
+        mPresenter.onCreateFragment(cacheListFragment);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

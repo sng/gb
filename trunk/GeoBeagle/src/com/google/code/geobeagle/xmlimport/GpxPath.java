@@ -14,6 +14,8 @@
 
 package com.google.code.geobeagle.xmlimport;
 
+import org.xmlpull.v1.XmlPullParser;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,6 +80,7 @@ public enum GpxPath {
     GPX_WPTNAME("/gpx/wpt/name", PathType.WPT_NAME),
     GPX_WPTTIME("/gpx/wpt/time", PathType.WPT_TIME),
     LOC_COORD("/loc/waypoint/coord", PathType.LOC_COORD),
+    LOC_LONGDESC("/loc/waypoint/desc", PathType.LONG_DESCRIPTION),
     LOC_WPT("/loc/waypoint", PathType.LOC_WPT),
     LOC_WPTNAME("/loc/waypoint/name", PathType.LOC_WPTNAME),
     NO_MATCH(null, PathType.NOP);
@@ -105,23 +108,23 @@ public enum GpxPath {
         this.pathType = pathType;
     }
 
-    public void endTag(CachePersisterFacade cachePersisterFacade) throws IOException {
-        pathType.endTag(cachePersisterFacade);
+    public void endTag(CacheXmlTagHandler cacheXmlTagHandler) throws IOException {
+        pathType.endTag(cacheXmlTagHandler);
     }
 
     public String getPath() {
         return path;
     }
 
-    public void startTag(XmlPullParserWrapper xmlPullParser,
-            CachePersisterFacade cachePersisterFacade) throws IOException {
-        pathType.startTag(xmlPullParser, cachePersisterFacade);
+    public void startTag(XmlPullParser xmlPullParser,
+            CacheXmlTagHandler cacheXmlTagHandler) throws IOException {
+        pathType.startTag(xmlPullParser, cacheXmlTagHandler);
     }
 
-    public boolean text(String text, CachePersisterFacade cachePersisterFacade) throws IOException {
+    public boolean text(String text, CacheXmlTagHandler cacheXmlTagHandler) throws IOException {
         String trimmedText = text.trim();
         if (trimmedText.length() <= 0)
             return true;
-        return pathType.text(trimmedText, cachePersisterFacade);
+        return pathType.text(trimmedText, cacheXmlTagHandler);
     }
 }

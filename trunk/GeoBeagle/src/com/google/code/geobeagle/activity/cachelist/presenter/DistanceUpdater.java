@@ -31,7 +31,6 @@ public class DistanceUpdater implements RefreshAction {
 
     @Override
     public void refresh() {
-        // Log.d("GeoBeagle", "notifyDataSetChanged");
         mGeocacheListAdapter.notifyDataSetChanged();
     }
 }

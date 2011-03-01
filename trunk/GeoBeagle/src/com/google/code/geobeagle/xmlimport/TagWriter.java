@@ -14,63 +14,59 @@
 
 package com.google.code.geobeagle.xmlimport;
 
-import com.google.code.geobeagle.cachedetails.Writer;
-import com.google.code.geobeagle.cachedetails.WriterWrapper;
+import com.google.code.geobeagle.cachedetails.DetailsDatabaseWriter;
 import com.google.inject.Inject;
-
-import java.io.IOException;
 
 class TagWriter {
     private static final String SPACES = "                        ";
     private int mLevel;
-    private final Writer writer;
+    private final DetailsDatabaseWriter writer;
+    private final StringBuffer stringBuffer;
+    private String wpt;
 
     @Inject
-    public TagWriter(WriterWrapper writer) {
+    public TagWriter(DetailsDatabaseWriter writer) {
         this.writer = writer;
+        stringBuffer = new StringBuffer();
     }
 
-    // For testing.
-    public TagWriter(Writer writer) {
-        this.writer = writer;
+    public void close() {
+        writer.write(wpt, stringBuffer.toString());
+        wpt = null;
     }
 
-    public void close() throws IOException {
-        writer.close();
-    }
-
-    public void endTag(String name) throws IOException {
+    public void endTag(String name) {
         mLevel--;
-        if (writer != null)
-            writer.write("</" + name + ">");
+        stringBuffer.append("</" + name + ">");
     }
 
-    public boolean isOpen() {
-        return writer.isOpen();
-    }
-
-    public void open(String path) throws IOException {
+    public void open(String wpt) {
         mLevel = 0;
-        writer.mkdirs(path);
-        writer.open(path);
-        writer.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+        this.wpt = wpt;
+        stringBuffer.setLength(0);
+        stringBuffer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
     }
 
-    public void startTag(Tag tag) throws IOException {
-        writeNewline();
+    public void startTag(Tag tag) {
+        stringBuffer.append("\n" + SPACES.substring(0, Math.min(mLevel, SPACES.length())));
         mLevel++;
-        writer.write("<" + tag.name);
+        stringBuffer.append("<" + tag.name);
         for (String key : tag.attributes.keySet()) {
-            writer.write(" " + key + "='" + tag.attributes.get(key) + "'");
+            stringBuffer.append(" " + key + "='" + tag.attributes.get(key) + "'");
         }
-        writer.write(">");
+        stringBuffer.append(">");
+
     }
 
-    private void writeNewline() throws IOException {
-        writer.write("\n" + SPACES.substring(0, Math.min(mLevel, SPACES.length())));
+    public void text(String text) {
+        stringBuffer.append(text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"));
     }
 
-    public void text(String text) throws IOException {
-        writer.write(text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"));
+    public void start() {
+        writer.start();
+    }
+
+    public void end() {
+        writer.end();
     }
 }

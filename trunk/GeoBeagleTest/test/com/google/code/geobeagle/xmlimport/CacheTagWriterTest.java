@@ -23,9 +23,9 @@ import com.google.code.geobeagle.CacheType;
 import com.google.code.geobeagle.CacheTypeFactory;
 import com.google.code.geobeagle.GeocacheFactory.Source;
 import com.google.code.geobeagle.activity.cachelist.GeoBeagleTest;
-import com.google.code.geobeagle.database.CacheWriter;
+import com.google.code.geobeagle.database.CacheSqlWriter;
 import com.google.code.geobeagle.database.ClearCachesFromSource;
-import com.google.code.geobeagle.database.GpxWriter;
+import com.google.code.geobeagle.database.GpxTableWriterGpxFiles;
 import com.google.code.geobeagle.database.Tag;
 import com.google.code.geobeagle.database.TagWriter;
 
@@ -37,8 +37,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 public class CacheTagWriterTest extends GeoBeagleTest {
-    private CacheWriter cacheWriter;
-    private GpxWriter gpxWriter;
+    private CacheSqlWriter cacheSqlWriter;
+    private GpxTableWriterGpxFiles gpxTableWriterGpxFiles;
     private TagWriter tagWriter;
     private CacheTypeFactory cacheTypeFactory;
     private CacheTagSqlWriter cacheTagSqlWriter;
@@ -46,18 +46,18 @@ public class CacheTagWriterTest extends GeoBeagleTest {
 
     @Before
     public void setUp() {
-        cacheWriter = PowerMock.createMock(CacheWriter.class);
-        gpxWriter = PowerMock.createMock(GpxWriter.class);
+        cacheSqlWriter = PowerMock.createMock(CacheSqlWriter.class);
+        gpxTableWriterGpxFiles = PowerMock.createMock(GpxTableWriterGpxFiles.class);
         tagWriter = PowerMock.createMock(TagWriter.class);
         cacheTypeFactory = PowerMock.createMock(CacheTypeFactory.class);
         clearCachesFromSource = PowerMock.createMock(ClearCachesFromSource.class);
-        cacheTagSqlWriter = new CacheTagSqlWriter(cacheWriter, gpxWriter, cacheTypeFactory,
-                tagWriter, clearCachesFromSource);
+        cacheTagSqlWriter = new CacheTagSqlWriter(cacheSqlWriter, gpxTableWriterGpxFiles,
+                cacheTypeFactory, tagWriter);
     }
 
     @Test
     public void testClear() {
-        cacheWriter.insertAndUpdateCache(null, null, 0, 0, Source.GPX, null, CacheType.NULL, 0, 0,
+        cacheSqlWriter.insertAndUpdateCache(null, null, 0, 0, Source.GPX, null, CacheType.NULL, 0, 0,
                 0, true, false, false);
 
         PowerMock.replayAll();
@@ -71,13 +71,13 @@ public class CacheTagWriterTest extends GeoBeagleTest {
         clearCachesFromSource.clearEarlierLoads();
 
         PowerMock.replayAll();
-        cacheTagSqlWriter.end();
+        cacheTagSqlWriter.end(clearCachesFromSource);
         PowerMock.verifyAll();
     }
 
     @Test
     public void testSymbol() {
-        cacheWriter.insertAndUpdateCache(null, null, 0, 0, Source.GPX, null, null, 0, 0, 0, false,
+        cacheSqlWriter.insertAndUpdateCache(null, null, 0, 0, Source.GPX, null, null, 0, 0, 0, false,
                 false, true);
         tagWriter.add(null, Tag.FOUND, false);
 
@@ -89,22 +89,24 @@ public class CacheTagWriterTest extends GeoBeagleTest {
 
     @Test
     public void testGpxTimeDontLoad() {
-        expect(gpxWriter.isGpxAlreadyLoaded("foo.gpx", "2008-04-15 16:10:30")).andReturn(true);
+        expect(gpxTableWriterGpxFiles.isGpxAlreadyLoaded("foo.gpx", "2008-04-15 16:10:30")).andReturn(true);
 
         PowerMock.replayAll();
         cacheTagSqlWriter.gpxName("foo.gpx");
-        assertFalse(cacheTagSqlWriter.gpxTime("2008-04-15T16:10:30"));
+        assertFalse(cacheTagSqlWriter.gpxTime(clearCachesFromSource, gpxTableWriterGpxFiles,
+                "2008-04-15T16:10:30"));
         PowerMock.verifyAll();
     }
 
     @Test
     public void testGpxTimeLoad() {
-        expect(gpxWriter.isGpxAlreadyLoaded("foo.gpx", "2008-04-15 16:10:30")).andReturn(false);
+        expect(gpxTableWriterGpxFiles.isGpxAlreadyLoaded("foo.gpx", "2008-04-15 16:10:30")).andReturn(false);
         clearCachesFromSource.clearCaches("foo.gpx");
 
         PowerMock.replayAll();
         cacheTagSqlWriter.gpxName("foo.gpx");
-        assertTrue(cacheTagSqlWriter.gpxTime("2008-04-15T16:10:30"));
+        assertTrue(cacheTagSqlWriter.gpxTime(clearCachesFromSource, gpxTableWriterGpxFiles,
+                "2008-04-15T16:10:30"));
         PowerMock.verifyAll();
     }
 
@@ -116,7 +118,7 @@ public class CacheTagWriterTest extends GeoBeagleTest {
 
     @Test
     public void testStartWriting() {
-        cacheWriter.startWriting();
+        cacheSqlWriter.startWriting();
 
         PowerMock.replayAll();
         cacheTagSqlWriter.startWriting();
@@ -125,7 +127,7 @@ public class CacheTagWriterTest extends GeoBeagleTest {
 
     @Test
     public void testStopWritingFailure() {
-        cacheWriter.stopWriting();
+        cacheSqlWriter.stopWriting();
 
         PowerMock.replayAll();
         cacheTagSqlWriter.stopWriting(false);
@@ -134,20 +136,21 @@ public class CacheTagWriterTest extends GeoBeagleTest {
 
     @Test
     public void testStopWritingSuccess() {
-        cacheWriter.stopWriting();
-        expect(gpxWriter.isGpxAlreadyLoaded("foo.gpx", "2008-04-15 16:10:30")).andReturn(true);
-        gpxWriter.writeGpx("foo.gpx");
+        cacheSqlWriter.stopWriting();
+        expect(gpxTableWriterGpxFiles.isGpxAlreadyLoaded("foo.gpx", "2008-04-15 16:10:30")).andReturn(true);
+        gpxTableWriterGpxFiles.writeGpx("foo.gpx");
 
         PowerMock.replayAll();
         cacheTagSqlWriter.gpxName("foo.gpx");
-        cacheTagSqlWriter.gpxTime("2008-04-15T16:10:30.7369220-08:00");
+        cacheTagSqlWriter.gpxTime(clearCachesFromSource, gpxTableWriterGpxFiles,
+                "2008-04-15T16:10:30.7369220-08:00");
         cacheTagSqlWriter.stopWriting(true);
         PowerMock.verifyAll();
     }
 
     @Test
     public void testWrite() {
-        cacheWriter.insertAndUpdateCache("GC123", "my cache", 122, 37, Source.GPX, "foo.gpx",
+        cacheSqlWriter.insertAndUpdateCache("GC123", "my cache", 122, 37, Source.GPX, "foo.gpx",
                 CacheType.TRADITIONAL, 6, 5, 1, false, false, true);
         expect(cacheTypeFactory.container("Micro")).andReturn(1);
         expect(cacheTypeFactory.stars("2.5")).andReturn(5);

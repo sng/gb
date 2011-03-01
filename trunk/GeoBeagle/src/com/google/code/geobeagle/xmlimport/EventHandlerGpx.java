@@ -14,34 +14,44 @@
 
 package com.google.code.geobeagle.xmlimport;
 
+
+import org.xmlpull.v1.XmlPullParser;
+
 import java.io.IOException;
 
 public class EventHandlerGpx implements EventHandler {
 
-    @Override
-    public void endTag(String name,
-            String previousFullPath,
-            CachePersisterFacade cachePersisterFacade) throws IOException {
-        GpxPath.fromString(previousFullPath).endTag(cachePersisterFacade);
+    private final CacheXmlTagHandler cacheXmlTagHandler;
+    private XmlPullParser xmlPullParser;
+
+    public EventHandlerGpx(CacheXmlTagHandler cacheXmlTagHandler) {
+        this.cacheXmlTagHandler = cacheXmlTagHandler;
     }
 
     @Override
-    public void startTag(String name,
-            String fullPath,
-            XmlPullParserWrapper xmlPullParser,
-            CachePersisterFacade cachePersisterFacade) throws IOException {
-        GpxPath.fromString(fullPath).startTag(xmlPullParser, cachePersisterFacade);
+    public void endTag(String name, String previousFullPath)
+            throws IOException {
+        GpxPath.fromString(previousFullPath).endTag(cacheXmlTagHandler);
     }
 
     @Override
-    public boolean text(String fullPath,
-            String text,
-            XmlPullParserWrapper xmlPullParser,
-            CachePersisterFacade cachePersisterFacade) throws IOException {
-        return GpxPath.fromString(fullPath).text(text, cachePersisterFacade);
+    public void startTag(String name, String fullPath)
+            throws IOException {
+        GpxPath.fromString(fullPath).startTag(xmlPullParser, cacheXmlTagHandler);
     }
 
     @Override
-    public void open(String filename) throws IOException {
+    public boolean text(String fullPath, String text) throws IOException {
+        return GpxPath.fromString(fullPath).text(text, cacheXmlTagHandler);
     }
+
+    @Override
+    public void start(XmlPullParser xmlPullParser) {
+        this.xmlPullParser = xmlPullParser;
+    }
+
+    @Override
+    public void end() {
+    }
+
 }

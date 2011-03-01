@@ -15,41 +15,49 @@
 package com.google.code.geobeagle.cacheloader;
 
 import com.google.code.geobeagle.R;
-import com.google.code.geobeagle.cachedetails.FilePathStrategy;
-import com.google.code.geobeagle.cachedetails.StringWriterWrapper;
-import com.google.code.geobeagle.cachedetails.reader.DetailsReader;
-import com.google.code.geobeagle.xmlimport.CachePersisterFacade;
+import com.google.code.geobeagle.cachedetails.DetailsDatabaseReader;
 
-import java.io.File;
+import org.xmlpull.v1.XmlPullParserException;
+
+import android.content.res.Resources;
+
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 
 public class CacheLoader {
+    private final DetailsDatabaseReader detailsDatabaseReader;
+    private final DetailsXmlToString detailsXmlToString;
+    private final CacheReaderFromFile cacheReaderFromFile;
+    private final Resources resources;
 
-    private final StringWriterWrapper stringWriterWrapper;
-
-    public CacheLoader(FilePathStrategy filePathStrategy,
-            DetailsOpener detailsOpener,
-            CachePersisterFacade cacheTagsReader,
-            StringWriterWrapper stringWriterWrapper) {
-        this.filePathStrategy = filePathStrategy;
-        this.detailsOpener = detailsOpener;
-        this.cacheTagsReader = cacheTagsReader;
-        this.stringWriterWrapper = stringWriterWrapper;
+    CacheLoader(CacheReaderFromFile cacheReaderFromFile,
+            DetailsDatabaseReader detailsDatabaseReader,
+            DetailsXmlToString detailsXmlToString,
+            Resources resources) {
+        this.detailsDatabaseReader = detailsDatabaseReader;
+        this.detailsXmlToString = detailsXmlToString;
+        this.cacheReaderFromFile = cacheReaderFromFile;
+        this.resources = resources;
     }
 
-    private final FilePathStrategy filePathStrategy;
-    private final DetailsOpener detailsOpener;
-    private final CachePersisterFacade cacheTagsReader;
-
     public String load(CharSequence sourceName, CharSequence cacheId) throws CacheLoaderException {
+        Reader reader = createReader(sourceName, cacheId);
         try {
-            stringWriterWrapper.open(null);
+            return detailsXmlToString.read(reader);
+        } catch (XmlPullParserException e) {
+            return resources.getString(R.string.error_reading_details_file, cacheId);
         } catch (IOException e) {
-            throw new CacheLoaderException(R.string.error_loading_url);
+            return resources.getString(R.string.error_reading_details_file, cacheId);
         }
-        String path = filePathStrategy.getPath(sourceName, cacheId.toString(), "gpx");
-        File file = new File(path);
-        DetailsReader detailsReader = detailsOpener.open(file);
-        return detailsReader.read(cacheTagsReader);
+    }
+
+    private Reader createReader(CharSequence sourceName, CharSequence cacheId)
+            throws CacheLoaderException {
+        String detailsFromDatabase = detailsDatabaseReader.read(cacheId);
+        if (detailsFromDatabase == null)
+            return cacheReaderFromFile.getReader(sourceName, cacheId);
+
+        return new StringReader(detailsFromDatabase);
     }
 }

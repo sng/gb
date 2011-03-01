@@ -17,9 +17,10 @@ package com.google.code.geobeagle.xmlimport;
 import com.google.code.geobeagle.CacheType;
 import com.google.code.geobeagle.CacheTypeFactory;
 import com.google.code.geobeagle.GeocacheFactory.Source;
-import com.google.code.geobeagle.database.CacheWriter;
+import com.google.code.geobeagle.database.CacheSqlWriter;
 import com.google.code.geobeagle.database.ClearCachesFromSource;
-import com.google.code.geobeagle.database.GpxWriter;
+import com.google.code.geobeagle.database.GpxTableWriter;
+import com.google.code.geobeagle.database.GpxTableWriterGpxFiles;
 import com.google.code.geobeagle.database.Tag;
 import com.google.code.geobeagle.database.TagWriter;
 import com.google.inject.Inject;
@@ -32,8 +33,8 @@ import android.util.Log;
 public class CacheTagSqlWriter {
     private final CacheTypeFactory mCacheTypeFactory;
     private CacheType mCacheType;
-    private final CacheWriter mCacheWriter;
-    private final GpxWriter mGpxWriter;
+    private final CacheSqlWriter mCacheWriter;
+    private final GpxTableWriterGpxFiles mGpxWriter;
     private int mContainer;
     private int mDifficulty;
     private String mGpxName;
@@ -43,21 +44,19 @@ public class CacheTagSqlWriter {
     private CharSequence mName;
     private int mTerrain;
     private final TagWriter mTagWriter;
-    private final ClearCachesFromSource mClearCachesFromSource;
     private boolean mArchived;
     private boolean mAvailable;
     private boolean mFound;
 
     @Inject
-    public CacheTagSqlWriter(CacheWriter cacheWriter, GpxWriter gpxWriter,
+    public CacheTagSqlWriter(CacheSqlWriter cacheSqlWriter,
+            GpxTableWriterGpxFiles gpxTableWriterGpxFiles,
             CacheTypeFactory cacheTypeFactory,
-            TagWriter tagWriter,
-            ClearCachesFromSource clearCachesFromSource) {
-        mCacheWriter = cacheWriter;
-        mGpxWriter = gpxWriter;
+            TagWriter tagWriter) {
+        mCacheWriter = cacheSqlWriter;
+        mGpxWriter = gpxTableWriterGpxFiles;
         mCacheTypeFactory = cacheTypeFactory;
         mTagWriter = tagWriter;
-        mClearCachesFromSource = clearCachesFromSource;
     }
 
     public void cacheName(String name) {
@@ -88,8 +87,8 @@ public class CacheTagSqlWriter {
         mDifficulty = mCacheTypeFactory.stars(difficulty);
     }
 
-    public void end() {
-        mClearCachesFromSource.clearEarlierLoads();
+    public void end(ClearCachesFromSource clearCachesFromSource) {
+        clearCachesFromSource.clearEarlierLoads();
     }
 
     public void gpxName(String gpxName) {
@@ -98,17 +97,18 @@ public class CacheTagSqlWriter {
     }
 
     /**
-     * @param gpxTime
      * @return true if we should load this gpx; false if the gpx is already
      *         loaded.
      */
-    public boolean gpxTime(String gpxTime) {
+    public boolean gpxTime(ClearCachesFromSource clearCachesFromSource,
+            GpxTableWriter gpxTableWriter,
+            String gpxTime) {
         String sqlDate = isoTimeToSql(gpxTime);
         Log.d("GeoBeagle", this + ": CacheTagSqlWriter:gpxTime: " + mGpxName);
-        if (mGpxWriter.isGpxAlreadyLoaded(mGpxName, sqlDate)) {
+        if (gpxTableWriter.isGpxAlreadyLoaded(mGpxName, sqlDate)) {
             return false;
         }
-        mClearCachesFromSource.clearCaches(mGpxName);
+        clearCachesFromSource.clearCaches(mGpxName);
         return true;
     }
 

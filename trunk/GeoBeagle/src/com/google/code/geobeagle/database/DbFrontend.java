@@ -15,12 +15,13 @@
 package com.google.code.geobeagle.database;
 
 import com.google.code.geobeagle.Geocache;
+import com.google.code.geobeagle.cachedetails.DetailsDatabaseWriter;
 import com.google.code.geobeagle.database.DatabaseDI.GeoBeagleSqliteOpenHelper;
 import com.google.code.geobeagle.preferences.PreferencesUpgrader;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -35,28 +36,28 @@ import java.util.ArrayList;
 @Singleton
 public class DbFrontend {
     private final CacheReader mCacheReader;
-    private Context mContext;
+    private final Context mContext;
     private ISQLiteDatabase mDatabase;
     private GeoBeagleSqliteOpenHelper mSqliteOpenHelper;
-    private final Provider<Context> mContextProvider;
     private final PreferencesUpgrader mPreferencesUpgrader;
+    private final DetailsDatabaseWriter mSdDatabase;
 
     @Inject
-    DbFrontend(Provider<Context> contextProvider,
+    DbFrontend(Activity activity,
             CacheReader cacheReader,
-            PreferencesUpgrader preferencesUpgrader) {
-        mContextProvider = contextProvider;
+            PreferencesUpgrader preferencesUpgrader,
+            DetailsDatabaseWriter detailsDatabaseWriter) {
         mCacheReader = cacheReader;
         mPreferencesUpgrader = preferencesUpgrader;
-        mContext = null;
+        mContext = activity.getApplicationContext();
+        mSdDatabase = detailsDatabaseWriter;
     }
 
     public synchronized void closeDatabase() {
         Log.d("GeoBeagleDb", this + ": DbFrontend.closeDatabase() " + mContext);
-        if (mContext == null)
+        if (mContext == null || mSqliteOpenHelper == null)
             return;
         mSqliteOpenHelper.close();
-        mContext = null;
         mDatabase = null;
         mSqliteOpenHelper = null;
     }
@@ -101,12 +102,10 @@ public class DbFrontend {
     }
 
     public synchronized void openDatabase() {
-        Context currentContext = mContextProvider.get();
-        if (mContext == currentContext)
+        if (mSqliteOpenHelper != null)
             return;
 
-        Log.d("GeoBeagleDb", this + ": DbFrontend.openDatabase() " + mContext + ", " + currentContext);
-        mContext = currentContext;
+        Log.d("GeoBeagleDb", this + ": DbFrontend.openDatabase() " + mContext);
         mSqliteOpenHelper = new GeoBeagleSqliteOpenHelper(mContext, mPreferencesUpgrader);
         mDatabase = new DatabaseDI.SQLiteWrapper(mSqliteOpenHelper.getWritableDatabase());
     }
@@ -122,6 +121,7 @@ public class DbFrontend {
         openDatabase();
         mDatabase.execSQL(Database.SQL_DELETE_ALL_CACHES);
         mDatabase.execSQL(Database.SQL_DELETE_ALL_GPX);
+        mSdDatabase.deleteAll();
     }
 
     public void forceUpdate() {

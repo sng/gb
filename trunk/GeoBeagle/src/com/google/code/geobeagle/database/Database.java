@@ -63,7 +63,6 @@ public class Database {
     public static final String SQL_DELETE_CACHE = "DELETE FROM CACHES WHERE Id=?";
     public static final String SQL_DELETE_OLD_CACHES = "DELETE FROM CACHES WHERE DeleteMe = 1";
     public static final String SQL_DELETE_OLD_GPX = "DELETE FROM GPX WHERE DeleteMe = 1";
-    public static final String SQL_DROP_CACHE_TABLE = "DROP TABLE IF EXISTS CACHES";
     public static final String SQL_GPX_DONT_DELETE_ME = "UPDATE GPX SET DeleteMe = 0 WHERE Name = ?";
     public static final String SQL_MATCH_NAME_AND_EXPORTED_LATER = "Name = ? AND ExportTime >= ?";
     public static final String SQL_REPLACE_CACHE = "REPLACE INTO CACHES "
@@ -75,7 +74,7 @@ public class Database {
     public static final String SQL_RESET_DELETE_ME_GPX = "UPDATE GPX SET DeleteMe = 1";
     public static final String SQL_DELETE_ALL_CACHES = "DELETE FROM CACHES";
     public static final String SQL_DELETE_ALL_GPX = "DELETE FROM GPX";
-
+    public static final String SQL_GET_EXPORT_TIME = "SELECT ExportTime FROM GPX WHERE Name = ?";
     public static final String TBL_CACHES = "CACHES";
     public static final String TBL_GPX = "GPX";
     public static final String SQL_FORCE_UPDATE_ALL = "UPDATE GPX SET ExportTime = '1970-01-01'";

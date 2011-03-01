@@ -36,8 +36,8 @@ public class HtmlWriter {
         mWriter.close();
     }
 
-    public void open(String path) throws IOException {
-        mWriter.open(path);
+    public void open() throws IOException {
+        mWriter.open();
     }
 
     public void writeln(String text) throws IOException {

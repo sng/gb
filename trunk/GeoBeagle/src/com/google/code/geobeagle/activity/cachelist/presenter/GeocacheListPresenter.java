@@ -31,6 +31,7 @@ import com.google.code.geobeagle.location.CombinedLocationListener;
 import com.google.code.geobeagle.location.CombinedLocationManager;
 import com.google.code.geobeagle.shakewaker.ShakeWaker;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 import android.app.Activity;
@@ -113,8 +114,8 @@ public class GeocacheListPresenter implements Pausable {
         private final GeocacheListAdapter geocacheListAdapter;
 
         @Inject
-        public ListActivityOnCreateHandler(GeocacheListAdapter geocacheListAdapter) {
-            this.geocacheListAdapter = geocacheListAdapter;
+        public ListActivityOnCreateHandler(Injector injector) {
+            this.geocacheListAdapter = injector.getInstance(GeocacheListAdapter.class);
         }
 
         @Override
@@ -136,8 +137,8 @@ public class GeocacheListPresenter implements Pausable {
         private final GeocacheListAdapter geocacheListAdapter;
 
         @Inject
-        public ListFragmentOnCreateHandler(GeocacheListAdapter geocacheListAdapter) {
-            this.geocacheListAdapter = geocacheListAdapter;
+        public ListFragmentOnCreateHandler(Injector injector) {
+            this.geocacheListAdapter = injector.getInstance(GeocacheListAdapter.class);
         }
 
         @Override

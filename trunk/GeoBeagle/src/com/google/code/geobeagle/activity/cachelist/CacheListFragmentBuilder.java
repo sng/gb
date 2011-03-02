@@ -14,13 +14,12 @@
 
 package com.google.code.geobeagle.activity.cachelist;
 
+import com.google.code.geobeagle.R;
+
 import android.app.Activity;
 
 class CacheListFragmentBuilder {
     public void onCreate(Activity activity) {
-        CacheListFragment cacheListFragment = new CacheListFragment();
-        cacheListFragment.setArguments(activity.getIntent().getExtras());
-        activity.getFragmentManager().beginTransaction()
-                .add(android.R.id.content, cacheListFragment).commit();
+        activity.setContentView(R.layout.cache_list_fragment);
     }
 }

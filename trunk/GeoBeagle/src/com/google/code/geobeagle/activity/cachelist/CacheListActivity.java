@@ -52,7 +52,7 @@ public class CacheListActivity extends GuiceListActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        setContentView(R.layout.cache_list);
+        setContentView(R.layout.cache_list_fragment);
     }
 
     @Override
@@ -74,11 +74,12 @@ public class CacheListActivity extends GuiceListActivity {
                 builder);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        return mCacheListDelegate.onCreateOptionsMenu(menu);
-    }
+    
+     @Override
+     public boolean onCreateOptionsMenu(Menu menu) {
+     super.onCreateOptionsMenu(menu);
+     return mCacheListDelegate.onCreateOptionsMenu(menu);
+     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -88,79 +89,81 @@ public class CacheListActivity extends GuiceListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("GeoBeagle", "CacheListActivity onCreate");
-        requestWindowFeature(Window.FEATURE_PROGRESS);
-
-        int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
-        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
-            new CacheListFragmentBuilder().onCreate(this);
-        }
-
-        final Injector injector = this.getInjector();
-
-        final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
-                .getInstance(InflatedGpsStatusWidget.class);
-        final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector
-                .getInstance(GpsStatusWidgetDelegate.class);
-        inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
-
-        mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
-
-        mCacheListDelegate.onCreate();
-        Intent intent = getIntent();
-
-        if (!Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            injector.getInstance(ActivityRestorer.class).restore(getIntent().getFlags(),
-                    ActivityType.CACHE_LIST);
-        }
-        Log.d("GeoBeagle", "Done creating CacheListActivity");
+        setContentView(R.layout.cache_list_fragment);
+//
+//        Log.d("GeoBeagle", "CacheListActivity onCreate");
+//        requestWindowFeature(Window.FEATURE_PROGRESS);
+//
+//        int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
+//        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
+//            setContentView(R.layout.cache_list_fragment);
+//        }
+//
+//        final Injector injector = this.getInjector();
+//
+//        final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
+//                .getInstance(InflatedGpsStatusWidget.class);
+//        final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector
+//                .getInstance(GpsStatusWidgetDelegate.class);
+//        inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
+//
+//        mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
+//
+//        mCacheListDelegate.onCreate();
+//        Intent intent = getIntent();
+//
+//        if (!Intent.ACTION_SEARCH.equals(intent.getAction())) {
+//            injector.getInstance(ActivityRestorer.class).restore(getIntent().getFlags(),
+//                    ActivityType.CACHE_LIST);
+//        }
+//        Log.d("GeoBeagle", "Done creating CacheListActivity");
     }
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        mCacheListDelegate.onListItemClick(position);
-    }
-
-    @Override
-    protected void onPause() {
-        Log.d("GeoBeagle", "CacheListActivity onPause");
-        /*
-         * cacheListDelegate closes the database, it must be called before
-         * super.onPause because the guice activity onPause nukes the database
-         * object from the guice map.
-         */
-        mCacheListDelegate.onPause();
-        super.onPause();
-        Log.d("GeoBeagle", "CacheListActivity onPauseComplete");
-    }
-
-    @Override
-    protected void onPrepareDialog(int id, Dialog dialog) {
-        getInjector().getInstance(ContextActionDeleteDialogHelper.class).onPrepareDialog(dialog);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        Intent intent = getIntent();
-        Injector injector = this.getInjector();
-
-        SearchTarget searchTarget = injector.getInstance(SearchTarget.class);
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            searchTarget.setTarget(query);
-            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
-                    SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
-            suggestions.saveRecentQuery(query, null);
-
-        } else {
-            searchTarget.setTarget(null);
-        }
-        Log.d("GeoBeagle", "CacheListActivity onResume");
-        mCacheListDelegate.onResume();
-    }
+//
+//    @Override
+//    protected void onListItemClick(ListView l, View v, int position, long id) {
+//        super.onListItemClick(l, v, position, id);
+//        mCacheListDelegate.onListItemClick(position);
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        Log.d("GeoBeagle", "CacheListActivity onPause");
+//        /*
+//         * cacheListDelegate closes the database, it must be called before
+//         * super.onPause because the guice activity onPause nukes the database
+//         * object from the guice map.
+//         */
+//        mCacheListDelegate.onPause();
+//        super.onPause();
+//        Log.d("GeoBeagle", "CacheListActivity onPauseComplete");
+//    }
+//
+//    @Override
+//    protected void onPrepareDialog(int id, Dialog dialog) {
+//        getInjector().getInstance(ContextActionDeleteDialogHelper.class).onPrepareDialog(dialog);
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        Intent intent = getIntent();
+//        Injector injector = this.getInjector();
+//
+//        SearchTarget searchTarget = injector.getInstance(SearchTarget.class);
+//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+//
+//            String query = intent.getStringExtra(SearchManager.QUERY);
+//            searchTarget.setTarget(query);
+//            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+//                    SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
+//            suggestions.saveRecentQuery(query, null);
+//
+//        } else {
+//            searchTarget.setTarget(null);
+//        }
+//        Log.d("GeoBeagle", "CacheListActivity onResume");
+//        mCacheListDelegate.onResume();
+//    }
 
 }

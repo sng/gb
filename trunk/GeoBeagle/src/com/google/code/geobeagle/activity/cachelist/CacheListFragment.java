@@ -25,21 +25,35 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class CacheListFragment extends ListFragment {
-
+    public static final String[] TITLES = 
+    {
+            "Henry IV (1)",   
+            "Henry V",
+            "Henry VIII",       
+            "Richard II",
+            "Richard III",
+            "Merchant of Venice",  
+            "Othello",
+            "King Lear"
+    };
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getCacheListDelegate().onCreateFragment(this);
+        // Populate list with our static array of titles.
+        setListAdapter(new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_list_item_activated_1, TITLES));
+//        getCacheListDelegate().onCreateFragment(this);
     }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        return getCacheListDelegate().onContextItemSelected(item)
-                || super.onContextItemSelected(item);
-    }
+//
+//    @Override
+//    public boolean onContextItemSelected(MenuItem item) {
+//        return getCacheListDelegate().onContextItemSelected(item)
+//                || super.onContextItemSelected(item);
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,39 +65,41 @@ public class CacheListFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         Log.d("GeoBeagle", "CacheListFragment::onCreateOptionsMenu");
-        getCacheListDelegate().onCreateOptionsMenu(menu);
-    }
+        menu.add(0, 0, 0, "hello");
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.cache_list, container, false);
+//        getCacheListDelegate().onCreateOptionsMenu(menu);
     }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        getCacheListDelegate().onListItemClick(position);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("GeoBeagle", "CacheListFragment::onOptionsItemSelected: " + item);
-        return getCacheListDelegate().onOptionsItemSelected(item)
-                || super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPause() {
-        getCacheListDelegate().onPause();
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getCacheListDelegate().onResume();
-    }
-
+//
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        return inflater.inflate(R.layout.cache_list_fragment, container, false);
+//    }
+//
+//    @Override
+//    public void onListItemClick(ListView l, View v, int position, long id) {
+//        super.onListItemClick(l, v, position, id);
+//        getCacheListDelegate().onListItemClick(position);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        Log.d("GeoBeagle", "CacheListFragment::onOptionsItemSelected: " + item);
+//        return getCacheListDelegate().onOptionsItemSelected(item)
+//                || super.onOptionsItemSelected(item);
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        getCacheListDelegate().onPause();
+//        super.onPause();
+//    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        getCacheListDelegate().onResume();
+//    }
+//
     private CacheListDelegate getCacheListDelegate() {
         return ((CacheListActivity)getActivity()).getCacheListDelegate();
     }

@@ -77,8 +77,9 @@ public class CacheListActivity extends GuiceListActivity {
     
      @Override
      public boolean onCreateOptionsMenu(Menu menu) {
-     super.onCreateOptionsMenu(menu);
-     return mCacheListDelegate.onCreateOptionsMenu(menu);
+         Log.d("GeoBeagle", "ONCREATEOPTIONSMENU");
+     return super.onCreateOptionsMenu(menu);
+//     return mCacheListDelegate.onCreateOptionsMenu(menu);
      }
 
     @Override
@@ -89,34 +90,34 @@ public class CacheListActivity extends GuiceListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cache_list_fragment);
-//
-//        Log.d("GeoBeagle", "CacheListActivity onCreate");
-//        requestWindowFeature(Window.FEATURE_PROGRESS);
-//
-//        int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
-//        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
-//            setContentView(R.layout.cache_list_fragment);
-//        }
-//
-//        final Injector injector = this.getInjector();
-//
-//        final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
-//                .getInstance(InflatedGpsStatusWidget.class);
-//        final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector
-//                .getInstance(GpsStatusWidgetDelegate.class);
-//        inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
-//
-//        mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
-//
-//        mCacheListDelegate.onCreate();
-//        Intent intent = getIntent();
-//
-//        if (!Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//            injector.getInstance(ActivityRestorer.class).restore(getIntent().getFlags(),
-//                    ActivityType.CACHE_LIST);
-//        }
-//        Log.d("GeoBeagle", "Done creating CacheListActivity");
+        requestWindowFeature(Window.FEATURE_PROGRESS);
+
+        Log.d("GeoBeagle", "CacheListActivity onCreate");
+
+        int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
+        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
+            setContentView(R.layout.cache_list_fragment);
+        }
+        if (false) 
+            return;
+        final Injector injector = this.getInjector();
+
+        final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
+                .getInstance(InflatedGpsStatusWidget.class);
+        final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector
+                .getInstance(GpsStatusWidgetDelegate.class);
+        inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
+
+        mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
+
+        mCacheListDelegate.onCreate();
+        Intent intent = getIntent();
+
+        if (!Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            injector.getInstance(ActivityRestorer.class).restore(getIntent().getFlags(),
+                    ActivityType.CACHE_LIST);
+        }
+        Log.d("GeoBeagle", "Done creating CacheListActivity");
     }
 //
 //    @Override

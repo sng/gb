@@ -44,9 +44,9 @@ public class CacheListFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Populate list with our static array of titles.
-        setListAdapter(new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_activated_1, TITLES));
-//        getCacheListDelegate().onCreateFragment(this);
+//        setListAdapter(new ArrayAdapter<String>(getActivity(),
+//                android.R.layout.simple_list_item_activated_1, TITLES));
+        getCacheListDelegate().onCreateFragment(this);
     }
 //
 //    @Override
@@ -69,11 +69,11 @@ public class CacheListFragment extends ListFragment {
 
 //        getCacheListDelegate().onCreateOptionsMenu(menu);
     }
-//
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        return inflater.inflate(R.layout.cache_list_fragment, container, false);
-//    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.cache_list, container, false);
+    }
 //
 //    @Override
 //    public void onListItemClick(ListView l, View v, int position, long id) {

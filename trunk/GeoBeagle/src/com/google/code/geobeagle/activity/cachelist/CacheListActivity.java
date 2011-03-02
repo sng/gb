@@ -119,52 +119,52 @@ public class CacheListActivity extends GuiceListActivity {
         }
         Log.d("GeoBeagle", "Done creating CacheListActivity");
     }
-//
-//    @Override
-//    protected void onListItemClick(ListView l, View v, int position, long id) {
-//        super.onListItemClick(l, v, position, id);
-//        mCacheListDelegate.onListItemClick(position);
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        Log.d("GeoBeagle", "CacheListActivity onPause");
-//        /*
-//         * cacheListDelegate closes the database, it must be called before
-//         * super.onPause because the guice activity onPause nukes the database
-//         * object from the guice map.
-//         */
-//        mCacheListDelegate.onPause();
-//        super.onPause();
-//        Log.d("GeoBeagle", "CacheListActivity onPauseComplete");
-//    }
-//
-//    @Override
-//    protected void onPrepareDialog(int id, Dialog dialog) {
-//        getInjector().getInstance(ContextActionDeleteDialogHelper.class).onPrepareDialog(dialog);
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//
-//        Intent intent = getIntent();
-//        Injector injector = this.getInjector();
-//
-//        SearchTarget searchTarget = injector.getInstance(SearchTarget.class);
-//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//
-//            String query = intent.getStringExtra(SearchManager.QUERY);
-//            searchTarget.setTarget(query);
-//            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
-//                    SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
-//            suggestions.saveRecentQuery(query, null);
-//
-//        } else {
-//            searchTarget.setTarget(null);
-//        }
-//        Log.d("GeoBeagle", "CacheListActivity onResume");
-//        mCacheListDelegate.onResume();
-//    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        mCacheListDelegate.onListItemClick(position);
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d("GeoBeagle", "CacheListActivity onPause");
+        /*
+         * cacheListDelegate closes the database, it must be called before
+         * super.onPause because the guice activity onPause nukes the database
+         * object from the guice map.
+         */
+        mCacheListDelegate.onPause();
+        super.onPause();
+        Log.d("GeoBeagle", "CacheListActivity onPauseComplete");
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        getInjector().getInstance(ContextActionDeleteDialogHelper.class).onPrepareDialog(dialog);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Intent intent = getIntent();
+        Injector injector = this.getInjector();
+
+        SearchTarget searchTarget = injector.getInstance(SearchTarget.class);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            searchTarget.setTarget(query);
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
+
+        } else {
+            searchTarget.setTarget(null);
+        }
+        Log.d("GeoBeagle", "CacheListActivity onResume");
+        mCacheListDelegate.onResume();
+    }
 
 }

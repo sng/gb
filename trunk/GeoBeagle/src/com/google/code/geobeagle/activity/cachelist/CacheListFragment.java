@@ -65,7 +65,7 @@ public class CacheListFragment extends ListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         Log.d("GeoBeagle", "CacheListFragment::onCreateOptionsMenu");
-        menu.add(0, 0, 0, "hello");
+//        menu.add(0, 0, 0, "hello");
 
 //        getCacheListDelegate().onCreateOptionsMenu(menu);
     }

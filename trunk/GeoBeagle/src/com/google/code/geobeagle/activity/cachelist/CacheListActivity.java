@@ -78,8 +78,8 @@ public class CacheListActivity extends GuiceListActivity {
      @Override
      public boolean onCreateOptionsMenu(Menu menu) {
          Log.d("GeoBeagle", "ONCREATEOPTIONSMENU");
-     return super.onCreateOptionsMenu(menu);
-//     return mCacheListDelegate.onCreateOptionsMenu(menu);
+     super.onCreateOptionsMenu(menu);
+     return mCacheListDelegate.onCreateOptionsMenu(menu);
      }
 
     @Override
@@ -91,8 +91,11 @@ public class CacheListActivity extends GuiceListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_PROGRESS);
+        Injector injector = this.getInjector();
 
         Log.d("GeoBeagle", "CacheListActivity onCreate");
+
+        mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
 
         int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
         if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
@@ -100,15 +103,12 @@ public class CacheListActivity extends GuiceListActivity {
         }
         if (false) 
             return;
-        final Injector injector = this.getInjector();
 
         final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
                 .getInstance(InflatedGpsStatusWidget.class);
         final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector
                 .getInstance(GpsStatusWidgetDelegate.class);
         inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
-
-        mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
 
         mCacheListDelegate.onCreate();
         Intent intent = getIntent();

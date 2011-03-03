@@ -74,13 +74,11 @@ public class CacheListActivity extends GuiceListActivity {
                 builder);
     }
 
-    
-     @Override
-     public boolean onCreateOptionsMenu(Menu menu) {
-         Log.d("GeoBeagle", "ONCREATEOPTIONSMENU");
-     super.onCreateOptionsMenu(menu);
-     return mCacheListDelegate.onCreateOptionsMenu(menu);
-     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        return mCacheListDelegate.onCreateOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -101,8 +99,6 @@ public class CacheListActivity extends GuiceListActivity {
         if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
             setContentView(R.layout.cache_list_fragment);
         }
-        if (false) 
-            return;
 
         final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
                 .getInstance(InflatedGpsStatusWidget.class);

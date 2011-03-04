@@ -30,8 +30,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.util.Log;
@@ -43,16 +41,11 @@ import android.view.Window;
 import android.widget.ListView;
 
 public class CacheListActivity extends GuiceListActivity {
+
     private CacheListDelegate mCacheListDelegate;
 
     public CacheListDelegate getCacheListDelegate() {
         return mCacheListDelegate;
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        setContentView(R.layout.cache_list_fragment);
     }
 
     @Override
@@ -93,11 +86,7 @@ public class CacheListActivity extends GuiceListActivity {
         Injector injector = this.getInjector();
 
         mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
-
-        int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
-        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
-            setContentView(R.layout.cache_list_fragment);
-        }
+        mCacheListDelegate.onCreate();
 
         final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
                 .getInstance(InflatedGpsStatusWidget.class);
@@ -105,7 +94,6 @@ public class CacheListActivity extends GuiceListActivity {
                 .getInstance(GpsStatusWidgetDelegate.class);
         inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
 
-        mCacheListDelegate.onCreate();
         Intent intent = getIntent();
 
         if (!Intent.ACTION_SEARCH.equals(intent.getAction())) {

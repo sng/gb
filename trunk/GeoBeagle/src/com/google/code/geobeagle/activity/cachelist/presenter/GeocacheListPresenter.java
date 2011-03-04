@@ -16,7 +16,6 @@ package com.google.code.geobeagle.activity.cachelist.presenter;
 
 import com.google.code.geobeagle.CacheListCompassListener;
 import com.google.code.geobeagle.LocationControlBuffered;
-import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.cachelist.CacheListViewScrollListener;
 import com.google.code.geobeagle.activity.cachelist.GeocacheListController.CacheListOnCreateContextMenuListener;
 import com.google.code.geobeagle.activity.cachelist.Pausable;
@@ -35,7 +34,6 @@ import com.google.inject.Provider;
 
 import android.app.Activity;
 import android.app.ListActivity;
-import android.app.ListFragment;
 import android.hardware.SensorManager;
 import android.location.LocationListener;
 import android.util.Log;
@@ -99,61 +97,6 @@ public class GeocacheListPresenter implements Pausable {
         this.updateFilterMediator = updateFilterMediator;
         this.searchTarget = searchTarget;
         this.listFragtivityOnCreateHandler = listFragtivityOnCreateHandler;
-    }
-
-    public static interface ListFragtivityOnCreateHandler {
-        void onCreateActivity(ListActivity listActivity,
-                GeocacheListPresenter geocacheListPresenter);
-
-        void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
-                Object listFragmentParam);
-    }
-
-    public static class ListActivityOnCreateHandler implements ListFragtivityOnCreateHandler {
-        private final GeocacheListAdapter geocacheListAdapter;
-
-        @Inject
-        public ListActivityOnCreateHandler(GeocacheListAdapter geocacheListAdapter) {
-            this.geocacheListAdapter = geocacheListAdapter;
-        }
-
-        @Override
-        public void onCreateActivity(ListActivity listActivity,
-                GeocacheListPresenter geocacheListPresenter) {
-            listActivity.setContentView(R.layout.cache_list);
-            ListView listView = listActivity.getListView();
-            geocacheListPresenter.setupListView(listView);
-            listActivity.setListAdapter(geocacheListAdapter);
-        }
-
-        @Override
-        public void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
-                Object listFragmentParam) {
-        }
-    }
-
-    public static class ListFragmentOnCreateHandler implements ListFragtivityOnCreateHandler {
-        private final GeocacheListAdapter geocacheListAdapter;
-
-        @Inject
-        public ListFragmentOnCreateHandler(GeocacheListAdapter geocacheListAdapter) {
-            this.geocacheListAdapter = geocacheListAdapter;
-        }
-
-        @Override
-        public void onCreateActivity(ListActivity listActivity,
-                GeocacheListPresenter geocacheListPresenter) {
-        }
-
-        @Override
-        public void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
-                Object listFragmentParam) {
-            ListFragment listFragment = (ListFragment)listFragmentParam;
-            ListView listView = listFragment.getListView();
-            geocacheListPresenter.setupListView(listView);
-            listFragment.setListAdapter(geocacheListAdapter);
-        }
-
     }
 
     public void onCreate() {

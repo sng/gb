@@ -31,6 +31,7 @@ import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.util.Log;
@@ -44,10 +45,14 @@ import android.widget.ListView;
 public class CacheListActivity extends GuiceListActivity {
     private CacheListDelegate mCacheListDelegate;
 
+    public CacheListDelegate getCacheListDelegate() {
+        return mCacheListDelegate;
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        setContentView(R.layout.cache_list);
+        setContentView(R.layout.cache_list_fragment);
     }
 
     @Override
@@ -85,16 +90,20 @@ public class CacheListActivity extends GuiceListActivity {
         super.onCreate(savedInstanceState);
         Log.d("GeoBeagle", "CacheListActivity onCreate");
         requestWindowFeature(Window.FEATURE_PROGRESS);
+        Injector injector = this.getInjector();
 
-        final Injector injector = this.getInjector();
+        mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
+
+        int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
+        if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
+            setContentView(R.layout.cache_list_fragment);
+        }
 
         final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
                 .getInstance(InflatedGpsStatusWidget.class);
         final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector
                 .getInstance(GpsStatusWidgetDelegate.class);
         inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
-
-        mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
 
         mCacheListDelegate.onCreate();
         Intent intent = getIntent();

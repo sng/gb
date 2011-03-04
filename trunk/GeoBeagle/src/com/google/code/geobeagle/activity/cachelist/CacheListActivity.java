@@ -52,7 +52,7 @@ public class CacheListActivity extends GuiceListActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        setContentView(R.layout.cache_list);
+        setContentView(R.layout.cache_list_fragment);
     }
 
     @Override
@@ -90,21 +90,20 @@ public class CacheListActivity extends GuiceListActivity {
         super.onCreate(savedInstanceState);
         Log.d("GeoBeagle", "CacheListActivity onCreate");
         requestWindowFeature(Window.FEATURE_PROGRESS);
+        Injector injector = this.getInjector();
+
+        mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
 
         int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
         if (sdkVersion >= Build.VERSION_CODES.HONEYCOMB) {
-            new CacheListFragmentBuilder().onCreate(this);
+            setContentView(R.layout.cache_list_fragment);
         }
-
-        final Injector injector = this.getInjector();
 
         final InflatedGpsStatusWidget inflatedGpsStatusWidget = injector
                 .getInstance(InflatedGpsStatusWidget.class);
         final GpsStatusWidgetDelegate gpsStatusWidgetDelegate = injector
                 .getInstance(GpsStatusWidgetDelegate.class);
         inflatedGpsStatusWidget.setDelegate(gpsStatusWidgetDelegate);
-
-        mCacheListDelegate = injector.getInstance(CacheListDelegate.class);
 
         mCacheListDelegate.onCreate();
         Intent intent = getIntent();

@@ -16,7 +16,6 @@ package com.google.code.geobeagle.activity.cachelist.presenter;
 
 import com.google.code.geobeagle.CacheListCompassListener;
 import com.google.code.geobeagle.LocationControlBuffered;
-import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.cachelist.CacheListViewScrollListener;
 import com.google.code.geobeagle.activity.cachelist.GeocacheListController.CacheListOnCreateContextMenuListener;
 import com.google.code.geobeagle.activity.cachelist.Pausable;
@@ -36,7 +35,6 @@ import com.google.inject.Provider;
 
 import android.app.Activity;
 import android.app.ListActivity;
-import android.app.ListFragment;
 import android.hardware.SensorManager;
 import android.location.LocationListener;
 import android.util.Log;
@@ -65,7 +63,6 @@ public class GeocacheListPresenter implements Pausable {
     private final SearchTarget searchTarget;
     private final ListFragtivityOnCreateHandler listFragtivityOnCreateHandler;
 
-    @Inject
     public GeocacheListPresenter(CombinedLocationListener combinedLocationListener,
             CombinedLocationManager combinedLocationManager,
             ListFragtivityOnCreateHandler listFragtivityOnCreateHandler,
@@ -102,66 +99,34 @@ public class GeocacheListPresenter implements Pausable {
         this.listFragtivityOnCreateHandler = listFragtivityOnCreateHandler;
     }
 
-    public static interface ListFragtivityOnCreateHandler {
-        void onCreateActivity(ListActivity listActivity,
-                GeocacheListPresenter geocacheListPresenter);
-
-        void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
-                Object listFragmentParam);
-    }
-
-    public static class ListActivityOnCreateHandler implements ListFragtivityOnCreateHandler {
-        private final GeocacheListAdapter geocacheListAdapter;
-
-        @Inject
-        public ListActivityOnCreateHandler(Injector injector) {
-            this.geocacheListAdapter = injector.getInstance(GeocacheListAdapter.class);
-        }
-
-        @Override
-        public void onCreateActivity(ListActivity listActivity,
-                GeocacheListPresenter geocacheListPresenter) {
-            listActivity.setContentView(R.layout.cache_list);
-            ListView listView = listActivity.getListView();
-            geocacheListPresenter.setupListView(listView);
-            listActivity.setListAdapter(geocacheListAdapter);
-        }
-
-        @Override
-        public void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
-                Object listFragmentParam) {
-        }
-    }
-
-    public static class ListFragmentOnCreateHandler implements ListFragtivityOnCreateHandler {
-        private final GeocacheListAdapter geocacheListAdapter;
-
-        @Inject
-        public ListFragmentOnCreateHandler(Injector injector) {
-            this.geocacheListAdapter = injector.getInstance(GeocacheListAdapter.class);
-        }
-
-        @Override
-        public void onCreateActivity(ListActivity listActivity,
-                GeocacheListPresenter geocacheListPresenter) {
-        }
-
-        @Override
-        public void onCreateFragment(GeocacheListPresenter geocacheListPresenter,
-                Object listFragmentParam) {
-            ListFragment listFragment = (ListFragment)listFragmentParam;
-            ListView listView = listFragment.getListView();
-            geocacheListPresenter.setupListView(listView);
-            listFragment.setListAdapter(geocacheListAdapter);
-        }
-
+    @Inject
+    public GeocacheListPresenter(Injector injector) {
+        this.combinedLocationListener = injector.getInstance(CombinedLocationListener.class);
+        this.combinedLocationManager = injector.getInstance(CombinedLocationManager.class);
+        this.cacheListCompassListenerProvider = injector
+                .getProvider(CacheListCompassListener.class);
+        this.geocacheVectors = injector.getInstance(GeocacheVectors.class);
+        this.inflatedGpsStatusWidget = injector.getInstance(InflatedGpsStatusWidget.class);
+        this.shakeWaker = injector.getInstance(ShakeWaker.class);
+        this.listActivity = (ListActivity)injector.getInstance(Activity.class);
+        this.locationControlBuffered = injector.getInstance(LocationControlBuffered.class);
+        this.updateGpsWidgetRunnable = injector.getInstance(UpdateGpsWidgetRunnable.class);
+        this.sensorManagerWrapper = injector.getInstance(SensorManagerWrapper.class);
+        this.scrollListener = injector.getInstance(CacheListViewScrollListener.class);
+        this.gpsStatusListener = injector.getInstance(GpsStatusListener.class);
+        this.updateFilterWorker = injector.getInstance(UpdateFilterWorker.class);
+        this.filterCleanliness = injector.getInstance(FilterCleanliness.class);
+        this.updateFilterMediator = injector.getInstance(UpdateFilterMediator.class);
+        this.searchTarget = injector.getInstance(SearchTarget.class);
+        this.listFragtivityOnCreateHandler = injector
+                .getInstance(ListFragtivityOnCreateHandler.class);
     }
 
     public void onCreate() {
         listFragtivityOnCreateHandler.onCreateActivity(listActivity, this);
     }
 
-    public void setupListView(ListView listView) {
+    void setupListView(ListView listView) {
         NoCachesView noCachesView = (NoCachesView)listView.getEmptyView();
         noCachesView.setSearchTarget(searchTarget);
         listView.addHeaderView((View)inflatedGpsStatusWidget.getTag());

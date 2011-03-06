@@ -6,9 +6,8 @@
 		class="com.google.code.geobeagle.activity.cachelist.CacheListFragment"
 		android:id="@+id/titles" android:layout_weight="50"
 		android:layout_width="0px" android:layout_height="match_parent" />
-
-	<TextView android:text="RIGHT layout-land / cache_list_fragment"
-	android:layout_marginLeft="4dip" android:layout_weight="50"
-	android:layout_width="0px" android:layout_height="wrap_content" />
+	<fragment class="com.google.code.geobeagle.activity.compass.CompassFragment"
+		android:id="@+id/compass" android:layout_weight="40"
+		android:layout_width="0px" android:layout_height="match_parent" />
 </LinearLayout>
 

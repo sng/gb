@@ -21,6 +21,6 @@ import android.app.Activity;
 class CompassActivityOnCreateHandler implements CompassFragtivityOnCreateHandler {
     @Override
     public void onCreate(Activity activity) {
-        activity.setContentView(R.layout.main);
+        activity.setContentView(R.layout.compass);
     }
 }

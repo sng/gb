@@ -29,7 +29,7 @@
 					android:textSize="15sp" android:gravity="left" />
 			</LinearLayout>
 			<view android:id="@+id/radarview"
-				class="com.google.code.geobeagle.activity.main.RadarView"
+				class="com.google.code.geobeagle.activity.compass.RadarView"
 				android:layout_width="220sp" android:layout_gravity="center_horizontal"
 				android:layout_height="220sp" android:layout_weight="1" />
 			<LinearLayout android:orientation="vertical"

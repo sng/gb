@@ -32,8 +32,8 @@ public class CompassFragment extends Fragment {
         View inflatedView = inflater.inflate(R.layout.compass, container, false);
         Bundle arguments = getArguments();
         if (arguments != null) {
-            CacheListActivity guiceActivity = (CacheListActivity)this.getActivity();
-            Injector injector = guiceActivity.getInjector();
+            CacheListActivity cacheListActivity = (CacheListActivity)getActivity();
+            Injector injector = cacheListActivity.getInjector();
             GeocacheViewerFactory geocacheViewerFactory = injector.getInstance(GeocacheViewerFactory.class);
             GeocacheViewer geocacheViewer = geocacheViewerFactory.create(new ViewViewContainer(inflatedView));
             GeocacheFromParcelFactory geocacheFromParcelFactory = injector

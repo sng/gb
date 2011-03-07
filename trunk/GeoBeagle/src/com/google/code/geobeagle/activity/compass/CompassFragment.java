@@ -18,14 +18,23 @@ import com.google.code.geobeagle.R;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class CompassFragment extends Fragment {
-
+    static int counter = 0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.compass, container, false);
+        Log.d("GeoBeagle", "CompassFragment::onCreateView: " + counter);
+        View inflatedView = inflater.inflate(R.layout.compass, container, false);
+        TextView details = (TextView)inflatedView.findViewById(R.id.gcname);
+        Bundle arguments = getArguments();
+        details.setText("counter: " + counter++);
+        if (arguments != null)
+            details.setText(arguments.getString("name"));
+        return inflatedView;
     }
 }

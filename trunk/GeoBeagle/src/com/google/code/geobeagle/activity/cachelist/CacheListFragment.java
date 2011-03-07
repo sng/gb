@@ -15,14 +15,23 @@
 package com.google.code.geobeagle.activity.cachelist;
 
 import com.google.code.geobeagle.R;
+import com.google.code.geobeagle.activity.compass.CompassFragment;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 public class CacheListFragment extends ListFragment {
     @Override
@@ -45,7 +54,21 @@ public class CacheListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        getCacheListDelegate().onListItemClick(position);
+        CompassFragment compassFragment = new CompassFragment();
+        Bundle args = new Bundle();
+        args.putString("name", "foobar");
+
+        compassFragment.setArguments(args);
+        FragmentManager fragmentManager = getFragmentManager();
+        Log.d("GeoBeagle",
+                "CacheListFragment find compass: " + fragmentManager.findFragmentById(R.id.compass_frame));
+        Log.d("GeoBeagle", "CacheListFragment new compass: " + compassFragment);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.compass_frame, compassFragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.commit();
+        
+        // getCacheListDelegate().onListItemClick(position);
     }
 
     @Override

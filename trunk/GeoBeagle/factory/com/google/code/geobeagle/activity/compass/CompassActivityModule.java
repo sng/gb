@@ -62,7 +62,7 @@ public class CompassActivityModule extends AbstractAndroidModule {
         }
     }
 
-    private UnlabelledAttributeViewer getImagesOnDifficulty(final Drawable[] pawDrawables,
+    private static UnlabelledAttributeViewer getImagesOnDifficulty(final Drawable[] pawDrawables,
             ImageView imageView, RatingsArray ratingsArray) {
         return new UnlabelledAttributeViewer(imageView, ratingsArray.getRatings(pawDrawables, 10));
     }
@@ -99,17 +99,17 @@ public class CompassActivityModule extends AbstractAndroidModule {
         final ImageView cacheTypeImageView = (ImageView)activity.findViewById(R.id.gcicon);
         final NameViewer gcName = new NameViewer(textViewName, nameFormatter);
 
-        final AttributeViewer gcDifficulty = getLabelledAttributeViewer(activity, resources,
-                ratingsArray, new int[] {
-                        R.drawable.ribbon_unselected_dark, R.drawable.ribbon_half_bright,
-                        R.drawable.ribbon_selected_bright
-                }, R.id.gc_difficulty, R.id.gc_text_difficulty);
+        final AttributeViewer gcDifficulty = getLabelledAttributeViewer(new ActivityViewContainer(
+                activity), resources, ratingsArray, new int[] {
+                R.drawable.ribbon_unselected_dark, R.drawable.ribbon_half_bright,
+                R.drawable.ribbon_selected_bright
+        }, R.id.gc_difficulty, R.id.gc_text_difficulty);
 
-        final AttributeViewer gcTerrain = getLabelledAttributeViewer(activity, resources,
-                ratingsArray, new int[] {
-                        R.drawable.paw_unselected_dark, R.drawable.paw_half_light,
-                        R.drawable.paw_selected_light
-                }, R.id.gc_terrain, R.id.gc_text_terrain);
+        final AttributeViewer gcTerrain = getLabelledAttributeViewer(new ActivityViewContainer(
+                activity), resources, ratingsArray, new int[] {
+                R.drawable.paw_unselected_dark, R.drawable.paw_half_light,
+                R.drawable.paw_selected_light
+        }, R.id.gc_terrain, R.id.gc_text_terrain);
         final ResourceImages gcContainer = new ResourceImages(
                 (TextView)activity.findViewById(R.id.gc_text_container),
                 (ImageView)activity.findViewById(R.id.gccontainer),
@@ -120,7 +120,7 @@ public class CompassActivityModule extends AbstractAndroidModule {
                 difficultyAndTerrainPainter);
     }
 
-    private AttributeViewer getLabelledAttributeViewer(Activity activity, Resources resources,
+    static AttributeViewer getLabelledAttributeViewer(HasViewById activity, Resources resources,
             RatingsArray ratingsArray, int[] resourceIds, int difficultyId, int labelId) {
         final ImageView imageViewTerrain = (ImageView)activity.findViewById(difficultyId);
 

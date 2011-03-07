@@ -16,6 +16,7 @@ package com.google.code.geobeagle.activity.cachelist;
 
 import com.google.code.geobeagle.activity.ActivitySaver;
 import com.google.code.geobeagle.activity.ActivityType;
+import com.google.code.geobeagle.activity.cachelist.model.GeocacheVectors;
 import com.google.code.geobeagle.activity.cachelist.presenter.CacheListRefresh;
 import com.google.code.geobeagle.activity.cachelist.presenter.GeocacheListPresenter;
 import com.google.code.geobeagle.database.DbFrontend;
@@ -68,6 +69,7 @@ public class CacheListDelegate {
     private final Provider<DbFrontend> dbFrontendProvider;
     private final ImportIntentManager importIntentManager;
     private final GeocacheListPresenter presenter;
+    private final GeocacheVectors geocacheVectors;
 
     public CacheListDelegate(ImportIntentManager importIntentManager,
             ActivitySaver activitySaver,
@@ -75,7 +77,8 @@ public class CacheListDelegate {
             GeocacheListController geocacheListController,
             GeocacheListPresenter geocacheListPresenter,
             Provider<DbFrontend> dbFrontendProvider,
-            ActivityVisible activityVisible) {
+            ActivityVisible activityVisible,
+            GeocacheVectors geocacheVectors) {
         this.activitySaver = activitySaver;
         this.cacheListRefresh = cacheListRefresh;
         this.controller = geocacheListController;
@@ -83,6 +86,7 @@ public class CacheListDelegate {
         this.importIntentManager = importIntentManager;
         this.dbFrontendProvider = dbFrontendProvider;
         this.activityVisible = activityVisible;
+        this.geocacheVectors = geocacheVectors;
     }
 
     @Inject
@@ -94,6 +98,7 @@ public class CacheListDelegate {
         this.importIntentManager = injector.getInstance(ImportIntentManager.class);
         this.dbFrontendProvider = injector.getProvider(DbFrontend.class);
         this.activityVisible = injector.getInstance(ActivityVisible.class);
+        this.geocacheVectors = injector.getInstance(GeocacheVectors.class);
     }
 
     public boolean onContextItemSelected(MenuItem menuItem) {
@@ -132,5 +137,9 @@ public class CacheListDelegate {
         activityVisible.setVisible(true);
         presenter.onResume(cacheListRefresh);
         controller.onResume(importIntentManager.isImport());
+    }
+
+    public GeocacheVectors getGeocacheVectors() {
+        return geocacheVectors;
     }
 }

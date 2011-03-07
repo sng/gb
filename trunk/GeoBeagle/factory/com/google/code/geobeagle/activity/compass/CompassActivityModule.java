@@ -21,11 +21,6 @@ import com.google.code.geobeagle.GraphicsGenerator.MapViewBitmapCopier;
 import com.google.code.geobeagle.GraphicsGenerator.RatingsArray;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.cachelist.view.NameFormatter;
-import com.google.code.geobeagle.activity.compass.ChooseNavDialog;
-import com.google.code.geobeagle.activity.compass.CompassActivityOnCreateHandler;
-import com.google.code.geobeagle.activity.compass.CompassFragmentOnCreateHandler;
-import com.google.code.geobeagle.activity.compass.CompassFragtivityOnCreateHandler;
-import com.google.code.geobeagle.activity.compass.RadarView;
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer;
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer.AttributeViewer;
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer.LabelledAttributeViewer;
@@ -49,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Arrays;
+
 
 public class CompassActivityModule extends AbstractAndroidModule {
     @Override
@@ -99,17 +95,18 @@ public class CompassActivityModule extends AbstractAndroidModule {
         final ImageView cacheTypeImageView = (ImageView)activity.findViewById(R.id.gcicon);
         final NameViewer gcName = new NameViewer(textViewName, nameFormatter);
 
-        final AttributeViewer gcDifficulty = getLabelledAttributeViewer(new ActivityViewContainer(
-                activity), resources, ratingsArray, new int[] {
-                R.drawable.ribbon_unselected_dark, R.drawable.ribbon_half_bright,
-                R.drawable.ribbon_selected_bright
-        }, R.id.gc_difficulty, R.id.gc_text_difficulty);
+        ActivityViewContainer activityViewContainer = new ActivityViewContainer(activity);
+        final AttributeViewer gcDifficulty = getLabelledAttributeViewer(activityViewContainer,
+                resources, ratingsArray, new int[] {
+                        R.drawable.ribbon_unselected_dark, R.drawable.ribbon_half_bright,
+                        R.drawable.ribbon_selected_bright
+                }, R.id.gc_difficulty, R.id.gc_text_difficulty);
 
-        final AttributeViewer gcTerrain = getLabelledAttributeViewer(new ActivityViewContainer(
-                activity), resources, ratingsArray, new int[] {
-                R.drawable.paw_unselected_dark, R.drawable.paw_half_light,
-                R.drawable.paw_selected_light
-        }, R.id.gc_terrain, R.id.gc_text_terrain);
+        final AttributeViewer gcTerrain = getLabelledAttributeViewer(activityViewContainer,
+                resources, ratingsArray, new int[] {
+                        R.drawable.paw_unselected_dark, R.drawable.paw_half_light,
+                        R.drawable.paw_selected_light
+                }, R.id.gc_terrain, R.id.gc_text_terrain);
         final ResourceImages gcContainer = new ResourceImages(
                 (TextView)activity.findViewById(R.id.gc_text_container),
                 (ImageView)activity.findViewById(R.id.gccontainer),

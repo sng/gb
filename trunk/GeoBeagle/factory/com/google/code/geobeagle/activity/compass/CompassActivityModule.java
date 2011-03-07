@@ -78,7 +78,6 @@ public class CompassActivityModule extends AbstractAndroidModule {
         return XmlPullParserFactory.newInstance().newPullParser();
     }
 
-    @Provides
     public GeocacheViewer providesGeocacheViewer(Injector injector) {
         RadarView radarView = injector.getInstance(RadarView.class);
         Activity activity = injector.getInstance(Activity.class);

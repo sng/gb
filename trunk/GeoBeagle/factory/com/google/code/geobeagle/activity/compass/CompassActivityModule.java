@@ -78,44 +78,6 @@ public class CompassActivityModule extends AbstractAndroidModule {
         return XmlPullParserFactory.newInstance().newPullParser();
     }
 
-    public GeocacheViewer providesGeocacheViewer(Injector injector) {
-        RadarView radarView = injector.getInstance(RadarView.class);
-        Activity activity = injector.getInstance(Activity.class);
-        IconOverlayFactory iconOverlayFactory = injector.getInstance(IconOverlayFactory.class);
-        NameFormatter nameFormatter = injector.getInstance(NameFormatter.class);
-        Resources resources = injector.getInstance(Resources.class);
-        RatingsArray ratingsArray = injector.getInstance(RatingsArray.class);
-        MapViewBitmapCopier mapViewBitmapCopier = injector.getInstance(MapViewBitmapCopier.class);
-        DifficultyAndTerrainPainter difficultyAndTerrainPainter = injector
-                .getInstance(DifficultyAndTerrainPainter.class);
-        IconRenderer iconRenderer = injector.getInstance(IconRenderer.class);
-
-        final TextView textViewName = (TextView)activity.findViewById(R.id.gcname);
-        final ImageView cacheTypeImageView = (ImageView)activity.findViewById(R.id.gcicon);
-        final NameViewer gcName = new NameViewer(textViewName, nameFormatter);
-
-        ActivityViewContainer activityViewContainer = new ActivityViewContainer(activity);
-        final AttributeViewer gcDifficulty = getLabelledAttributeViewer(activityViewContainer,
-                resources, ratingsArray, new int[] {
-                        R.drawable.ribbon_unselected_dark, R.drawable.ribbon_half_bright,
-                        R.drawable.ribbon_selected_bright
-                }, R.id.gc_difficulty, R.id.gc_text_difficulty);
-
-        final AttributeViewer gcTerrain = getLabelledAttributeViewer(activityViewContainer,
-                resources, ratingsArray, new int[] {
-                        R.drawable.paw_unselected_dark, R.drawable.paw_half_light,
-                        R.drawable.paw_selected_light
-                }, R.id.gc_terrain, R.id.gc_text_terrain);
-        final ResourceImages gcContainer = new ResourceImages(
-                (TextView)activity.findViewById(R.id.gc_text_container),
-                (ImageView)activity.findViewById(R.id.gccontainer),
-                Arrays.asList(GeocacheViewer.CONTAINER_IMAGES));
-
-        return new GeocacheViewer(radarView, activity, gcName, cacheTypeImageView, gcDifficulty,
-                gcTerrain, gcContainer, iconOverlayFactory, mapViewBitmapCopier, iconRenderer,
-                difficultyAndTerrainPainter);
-    }
-
     static AttributeViewer getLabelledAttributeViewer(HasViewById activity, Resources resources,
             RatingsArray ratingsArray, int[] resourceIds, int difficultyId, int labelId) {
         final ImageView imageViewTerrain = (ImageView)activity.findViewById(difficultyId);

@@ -14,20 +14,11 @@
 
 package com.google.code.geobeagle.activity.compass;
 
-import com.google.code.geobeagle.GraphicsGenerator.DifficultyAndTerrainPainter;
-import com.google.code.geobeagle.GraphicsGenerator.IconOverlayFactory;
-import com.google.code.geobeagle.GraphicsGenerator.IconRenderer;
-import com.google.code.geobeagle.GraphicsGenerator.MapViewBitmapCopier;
 import com.google.code.geobeagle.GraphicsGenerator.RatingsArray;
 import com.google.code.geobeagle.R;
-import com.google.code.geobeagle.activity.cachelist.view.NameFormatter;
-import com.google.code.geobeagle.activity.compass.view.GeocacheViewer;
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer.AttributeViewer;
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer.LabelledAttributeViewer;
-import com.google.code.geobeagle.activity.compass.view.GeocacheViewer.NameViewer;
-import com.google.code.geobeagle.activity.compass.view.GeocacheViewer.ResourceImages;
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer.UnlabelledAttributeViewer;
-import com.google.inject.Injector;
 import com.google.inject.Provides;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -42,8 +33,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.Arrays;
 
 
 public class CompassActivityModule extends AbstractAndroidModule {

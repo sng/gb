@@ -17,7 +17,9 @@ package com.google.code.geobeagle.activity.cachelist;
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.cachelist.model.GeocacheVector;
+import com.google.code.geobeagle.activity.cachelist.model.GeocacheVectors;
 import com.google.code.geobeagle.activity.compass.CompassFragment;
+import com.google.inject.Injector;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -58,7 +60,7 @@ public class CacheListFragment extends ListFragment {
         super.onListItemClick(l, v, position, id);
         CompassFragment compassFragment = new CompassFragment();
         Bundle bundle = new Bundle();
-        GeocacheVector geocacheVector = getCacheListDelegate().getGeocacheVectors().get(position - 1);
+        GeocacheVector geocacheVector = getInjector().getInstance(GeocacheVectors.class).get(position - 1);
         geocacheVector.getGeocache().saveToBundle(bundle);
     
         compassFragment.setArguments(bundle);
@@ -81,6 +83,9 @@ public class CacheListFragment extends ListFragment {
                 || super.onOptionsItemSelected(item);
     }
 
+    private Injector getInjector() {
+        return ((CacheListActivity)getActivity()).getInjector();
+    }
     private CacheListDelegate getCacheListDelegate() {
         return ((CacheListActivity)getActivity()).getCacheListDelegate();
     }

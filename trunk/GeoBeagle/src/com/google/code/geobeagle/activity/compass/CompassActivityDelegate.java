@@ -21,6 +21,8 @@ import com.google.code.geobeagle.GeocacheFactory.Source;
 import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.activity.ActivitySaver;
 import com.google.code.geobeagle.activity.ActivityType;
+import com.google.code.geobeagle.activity.compass.CompassActivityModule.GeocacheViewerFactory;
+import com.google.code.geobeagle.activity.compass.CompassActivityModule.ActivityViewContainer;
 import com.google.code.geobeagle.activity.compass.GeocacheFromParcelFactory;
 import com.google.code.geobeagle.activity.compass.view.CheckDetailsButton;
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer;
@@ -100,7 +102,8 @@ public class CompassActivityDelegate {
         activitySaver = injector.getInstance(ActivitySaver.class);
         appLifecycleManager = injector.getInstance(AppLifecycleManager.class);
         menuActions = injector.getInstance(GeoBeagleActivityMenuActions.class);
-        geocacheViewer = injector.getInstance(GeocacheViewer.class);
+        geocacheViewer = injector.getInstance(GeocacheViewerFactory.class).create(
+                new ActivityViewContainer(parent));
         geocacheFactory = injector.getInstance(GeocacheFactory.class);
         incomingIntentHandler = injector.getInstance(IncomingIntentHandler.class);
         dbFrontendProvider = injector.getProvider(DbFrontend.class);

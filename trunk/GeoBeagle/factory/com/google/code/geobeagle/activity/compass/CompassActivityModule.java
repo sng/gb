@@ -32,6 +32,7 @@ import com.google.code.geobeagle.activity.compass.view.GeocacheViewer.LabelledAt
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer.NameViewer;
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer.ResourceImages;
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer.UnlabelledAttributeViewer;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 
@@ -42,7 +43,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import roboguice.config.AbstractAndroidModule;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -84,7 +84,69 @@ public class CompassActivityModule extends AbstractAndroidModule {
         return XmlPullParserFactory.newInstance().newPullParser();
     }
 
-    @Provides
+    public static class GeocacheViewerFactory {
+
+        private final IconOverlayFactory iconOverlayFactory;
+        private final NameFormatter nameFormatter;
+        private final Resources resources;
+        private final RatingsArray ratingsArray;
+        private final MapViewBitmapCopier mapViewBitmapCopier;
+        private final DifficultyAndTerrainPainter difficultyAndTerrainPainter;
+        private final IconRenderer iconRenderer;
+        private final Activity activity;
+
+        @Inject
+        GeocacheViewerFactory(IconOverlayFactory iconOverlayFactory,
+                NameFormatter nameFormatter,
+                Resources resources,
+                RatingsArray ratingsArray,
+                MapViewBitmapCopier mapViewBitmapCopier,
+                DifficultyAndTerrainPainter difficultyAndTerrainPainter,
+                IconRenderer iconRenderer,
+                Activity activity) {
+            this.iconOverlayFactory = iconOverlayFactory;
+            this.nameFormatter = nameFormatter;
+            this.resources = resources;
+            this.ratingsArray = ratingsArray;
+            this.mapViewBitmapCopier = mapViewBitmapCopier;
+            this.difficultyAndTerrainPainter = difficultyAndTerrainPainter;
+            this.iconRenderer = iconRenderer;
+            this.activity = activity;
+        }
+
+        GeocacheViewer create(HasViewById hasViewById) {
+            RadarView radarView = (RadarView)hasViewById.findViewById(R.id.radarview);
+            radarView.setUseImperial(false);
+            radarView.setDistanceView((TextView)hasViewById.findViewById(R.id.radar_distance),
+                    (TextView)hasViewById.findViewById(R.id.radar_bearing),
+                    (TextView)hasViewById.findViewById(R.id.radar_accuracy));
+
+            TextView textViewName = (TextView)hasViewById.findViewById(R.id.gcname);
+            ImageView cacheTypeImageView = (ImageView)hasViewById.findViewById(R.id.gcicon);
+            NameViewer gcName = new NameViewer(textViewName, nameFormatter);
+
+            AttributeViewer gcDifficulty = getLabelledAttributeViewer(hasViewById,
+                    resources, ratingsArray, new int[] {
+                            R.drawable.ribbon_unselected_dark, R.drawable.ribbon_half_bright,
+                            R.drawable.ribbon_selected_bright
+                    }, R.id.gc_difficulty, R.id.gc_text_difficulty);
+
+            AttributeViewer gcTerrain = getLabelledAttributeViewer(hasViewById,
+                    resources, ratingsArray, new int[] {
+                            R.drawable.paw_unselected_dark, R.drawable.paw_half_light,
+                            R.drawable.paw_selected_light
+                    }, R.id.gc_terrain, R.id.gc_text_terrain);
+            final ResourceImages gcContainer = new ResourceImages(
+                    (TextView)hasViewById.findViewById(R.id.gc_text_container),
+                    (ImageView)hasViewById.findViewById(R.id.gccontainer),
+                    Arrays.asList(GeocacheViewer.CONTAINER_IMAGES));
+
+            return new GeocacheViewer(radarView, activity, gcName, cacheTypeImageView, gcDifficulty,
+                    gcTerrain, gcContainer, iconOverlayFactory, mapViewBitmapCopier, iconRenderer,
+                    difficultyAndTerrainPainter);
+        }
+    }
+
     public GeocacheViewer providesGeocacheViewer(Injector injector) {
         RadarView radarView = injector.getInstance(RadarView.class);
         Activity activity = injector.getInstance(Activity.class);

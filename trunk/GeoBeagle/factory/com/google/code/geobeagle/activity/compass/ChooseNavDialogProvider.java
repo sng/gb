@@ -35,7 +35,7 @@ import android.content.res.Resources;
 
 public class ChooseNavDialogProvider implements Provider<ChooseNavDialog> {
     private final ErrorDisplayer errorDisplayer;
-    private final Activity compassActivity;
+    private final Activity activity;
     private final Provider<Resources> resourcesProvider;
     private final Provider<Context> contextProvider;
     private final Provider<InstallRadarAppDialog> installRadarAppDialogProvider;
@@ -43,7 +43,7 @@ public class ChooseNavDialogProvider implements Provider<ChooseNavDialog> {
     @Inject
     public ChooseNavDialogProvider(Injector injector) {
         errorDisplayer = injector.getInstance(ErrorDisplayer.class);
-        compassActivity = injector.getInstance(Activity.class);
+        activity = injector.getInstance(Activity.class);
         resourcesProvider = injector.getProvider(Resources.class);
         contextProvider = injector.getProvider(Context.class);
         installRadarAppDialogProvider = injector.getProvider(InstallRadarAppDialog.class);
@@ -57,11 +57,11 @@ public class ChooseNavDialogProvider implements Provider<ChooseNavDialog> {
         final GeocacheToGoogleGeo geocacheToNavigate = new GeocacheToGoogleGeo(resourcesProvider,
                 R.string.navigate_intent);
 
-        final IntentStarterGeo intentStarterRadar = new IntentStarterGeo(compassActivity, new Intent(
+        final IntentStarterGeo intentStarterRadar = new IntentStarterGeo(activity, new Intent(
                 "com.google.android.radar.SHOW_RADAR"));
-        final IntentStarterViewUri intentStarterGoogleMaps = new IntentStarterViewUri(compassActivity,
+        final IntentStarterViewUri intentStarterGoogleMaps = new IntentStarterViewUri(activity,
                 geocacheToGoogleMaps, errorDisplayer);
-        final IntentStarterViewUri intentStarterNavigate = new IntentStarterViewUri(compassActivity,
+        final IntentStarterViewUri intentStarterNavigate = new IntentStarterViewUri(activity,
                 geocacheToNavigate, errorDisplayer);
         final IntentStarter[] intentStarters = {
                 intentStarterRadar, intentStarterGoogleMaps, intentStarterNavigate

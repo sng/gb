@@ -19,7 +19,6 @@ import com.google.code.geobeagle.activity.compass.CompassFragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 
 public class IntentStarterGeo implements IntentStarter {
     private final Activity mGeoBeagle;
@@ -32,7 +31,6 @@ public class IntentStarterGeo implements IntentStarter {
 
     @Override
     public void startIntent() {
-        Log.d("GeoBeagle", "IntentStarterGeo::startIntent " + mGeoBeagle + ", " + mGeoBeagle.getFragmentManager());
         CompassFragment fragment = (CompassFragment)mGeoBeagle.getFragmentManager().findFragmentById(R.id.compass_fragment);
         Geocache geocache = fragment.getGeocache();
         mIntent.putExtra("latitude", (float)geocache.getLatitude());

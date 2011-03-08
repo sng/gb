@@ -16,8 +16,6 @@ package com.google.code.geobeagle.activity.compass;
 
 import com.google.code.geobeagle.ErrorDisplayer;
 import com.google.code.geobeagle.R;
-import com.google.code.geobeagle.activity.compass.ChooseNavDialog;
-import com.google.code.geobeagle.activity.compass.CompassActivity;
 import com.google.code.geobeagle.activity.compass.intents.GeocacheToGoogleGeo;
 import com.google.code.geobeagle.activity.compass.intents.IntentStarter;
 import com.google.code.geobeagle.activity.compass.intents.IntentStarterGeo;
@@ -31,13 +29,13 @@ import com.google.inject.Provider;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.res.Resources;
 
 public class ChooseNavDialogProvider implements Provider<ChooseNavDialog> {
     private final ErrorDisplayer errorDisplayer;
-    private final CompassActivity compassActivity;
+    private final Activity compassActivity;
     private final Provider<Resources> resourcesProvider;
     private final Provider<Context> contextProvider;
     private final Provider<InstallRadarAppDialog> installRadarAppDialogProvider;
@@ -45,7 +43,7 @@ public class ChooseNavDialogProvider implements Provider<ChooseNavDialog> {
     @Inject
     public ChooseNavDialogProvider(Injector injector) {
         errorDisplayer = injector.getInstance(ErrorDisplayer.class);
-        compassActivity = (CompassActivity)injector.getInstance(Activity.class);
+        compassActivity = injector.getInstance(Activity.class);
         resourcesProvider = injector.getProvider(Resources.class);
         contextProvider = injector.getProvider(Context.class);
         installRadarAppDialogProvider = injector.getProvider(InstallRadarAppDialog.class);

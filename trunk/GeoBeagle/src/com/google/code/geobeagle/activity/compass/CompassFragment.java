@@ -16,6 +16,7 @@ package com.google.code.geobeagle.activity.compass;
 
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.R;
+import com.google.code.geobeagle.R.id;
 import com.google.code.geobeagle.activity.cachelist.CacheListActivity;
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer;
 import com.google.inject.Injector;
@@ -25,8 +26,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 
 public class CompassFragment extends Fragment {
+    private Geocache geocache;
+
+    public Geocache getGeocache() {
+        return geocache;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.compass, container, false);
@@ -34,12 +42,19 @@ public class CompassFragment extends Fragment {
         if (arguments != null) {
             CacheListActivity cacheListActivity = (CacheListActivity)getActivity();
             Injector injector = cacheListActivity.getInjector();
-            GeocacheViewerFactory geocacheViewerFactory = injector.getInstance(GeocacheViewerFactory.class);
-            GeocacheViewer geocacheViewer = geocacheViewerFactory.create(new ViewViewContainer(inflatedView));
+            GeocacheViewerFactory geocacheViewerFactory = injector
+                    .getInstance(GeocacheViewerFactory.class);
+            GeocacheViewer geocacheViewer = geocacheViewerFactory.create(new ViewViewContainer(
+                    inflatedView));
             GeocacheFromParcelFactory geocacheFromParcelFactory = injector
                     .getInstance(GeocacheFromParcelFactory.class);
-            Geocache geocache = geocacheFromParcelFactory.createFromBundle(arguments);
+            geocache = geocacheFromParcelFactory.createFromBundle(arguments);
             geocacheViewer.set(geocache);
+
+            OnClickListener onClickListenerNavigate = injector
+                    .getInstance(OnClickListenerNavigate.class);
+            inflatedView.findViewById(id.navigate).setOnClickListener(onClickListenerNavigate);
+
         }
         return inflatedView;
     }

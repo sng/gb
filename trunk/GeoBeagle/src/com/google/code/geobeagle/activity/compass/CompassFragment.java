@@ -19,6 +19,7 @@ import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.R.id;
 import com.google.code.geobeagle.activity.cachelist.CacheListActivity;
 import com.google.code.geobeagle.activity.compass.view.GeocacheViewer;
+import com.google.code.geobeagle.activity.compass.view.OnClickListenerCacheDetails;
 import com.google.inject.Injector;
 
 import android.app.Fragment;
@@ -51,10 +52,11 @@ public class CompassFragment extends Fragment {
             geocache = geocacheFromParcelFactory.createFromBundle(arguments);
             geocacheViewer.set(geocache);
 
+            inflatedView.findViewById(R.id.cache_details).setOnClickListener(
+                    injector.getInstance(OnClickListenerCacheDetails.class));
             OnClickListener onClickListenerNavigate = injector
                     .getInstance(OnClickListenerNavigate.class);
             inflatedView.findViewById(id.navigate).setOnClickListener(onClickListenerNavigate);
-
         }
         return inflatedView;
     }

@@ -15,7 +15,8 @@
 package com.google.code.geobeagle.activity.compass.view;
 
 import com.google.code.geobeagle.Geocache;
-import com.google.code.geobeagle.activity.compass.CompassActivity;
+import com.google.code.geobeagle.R;
+import com.google.code.geobeagle.activity.compass.CompassFragment;
 import com.google.code.geobeagle.activity.details.DetailsActivity;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -26,26 +27,29 @@ import android.view.View;
 
 public class OnClickListenerCacheDetails implements View.OnClickListener {
 
-    private final CompassActivity compassActivity;
+    private final Activity activity;
 
     // For testing.
     public OnClickListenerCacheDetails(Activity geoBeagle) {
-        this.compassActivity = (CompassActivity)geoBeagle;
+        this.activity = geoBeagle;
     }
 
     @Inject
     public OnClickListenerCacheDetails(Injector injector) {
-        compassActivity = (CompassActivity)injector.getInstance(Activity.class);
+        activity = injector.getInstance(Activity.class);
     }
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(compassActivity, DetailsActivity.class);
-        Geocache geocache = compassActivity.getGeocache();
+        Intent intent = new Intent(activity, DetailsActivity.class);
+        CompassFragment fragment = (CompassFragment)activity.getFragmentManager().findFragmentById(
+                R.id.compass_frame);
+
+        Geocache geocache = fragment.getGeocache();
         intent.putExtra(DetailsActivity.INTENT_EXTRA_GEOCACHE_SOURCE, geocache.getSourceName());
         intent.putExtra(DetailsActivity.INTENT_EXTRA_GEOCACHE_ID, geocache.getId().toString());
         intent.putExtra(DetailsActivity.INTENT_EXTRA_GEOCACHE_NAME, geocache.getName().toString());
 
-        compassActivity.startActivity(intent);
+        activity.startActivity(intent);
     }
 }

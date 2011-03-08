@@ -51,22 +51,21 @@ public class ChooseNavDialogProvider implements Provider<ChooseNavDialog> {
 
     @Override
     public ChooseNavDialog get() {
-
-        final GeocacheToGoogleGeo geocacheToGoogleMaps = new GeocacheToGoogleGeo(resourcesProvider,
+        GeocacheToGoogleGeo geocacheToGoogleMaps = new GeocacheToGoogleGeo(resourcesProvider,
                 R.string.google_maps_intent);
-        final GeocacheToGoogleGeo geocacheToNavigate = new GeocacheToGoogleGeo(resourcesProvider,
+        GeocacheToGoogleGeo geocacheToNavigate = new GeocacheToGoogleGeo(resourcesProvider,
                 R.string.navigate_intent);
 
-        final IntentStarterGeo intentStarterRadar = new IntentStarterGeo(activity, new Intent(
+        IntentStarterGeo intentStarterRadar = new IntentStarterGeo(activity, new Intent(
                 "com.google.android.radar.SHOW_RADAR"));
-        final IntentStarterViewUri intentStarterGoogleMaps = new IntentStarterViewUri(activity,
+        IntentStarterViewUri intentStarterGoogleMaps = new IntentStarterViewUri(activity,
                 geocacheToGoogleMaps, errorDisplayer);
-        final IntentStarterViewUri intentStarterNavigate = new IntentStarterViewUri(activity,
+        IntentStarterViewUri intentStarterNavigate = new IntentStarterViewUri(activity,
                 geocacheToNavigate, errorDisplayer);
-        final IntentStarter[] intentStarters = {
+        IntentStarter[] intentStarters = {
                 intentStarterRadar, intentStarterGoogleMaps, intentStarterNavigate
         };
-        final OnClickListener onClickListener = new NavigateOnClickListener(intentStarters,
+        OnClickListener onClickListener = new NavigateOnClickListener(intentStarters,
                 installRadarAppDialogProvider.get());
         return new ChooseNavDialog(new AlertDialog.Builder(contextProvider.get())
                 .setItems(R.array.select_nav_choices, onClickListener)

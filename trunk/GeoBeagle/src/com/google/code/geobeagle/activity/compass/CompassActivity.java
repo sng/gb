@@ -17,7 +17,6 @@ package com.google.code.geobeagle.activity.compass;
 import com.google.code.geobeagle.ErrorDisplayer;
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.LocationControlBuffered;
-import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.R.id;
 import com.google.code.geobeagle.activity.cachelist.LogFindDialogHelper;
 import com.google.code.geobeagle.activity.compass.intents.IntentStarterGeo;
@@ -58,7 +57,7 @@ public class CompassActivity extends GuiceActivity {
 
         Injector injector = getInjector();
         injector.getInstance(CompassFragtivityOnCreateHandler.class).onCreate(this);
-        
+
         RadarView radarView = injector.getInstance(RadarView.class);
 
         locationControlBuffered.onLocationChanged(null);
@@ -156,7 +155,7 @@ public class CompassActivity extends GuiceActivity {
         Injector injector = getInjector();
 
         Geocache geocache = compassActivityDelegate.getGeocache();
-        logFindDialogHelper.onPrepareDialog(geocache, injector, id, dialog);
+        logFindDialogHelper.onPrepareDialog(geocache.getId(), injector, id, dialog);
     }
 
     /*

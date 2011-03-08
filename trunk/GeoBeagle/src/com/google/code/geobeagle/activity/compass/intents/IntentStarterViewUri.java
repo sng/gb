@@ -25,31 +25,31 @@ import android.content.Intent;
 import android.net.Uri;
 
 public class IntentStarterViewUri implements IntentStarter {
-    private final Activity mGeoBeagle;
-    private final GeocacheToUri mGeocacheToUri;
-    private final ErrorDisplayer mErrorDisplayer;
+    private final Activity activity;
+    private final GeocacheToUri geocacheToUri;
+    private final ErrorDisplayer errorDisplayer;
 
     public IntentStarterViewUri(Activity geoBeagle,
             GeocacheToUri geocacheToUri,
             ErrorDisplayer errorDisplayer) {
-        mGeoBeagle = geoBeagle;
-        mGeocacheToUri = geocacheToUri;
-        mErrorDisplayer = errorDisplayer;
+        this.activity = geoBeagle;
+        this.geocacheToUri = geocacheToUri;
+        this.errorDisplayer = errorDisplayer;
     }
 
     @Override
     public void startIntent() {
         try {
-            CompassFragment fragment = (CompassFragment)mGeoBeagle.getFragmentManager()
+            CompassFragment fragment = (CompassFragment)activity.getFragmentManager()
                     .findFragmentById(R.id.compass_frame);
-            String uri = mGeocacheToUri.convert(fragment.getGeocache());
+            String uri = geocacheToUri.convert(fragment.getGeocache());
             try {
-                mGeoBeagle.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
+                activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
             } catch (ActivityNotFoundException e) {
-                mErrorDisplayer.displayError(R.string.no_intent_handler, uri);
+                errorDisplayer.displayError(R.string.no_intent_handler, uri);
             }
         } catch (CacheLoaderException e) {
-            mErrorDisplayer.displayError(e.getError(), e.getArgs());
+            errorDisplayer.displayError(e.getError(), e.getArgs());
         }
     }
 }

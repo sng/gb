@@ -14,8 +14,10 @@
 
 package com.google.code.geobeagle.activity.cachelist;
 
+import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.OnClickCancelListener;
 import com.google.code.geobeagle.R;
+import com.google.code.geobeagle.activity.compass.CompassFragment;
 import com.google.code.geobeagle.activity.compass.fieldnotes.DialogHelperSms;
 import com.google.code.geobeagle.activity.compass.fieldnotes.DialogHelperSmsFactory;
 import com.google.code.geobeagle.activity.compass.fieldnotes.FieldnoteLogger;
@@ -38,7 +40,11 @@ public class LogFindDialogHelper {
     private static final DateFormat mLocalDateFormat = DateFormat
             .getTimeInstance(DateFormat.MEDIUM);
 
-    public void onPrepareDialog(CharSequence cacheId, Injector injector, int id, Dialog dialog) {
+    public void onPrepareDialog(Activity activity, Injector injector, int id, Dialog dialog) {
+        CompassFragment fragment = (CompassFragment)activity.getFragmentManager().findFragmentById(
+                R.id.compass_frame);
+        Geocache geocache = fragment.getGeocache();
+        CharSequence cacheId = geocache.getId();
         boolean fDnf = id == R.id.menu_log_dnf;
         DialogHelperSms dialogHelperSms = injector.getInstance(DialogHelperSmsFactory.class)
                 .create(cacheId.length(), fDnf);

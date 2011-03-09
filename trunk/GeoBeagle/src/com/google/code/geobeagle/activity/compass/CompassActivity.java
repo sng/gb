@@ -17,6 +17,7 @@ package com.google.code.geobeagle.activity.compass;
 import com.google.code.geobeagle.ErrorDisplayer;
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.LocationControlBuffered;
+import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.R.id;
 import com.google.code.geobeagle.activity.cachelist.LogFindDialogHelper;
 import com.google.code.geobeagle.activity.compass.intents.IntentStarterGeo;
@@ -79,17 +80,13 @@ public class CompassActivity extends GuiceActivity {
         Intent geoMapActivityIntent = new Intent(this, GeoMapActivity.class);
         OnClickListenerIntentStarter onClickListenerMapPage = new OnClickListenerIntentStarter(
                 new IntentStarterGeo(this, geoMapActivityIntent), errorDisplayer);
-        findViewById(id.maps).setOnClickListener(onClickListenerMapPage);
+        findViewById(R.id.maps).setOnClickListener(onClickListenerMapPage);
 
         injector.getInstance(CompassClickListenerSetter.class).setListeners(
-                new ActivityViewContainer(this));
+                this, new ActivityViewContainer(this));
 
         findViewById(id.radarview).setOnClickListener(
                 injector.getInstance(OnClickListenerRadar.class));
-        findViewById(id.menu_log_find).setOnClickListener(
-                new LogFindClickListener(this, id.menu_log_find));
-        findViewById(id.menu_log_dnf).setOnClickListener(
-                new LogFindClickListener(this, id.menu_log_dnf));
         
         logFindDialogHelper = injector.getInstance(LogFindDialogHelper.class);
     }
@@ -153,9 +150,7 @@ public class CompassActivity extends GuiceActivity {
         //TODO(sng) shouldn't this be onPrepareDialog?
         super.onCreateDialog(id);
         Injector injector = getInjector();
-
-        Geocache geocache = compassActivityDelegate.getGeocache();
-        logFindDialogHelper.onPrepareDialog(geocache.getId(), injector, id, dialog);
+        logFindDialogHelper.onPrepareDialog(this, injector, id, dialog);
     }
 
     /*

@@ -19,22 +19,27 @@ import com.google.code.geobeagle.R.id;
 import com.google.code.geobeagle.activity.compass.view.OnClickListenerCacheDetails;
 import com.google.inject.Inject;
 
-import android.view.View.OnClickListener;
+import android.app.Activity;
 
 class CompassClickListenerSetter {
     private final OnClickListenerCacheDetails onClickListenerCacheDetails;
-    private final OnClickListener onClickListenerNavigate;
+    private final OnClickListenerNavigate onClickListenerNavigate;
 
     @Inject
     public CompassClickListenerSetter(OnClickListenerCacheDetails onClickListenerCacheDetails,
-            OnClickListener onClickListenerNavigate) {
+            OnClickListenerNavigate onClickListenerNavigate) {
         this.onClickListenerCacheDetails = onClickListenerCacheDetails;
         this.onClickListenerNavigate = onClickListenerNavigate;
     }
 
-    void setListeners(HasViewById hasViewById) {
+    void setListeners(Activity activity, HasViewById hasViewById) {
         hasViewById.findViewById(R.id.cache_details)
                 .setOnClickListener(onClickListenerCacheDetails);
         hasViewById.findViewById(id.navigate).setOnClickListener(onClickListenerNavigate);
+
+        hasViewById.findViewById(id.menu_log_find).setOnClickListener(
+                new LogFindClickListener(activity, id.menu_log_find));
+        hasViewById.findViewById(id.menu_log_dnf).setOnClickListener(
+                new LogFindClickListener(activity, id.menu_log_dnf));
     }
 }

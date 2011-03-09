@@ -20,6 +20,7 @@ import com.google.code.geobeagle.activity.ActivityRestorer;
 import com.google.code.geobeagle.activity.ActivityType;
 import com.google.code.geobeagle.activity.cachelist.actions.context.delete.ContextActionDeleteDialogHelper;
 import com.google.code.geobeagle.activity.cachelist.actions.context.delete.ContextActionDeleteStore;
+import com.google.code.geobeagle.activity.compass.CompassFragment;
 import com.google.code.geobeagle.gpsstatuswidget.GpsStatusWidgetDelegate;
 import com.google.code.geobeagle.gpsstatuswidget.InflatedGpsStatusWidget;
 import com.google.inject.Injector;
@@ -123,16 +124,14 @@ public class CacheListActivity extends GuiceListActivity {
 
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
+        super.onPrepareDialog(id, dialog);
 
         Injector injector = getInjector();
-        ContextActionDeleteStore contextActionDeleteStore = injector
-                .getInstance(ContextActionDeleteStore.class);
         injector.getInstance(ContextActionDeleteDialogHelper.class).onPrepareDialog(dialog);
         if (id == R.id.delete_cache)
             injector.getInstance(ContextActionDeleteDialogHelper.class).onPrepareDialog(dialog);
         else
-            mLogFindDialogHelper.onPrepareDialog(contextActionDeleteStore.getCacheId(),
-                    this.getInjector(), id, dialog);
+            mLogFindDialogHelper.onPrepareDialog(this, this.getInjector(), id, dialog);
     }
 
     @Override

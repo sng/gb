@@ -14,20 +14,21 @@
 
 package com.google.code.geobeagle.activity.compass;
 
+import android.app.Activity;
 import android.view.View;
 import android.view.View.OnClickListener;
 
 public class LogFindClickListener implements OnClickListener {
-    private final CompassActivity mGeoBeagle;
+    private final Activity mActivity;
     private final int mIdDialog;
 
-    LogFindClickListener(CompassActivity compassActivity, int idDialog) {
-        mGeoBeagle = compassActivity;
+    LogFindClickListener(Activity activity, int idDialog) {
+        mActivity = activity;
         mIdDialog = idDialog;
     }
 
     @Override
     public void onClick(View v) {
-        mGeoBeagle.showDialog(mIdDialog);
+        mActivity.showDialog(mIdDialog);
     }
 }

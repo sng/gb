@@ -123,6 +123,7 @@ public class CacheListActivity extends GuiceListActivity {
 
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
+        super.onPrepareDialog(id, dialog);
 
         if (id == R.id.delete_cache)
             mContextActionDeleteDialogHelper.onPrepareDialog(dialog);

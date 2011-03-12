@@ -17,15 +17,8 @@ package com.google.code.geobeagle.activity.compass;
 import com.google.code.geobeagle.ErrorDisplayer;
 import com.google.code.geobeagle.Geocache;
 import com.google.code.geobeagle.LocationControlBuffered;
-import com.google.code.geobeagle.OnClickCancelListener;
-import com.google.code.geobeagle.R;
 import com.google.code.geobeagle.R.id;
-import com.google.code.geobeagle.activity.compass.fieldnotes.DialogHelperSms;
-import com.google.code.geobeagle.activity.compass.fieldnotes.DialogHelperSmsFactory;
-import com.google.code.geobeagle.activity.compass.fieldnotes.FieldnoteLogger;
-import com.google.code.geobeagle.activity.compass.fieldnotes.FieldnoteLogger.OnClickOk;
-import com.google.code.geobeagle.activity.compass.fieldnotes.FieldnoteLoggerFactory;
-import com.google.code.geobeagle.activity.compass.fieldnotes.OnClickOkFactory;
+import com.google.code.geobeagle.activity.cachelist.LogFindDialogHelper;
 import com.google.code.geobeagle.activity.compass.intents.IntentStarterGeo;
 import com.google.code.geobeagle.activity.compass.view.OnClickListenerIntentStarter;
 import com.google.code.geobeagle.activity.compass.view.OnClickListenerRadar;
@@ -36,26 +29,18 @@ import com.google.inject.Injector;
 import roboguice.activity.GuiceActivity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-
-import java.text.DateFormat;
-import java.util.Date;
 
 public class CompassActivity extends GuiceActivity {
-    private static final DateFormat mLocalDateFormat = DateFormat
-            .getTimeInstance(DateFormat.MEDIUM);
     private CompassActivityDelegate compassActivityDelegate;
+    private LogFindDialogHelper logFindDialogHelper;
     
     @Inject
     LocationControlBuffered locationControlBuffered;
@@ -72,7 +57,7 @@ public class CompassActivity extends GuiceActivity {
 
         Injector injector = getInjector();
         injector.getInstance(CompassFragtivityOnCreateHandler.class).onCreate(this);
-        
+
         RadarView radarView = injector.getInstance(RadarView.class);
 
         locationControlBuffered.onLocationChanged(null);
@@ -101,11 +86,12 @@ public class CompassActivity extends GuiceActivity {
 
         findViewById(id.radarview).setOnClickListener(
                 injector.getInstance(OnClickListenerRadar.class));
-
         findViewById(id.menu_log_find).setOnClickListener(
                 new LogFindClickListener(this, id.menu_log_find));
         findViewById(id.menu_log_dnf).setOnClickListener(
                 new LogFindClickListener(this, id.menu_log_dnf));
+        
+        logFindDialogHelper = injector.getInstance(LogFindDialogHelper.class);
     }
 
     @Override
@@ -159,22 +145,7 @@ public class CompassActivity extends GuiceActivity {
     @Override
     protected Dialog onCreateDialog(int id) {
         super.onCreateDialog(id);
-        Injector injector = getInjector();
-
-        AlertDialog.Builder builder = injector.getInstance(AlertDialog.Builder.class);
-        View fieldnoteDialogView = LayoutInflater.from(this).inflate(R.layout.fieldnote, null);
-
-        boolean fDnf = id == R.id.menu_log_dnf;
-
-        OnClickOk onClickOk = injector.getInstance(OnClickOkFactory.class).create(
-                (EditText)fieldnoteDialogView.findViewById(R.id.fieldnote), fDnf);
-        builder.setTitle(R.string.field_note_title);
-        builder.setView(fieldnoteDialogView);
-        builder.setNegativeButton(R.string.cancel,
-                injector.getInstance(OnClickCancelListener.class));
-        builder.setPositiveButton(R.string.log_cache, onClickOk);
-        AlertDialog alertDialog = builder.create();
-        return alertDialog;
+        return logFindDialogHelper.onCreateDialog(this, getInjector(), id);
     }
 
     @Override
@@ -182,14 +153,8 @@ public class CompassActivity extends GuiceActivity {
         super.onPrepareDialog(id, dialog);
         Injector injector = getInjector();
 
-        boolean fDnf = id == R.id.menu_log_dnf;
-
-        DialogHelperSms dialogHelperSms = injector.getInstance(DialogHelperSmsFactory.class)
-                .create(compassActivityDelegate.getGeocache().getId().length(), fDnf);
-        FieldnoteLogger fieldnoteLogger = injector.getInstance(FieldnoteLoggerFactory.class)
-                .create(dialogHelperSms);
-
-        fieldnoteLogger.onPrepareDialog(dialog, mLocalDateFormat.format(new Date()), fDnf);
+        Geocache geocache = compassActivityDelegate.getGeocache();
+        logFindDialogHelper.onPrepareDialog(geocache.getId(), injector, id, dialog);
     }
 
     /*

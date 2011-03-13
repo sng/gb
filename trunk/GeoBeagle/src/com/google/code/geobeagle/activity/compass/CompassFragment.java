@@ -27,21 +27,29 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class CompassFragment extends Fragment {
+    private Geocache geocache;
+
+    public Geocache getGeocache() {
+        return geocache;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.compass, container, false);
         Bundle arguments = getArguments();
         if (arguments != null) {
-            CacheListActivity guiceActivity = (CacheListActivity)this.getActivity();
-            Injector injector = guiceActivity.getInjector();
-            GeocacheViewerFactory geocacheViewerFactory = injector.getInstance(GeocacheViewerFactory.class);
-            GeocacheViewer geocacheViewer = geocacheViewerFactory.create(new ViewViewContainer(inflatedView));
+            CacheListActivity cacheListActivity = (CacheListActivity)getActivity();
+            Injector injector = cacheListActivity.getInjector();
+            GeocacheViewerFactory geocacheViewerFactory = injector
+                    .getInstance(GeocacheViewerFactory.class);
+            GeocacheViewer geocacheViewer = geocacheViewerFactory.create(new ViewViewContainer(
+                    inflatedView));
             GeocacheFromParcelFactory geocacheFromParcelFactory = injector
                     .getInstance(GeocacheFromParcelFactory.class);
-            Geocache geocache = geocacheFromParcelFactory.createFromBundle(arguments);
+            geocache = geocacheFromParcelFactory.createFromBundle(arguments);
             geocacheViewer.set(geocache);
             injector.getInstance(CompassClickListenerSetter.class).setListeners(
-                    new ViewViewContainer(inflatedView), guiceActivity);
+                    new ViewViewContainer(inflatedView), cacheListActivity);
         }
         return inflatedView;
     }

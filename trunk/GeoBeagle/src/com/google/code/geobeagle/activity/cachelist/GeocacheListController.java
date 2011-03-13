@@ -34,7 +34,7 @@ import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class GeocacheListController {
-
+    //TODO(sng) rename to CacheListController.
     public static class CacheListOnCreateContextMenuListener implements OnCreateContextMenuListener {
         private final GeocacheVectors mGeocacheVectors;
 

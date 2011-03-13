@@ -105,7 +105,7 @@ public class CacheListActivity extends GuiceListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        mCacheListDelegate.onListItemClick(position);
+//        mCacheListDelegate.onListItemClick(position);
     }
 
     @Override
@@ -124,7 +124,10 @@ public class CacheListActivity extends GuiceListActivity {
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
         super.onPrepareDialog(id, dialog);
-        mContextActionDeleteDialogHelper.onPrepareDialog(dialog);
+        if (id == R.id.delete_cache)
+            mContextActionDeleteDialogHelper.onPrepareDialog(dialog);
+        else
+            mLogFindDialogHelper.onPrepareDialog(this, id, dialog);
     }
 
     @Override

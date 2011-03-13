@@ -15,9 +15,15 @@
 package com.google.code.geobeagle.activity.cachelist;
 
 import com.google.code.geobeagle.R;
+import com.google.code.geobeagle.activity.cachelist.model.GeocacheVectors;
+import com.google.code.geobeagle.activity.compass.CompassFragment;
+import com.google.inject.Injector;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +31,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 public class CacheListFragment extends ListFragment {
+    private GeocacheVectors geocacheVectors;
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -34,6 +42,8 @@ public class CacheListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Injector injector = ((CacheListActivity)getActivity()).getInjector();
+        geocacheVectors = injector.getInstance(GeocacheVectors.class);
         setHasOptionsMenu(true);
     }
 
@@ -45,7 +55,22 @@ public class CacheListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        getCacheListDelegate().onListItemClick(position);
+        CompassFragment compassFragment = new CompassFragment();
+        Bundle bundle = new Bundle();
+        geocacheVectors.get(position - 1).getGeocache().saveToBundle(bundle);
+
+        compassFragment.setArguments(bundle);
+        FragmentManager fragmentManager = getFragmentManager();
+        Log.d("GeoBeagle",
+                "CacheListFragment find compass: "
+                        + fragmentManager.findFragmentById(R.id.compass_frame));
+        Log.d("GeoBeagle", "CacheListFragment new compass: " + compassFragment);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.compass_frame, compassFragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.commit();
+        
+        // getCacheListDelegate().onListItemClick(position);
     }
 
     @Override

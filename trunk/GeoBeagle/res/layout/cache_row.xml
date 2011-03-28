@@ -17,7 +17,7 @@
 	<LinearLayout android:orientation="vertical"
 		android:layout_width="25sp" android:layout_height="fill_parent">
 		<ImageView android:gravity="center_vertical"
-		    android:maxWidth="32px" android:maxHeight="32px"
+			android:maxWidth="32px" android:maxHeight="32px"
 			android:paddingRight="3sp" android:layout_width="wrap_content"
 			android:layout_height="fill_parent" android:id="@+id/gc_row_icon"
 			android:layout_weight="1" />
@@ -43,8 +43,8 @@
 
 				<TextView android:id="@+id/distance" android:gravity="right"
 					android:textColor="#93be26" android:textSize="16sp" android:text="right"
-					android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:layout_weight="1" />
+					android:textStyle="bold" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:layout_weight="1" />
 			</LinearLayout>
 		</FrameLayout>
 

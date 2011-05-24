@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class ActivityRestorer {
 
@@ -92,9 +93,8 @@ public class ActivityRestorer {
             SharedPreferences sharedPreferences,
             CacheListRestorer cacheListRestorer) {
         mSharedPreferences = sharedPreferences;
-        final NullRestorer nullRestorer = new NullRestorer();
         mRestorers = new Restorer[] {
-                nullRestorer, cacheListRestorer, nullRestorer,
+                cacheListRestorer, cacheListRestorer, cacheListRestorer,
                 new ViewCacheRestorer(geocacheFromPreferencesFactory, sharedPreferences, activity)
         };
     }
@@ -106,7 +106,7 @@ public class ActivityRestorer {
         final String lastActivity = mSharedPreferences.getString(ActivitySaver.LAST_ACTIVITY,
                 ActivityType.NONE.name());
         final ActivityType activityType = ActivityType.valueOf(lastActivity);
-        if (currentActivityType != activityType) {
+        if (currentActivityType != activityType || activityType == ActivityType.CACHE_LIST) {
             Log.d("GeoBeagle", "RESTORING: " + activityType);
             mRestorers[activityType.toInt()].restore();
             return true;
